@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
-import mplfinance as mpf
 import matplotlib.pyplot as plt
 st.title("SpotTraderBot 🚀")
 
@@ -68,28 +67,21 @@ if st.session_state.bot_activo:
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
         with grafico.container():
-           
-                df.index = pd.date_range(
-                    start="2024-01-01",
-                    periods=len(df),
-                    freq="1min"
-                )
+            fig, ax = plt.subplots(figsize=(10,5))
 
-                apds = [
-                    mpf.make_addplot(df["EMA9"], color="blue"),
-                    mpf.make_addplot(df["EMA21"], color="red")
-                ]
+            ax.plot(df["close"], label="Precio", color="white")
+            ax.plot(df["EMA9"], label="EMA 9", color="blue")
+            ax.plot(df["EMA21"], label="EMA 21", color="red")
 
-                fig, ax = mpf.plot(
-                    df,
-                    type="candle",
-                    style="charles",
-                    addplot=apds,
-                    returnfig=True,
-                    volume=False
-                )
+            ax.set_facecolor("black")
+            fig.patch.set_facecolor("black")
 
-                st.pyplot(fig)
+            plt.legend()
+
+            st.pyplot(fig)   
+              
+
+                 
         with panel.container():
 
                 cambio = precio_actual - closes[-2]
