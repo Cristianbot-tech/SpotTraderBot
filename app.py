@@ -59,7 +59,6 @@ if st.button("Iniciar Bot"):
                 st.error("VENTA SPOT 📉")
 
             st.success(f"Bot iniciado para {crypto}")
-
-         for i in range(60, 0, -1):
-                contador.write(i)
-                time.sleep(1)
+        for i in range(60, 0, -1):
+            contador.write(i)
+            time.sleep(1)
