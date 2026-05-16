@@ -1,4 +1,4 @@
 streamlit
 pandas
 requests
-matplotlib
+matplotlib==3.8.4
