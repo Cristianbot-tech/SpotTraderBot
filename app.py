@@ -23,6 +23,9 @@ if st.button("Iniciar Bot"):
     closes = []
     for candle in data["data"]:
         closes.append(float(candle["close"]))
+    precio_actual = closes[-1]
+
+    st.write("Precio actual:", precio_actual)
 
     df = pd.DataFrame(closes, columns=["close"])
 
