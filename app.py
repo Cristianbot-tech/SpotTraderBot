@@ -16,6 +16,8 @@ sl = st.number_input("Stop Loss %", value=1.0)
 if st.button("Iniciar Bot"):
     ema9 = 100
     ema21 = 95
+    st.write("EMA 9:", ema9)
+    st.write("EMA 21:", ema21)
 
     if ema9 > ema21:
         st.success("COMPRA SPOT 🚀")
