@@ -40,7 +40,7 @@ if st.button("Iniciar Bot"):
         if ema9 > ema21:
             st.success("COMPRA SPOT 🚀")
 
-    elif ema9 < ema21:
-        st.error("VENTA SPOT 📉")
-    st.success(f"Bot iniciado para {crypto}")
-    time.sleep(60)
+        elif ema9 < ema21:
+            st.error("VENTA SPOT 📉")
+        st.success(f"Bot iniciado para {crypto}")
+        time.sleep(60)
