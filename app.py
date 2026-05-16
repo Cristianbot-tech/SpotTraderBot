@@ -12,7 +12,7 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     crypto = st.selectbox(
         "Selecciona par",
-        ["BTC/USDT", "ETH/USDT", "SOL/USDT",  "XRP/USDT", "DOGE", "POL/USDT", "ONDO/USDT"]
+        ["BTC/USDT", "ETH/USDT", "SOL/USDT",  "XRP/USDT", "DOGE/USDT", "BILL/USDT", "POL/USDT", "ONDO/USDT"]
     )
 
 with col2:
@@ -22,26 +22,25 @@ with col3:
     sl = st.number_input("Stop Loss %", value=1.00)
 
 with col4:
-
-    if st.button("Iniciar Bot"):
+   if "bot_activo" not in st.session_state: 
+    st.session_state.bot_activo = False
+       
+   if st.button("Iniciar Bot", key="btn_iniciar"):
         st.session_state.bot_activo = True
 
-    if st.button("Detener Bot"):
+   if st.button("Detener Bot", key="btn_detener"):
         st.session_state.bot_activo = False
-
-if "bot_activo" not in st.session_state: 
-    st.session_state.bot_activo = False
-
-if st.button("Iniciar Bot"):
-    st.session_state.bot_activo = True
     
 panel = st.empty()
 grafico = st.empty()
 
 if st.session_state.bot_activo:
-    while True:
-        url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
-
+    while st.session_state.bot_activo:
+        market = crypto.replace("/", "")
+        url = (
+            f"https://api.coinex.com/v2/spot/kline"
+            f"?market={market}&period=1min&limit=50"
+        )
         response = requests.get(url)
         data = response.json()
 
@@ -64,39 +63,39 @@ if st.session_state.bot_activo:
         })
         df["EMA9"] = df["close"].ewm(span=9).mean()
         df["EMA21"] = df["close"].ewm(span=21).mean()
-
+        precio_actual = closes[-1]
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
         with grafico.container():
             st.line_chart(
                 df[["close", "EMA9", "EMA21"]],
-                height=400
+                height=500
             )
         with panel.container():
 
             cambio = precio_actual - closes[-2]
 
             st.metric(
-                "💰 Precio",
+                "💰 Precio actual",
                 round(precio_actual, 2),
                 round(cambio, 2)
             )
             col1, col2, col3 = st.columns(3)
 
             with col1:
-                st.write("EMA 9:", ema9)
+                st.write("EMA 9:",round(ema9, 2))
 
             with col2:
-                st.write("EMA 21:", ema21)
+                st.write("EMA 21:",round(ema21, 2))
 
             with col3:
                 contador = st.empty()
 
             if ema9 > ema21:
-                st.success("COMPRA SPOT 🚀")
+                st.success("🚀COMPRA SPOT")
 
             elif ema9 < ema21:
-                st.error("VENTA SPOT 📉")
+                st.error("📉VENTA SPOT")
 
             st.success(f"Bot iniciado para {crypto}")
         for i in range(60, 0, -1):
