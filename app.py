@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
-import matplotlib.pyplot as plt
 st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
@@ -66,19 +65,6 @@ if st.session_state.bot_activo:
         precio_actual = closes[-1]
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
-        with grafico.container():
-            fig, ax = plt.subplots(figsize=(10,5))
-
-            ax.plot(df["close"], label="Precio")
-            ax.plot(df["EMA9"], label="EMA 9")
-            ax.plot(df["EMA21"], label="EMA 21")
-
-            ax.legend()
-
-            st.pyplot(fig)
-              
-
-                 
         with panel.container():
 
                 cambio = precio_actual - closes[-2]
