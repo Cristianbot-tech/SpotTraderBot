@@ -1,5 +1,5 @@
-stremlit
+streamlit
 pandas
-mplfinance
 requests
 matplotlib
+mplfinance
