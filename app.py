@@ -21,8 +21,7 @@ if st.button("Iniciar Bot"):
     data = response.json()
 
     closes = []
-
-    for candle in data["data"]:
+    for candle in data["data"]["data"]:
         closes.append(float(candle["close"]))
 
     df = pd.DataFrame(closes, columns=["close"])
