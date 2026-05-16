@@ -22,7 +22,8 @@ if st.button("Iniciar Bot"):
 
     closes = []
     for candle in data["data"]["data"]:
-        closes.append(float(candle["close"]))
+        if "close" in candle:
+            closes.append(float(candle["close"]))
 
     df = pd.DataFrame(closes, columns=["close"])
 
