@@ -7,7 +7,7 @@ st.write("Bot de trading spot para CoinEx")
 
 crypto = st.selectbox(
     "Selecciona una criptomoneda",
-    ["DOGE/USDT", "BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "BILL/USDT", "POL/USDT", "ONDO/UST"]
+    ["DOGE/USDT", "BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "BILL/USDT", "POL/USDT", "ONDO/USdT"]
 )
 
 tp = st.number_input("Take Profit %", value=1.5)
@@ -22,13 +22,9 @@ if st.button("Iniciar Bot"):
 
     closes = []
     for candle in data["data"]:
-        if "close" in candle:
-            closes.append(float(candle["close"]))
+        closes.append(float(candle["close"]))
 
     df = pd.DataFrame(closes, columns=["close"])
-    if len(closes) == 0:
-        st.error(f"No hay datos disponibles para {crypto}")
-        st.stop()
 
     ema9 = df["close"].ewm(span=9).mean().iloc[-1]
     ema21 = df["close"].ewm(span=21).mean().iloc[-1]
