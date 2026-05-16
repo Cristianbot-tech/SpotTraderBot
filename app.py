@@ -16,6 +16,7 @@ tp = st.number_input("Take Profit %", value=1.5)
 sl = st.number_input("Stop Loss %", value=1.0)
 
 if st.button("Iniciar Bot"):
+    panel = st.empty()
     while True:
         url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
 
@@ -27,24 +28,29 @@ if st.button("Iniciar Bot"):
             closes.append(float(candle["close"]))
         precio_actual = closes[-1]
 
-        st.write("Precio actual:", precio_actual)
+        with panel.container():
 
-        df = pd.DataFrame(closes, columns=["close"])
+            st.write("Precio actual:", precio_actual)
 
-        ema9 = df["close"].ewm(span=9).mean().iloc[-1]
-        ema21 = df["close"].ewm(span=21).mean().iloc[-1]
-    
-        st.write("EMA 9:", ema9)
-        st.write("EMA 21:", ema21)
+            col1, col2, col3 = st.columns(3)
 
-        if ema9 > ema21:
-            st.success("COMPRA SPOT 🚀")
+            with col1:
+                st.write("EMA 9:", ema9)
 
-        elif ema9 < ema21:
-            st.error("VENTA SPOT 📉")
-        st.success(f"Bot iniciado para {crypto}")
-        contador = st.empty()
+            with col2:
+                st.write("EMA 21:", ema21)
 
-        for i in range(60, 0, -1):
-            contador.write(f"⏳ Próxima actualización en {i} segundos")
-            time.sleep(1)
+            with col3:
+                contador = st.empty()
+
+            if ema9 > ema21:
+                st.success("COMPRA SPOT 🚀")
+
+            elif ema9 < ema21:
+                st.error("VENTA SPOT 📉")
+
+            st.success(f"Bot iniciado para {crypto}")
+
+            for i in range(60, 0, -1):
+                contador.write(f"⏳ Próxima actualización en {i} segundos")
+                time.sleep(1)
