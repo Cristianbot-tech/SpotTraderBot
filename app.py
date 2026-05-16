@@ -54,8 +54,13 @@ if st.button("Iniciar Bot"):
             )
         with panel.container():
 
-            st.write("Precio actual:", precio_actual)
+            cambio = precio_actual - closes[-2]
 
+            st.metric(
+                "💰 Precio",
+                round(precio_actual, 2),
+                round(cambio, 2)
+            )
             col1, col2, col3 = st.columns(3)
 
             with col1:
