@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
+import plotly.graph_objects as go
 st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
@@ -65,6 +66,33 @@ if st.session_state.bot_activo:
         precio_actual = closes[-1]
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
+        with grafico.container():
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        y=df["close"],
+        mode="lines",
+        name="Precio"
+    ))
+
+    fig.add_trace(go.Scatter(
+        y=df["EMA9"],
+        mode="lines",
+        name="EMA 9"
+    ))
+
+    fig.add_trace(go.Scatter(
+        y=df["EMA21"],
+        mode="lines",
+        name="EMA 21"
+    ))
+
+    fig.update_layout(
+        height=500
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
         with panel.container():
 
                 cambio = precio_actual - closes[-2]
