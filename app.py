@@ -69,16 +69,13 @@ if st.session_state.bot_activo:
         with grafico.container():
             fig, ax = plt.subplots(figsize=(10,5))
 
-            ax.plot(df["close"], label="Precio", color="white")
-            ax.plot(df["EMA9"], label="EMA 9", color="blue")
-            ax.plot(df["EMA21"], label="EMA 21", color="red")
+            ax.plot(df["close"], label="Precio")
+            ax.plot(df["EMA9"], label="EMA 9")
+            ax.plot(df["EMA21"], label="EMA 21")
 
-            ax.set_facecolor("black")
-            fig.patch.set_facecolor("black")
+            ax.legend()
 
-            plt.legend()
-
-            st.pyplot(fig)   
+            st.pyplot(fig)
               
 
                  
