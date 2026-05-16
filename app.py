@@ -35,7 +35,10 @@ if st.button("Iniciar Bot"):
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
 
-        grafico.line_chart(df[["close", "EMA9", "EMA21"]])
+        grafico.line_chart(
+            df[["close", "EMA9", "EMA21"]],
+            height=400
+        )
 
         with panel.container():
 
