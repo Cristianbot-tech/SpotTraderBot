@@ -21,7 +21,7 @@ if st.button("Iniciar Bot"):
     data = response.json()
 
     closes = []
-    for candle in data["data"]["data"]:
+    for candle in data["data"]:
         if "close" in candle:
             closes.append(float(candle["close"]))
 
