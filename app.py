@@ -16,16 +16,16 @@ tp = st.number_input("Take Profit %", value=1.5)
 
 sl = st.number_input("Stop Loss %", value=1.0)
 
-    panel = st.empty()
-    grafico = st.empty()
+panel = st.empty()
+grafico = st.empty()
 
-    if "bot_activo" not in st.session_state: 
-        st.session_state.bot_activo = False
+if "bot_activo" not in st.session_state: 
+    st.session_state.bot_activo = False
 
-    if st.button("Iniciar Bot"):
-        st.session_state.bot_activo = True
+if st.button("Iniciar Bot"):
+    st.session_state.bot_activo = True
 
-    if st.session_state.bot_activo:
+if st.session_state.bot_activo:
     while True:
         url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
 
