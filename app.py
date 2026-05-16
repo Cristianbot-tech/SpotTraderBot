@@ -19,7 +19,7 @@ sl = st.number_input("Stop Loss %", value=1.0)
 if st.button("Iniciar Bot"):
     panel = st.empty()
     grafico = st.empty()
-    while True:
+   for _ in range(1):
         url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
 
         response = requests.get(url)
