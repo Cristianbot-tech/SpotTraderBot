@@ -7,10 +7,27 @@ st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
 
-crypto = st.selectbox(
-    "Selecciona una criptomoneda",
-    ["BTC/USDT", "ETH/USDT", "SOL/USDT", "DOGE/USDT", "XRP/USDT", "BILL/USDT", "POL/USDT", "ONDO/USDT"]
-)
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    crypto = st.selectbox(
+        "Selecciona par",
+        ["BTC/USDT", "ETH/USDT", "SOL/USDT",  "XRP/USDT", "DOGE", "POL/USDT", "ONDO/USDT"]
+    )
+
+with col2:
+    tp = st.number_input("Take Profit %", value=1.50)
+
+with col3:
+    sl = st.number_input("Stop Loss %", value=1.00)
+
+with col4:
+
+    if st.button("Iniciar Bot"):
+        st.session_state.bot_activo = True
+
+    if st.button("Detener Bot"):
+        st.session_state.bot_activo = False
 
 tp = st.number_input("Take Profit %", value=1.5)
 
