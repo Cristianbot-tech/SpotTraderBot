@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
+import plotly.graph_objects as go
 st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
@@ -24,11 +25,23 @@ if st.button("Iniciar Bot"):
         response = requests.get(url)
         data = response.json()
 
+        opens = []
+        highs = []
+        lows = []
         closes = []
+
         for candle in data["data"]:
+            opens.append(float(candle["open"]))
+            highs.append(float(candle["high"]))
+            lows.append(float(candle["low"]))
             closes.append(float(candle["close"]))
         precio_actual = closes[-1]
-        df = pd.DataFrame(closes[-100:], columns=["close"])
+        df = pd.DataFrame({
+            "open": opens[-100:],
+            "high": highs[-100:],
+            "low": lows[-100:],
+            "close": closes[-100:]
+        })
         df["EMA9"] = df["close"].ewm(span=9).mean()
         df["EMA21"] = df["close"].ewm(span=21).mean()
 
