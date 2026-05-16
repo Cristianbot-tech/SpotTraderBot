@@ -1,5 +1,6 @@
 import streamlit as st
-
+import pandas as pd
+import requests
 st.title("TraderBotSpot")
 
 st.write("Bot de trading spot para CoinEx")
