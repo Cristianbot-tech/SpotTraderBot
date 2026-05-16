@@ -43,4 +43,6 @@ if st.button("Iniciar Bot"):
         elif ema9 < ema21:
             st.error("VENTA SPOT 📉")
         st.success(f"Bot iniciado para {crypto}")
-        time.sleep(60)
+        for i in range(60, 0, -1):
+            st.write(f"⏳ Próxima actualización en {i} segundos")
+            time.sleep(1)
