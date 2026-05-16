@@ -55,5 +55,5 @@ if st.button("Iniciar Bot"):
             st.success(f"Bot iniciado para {crypto}")
 
             for i in range(60, 0, -1):
-                contador.write(f"⏳ Próxima actualización en {i} segundos")
+                contador.write(i)
                 time.sleep(1)
