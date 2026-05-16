@@ -16,14 +16,14 @@ tp = st.number_input("Take Profit %", value=1.5)
 
 sl = st.number_input("Stop Loss %", value=1.0)
 
-panel = st.empty()
-grafico = st.empty()
-
 if "bot_activo" not in st.session_state: 
     st.session_state.bot_activo = False
 
 if st.button("Iniciar Bot"):
     st.session_state.bot_activo = True
+    
+panel = st.empty()
+grafico = st.empty()
 
 if st.session_state.bot_activo:
     while True:
