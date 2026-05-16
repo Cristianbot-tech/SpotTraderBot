@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
-import plotly.graph_objects as go
+# import plotly.graph_objects as go
 st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
