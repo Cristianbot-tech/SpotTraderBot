@@ -29,10 +29,6 @@ with col4:
     if st.button("Detener Bot"):
         st.session_state.bot_activo = False
 
-tp = st.number_input("Take Profit %", value=1.5)
-
-sl = st.number_input("Stop Loss %", value=1.0)
-
 if "bot_activo" not in st.session_state: 
     st.session_state.bot_activo = False
 
