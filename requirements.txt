@@ -1,2 +1,4 @@
 stremlit
 pandas
+requests
+plotly
