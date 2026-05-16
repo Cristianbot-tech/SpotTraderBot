@@ -7,7 +7,7 @@ st.write("Bot de trading spot para CoinEx")
 
 crypto = st.selectbox(
     "Selecciona una criptomoneda",
-    ["DOGE/USDT", "BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "BILL/USDT", "POL/USDT", "ONDO/USdT"]
+    ["DOGE/USDT", "BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "BILL/USDT", "POL/USDT", "ONDO/USDT"]
 )
 
 tp = st.number_input("Take Profit %", value=1.5)
