@@ -17,6 +17,7 @@ sl = st.number_input("Stop Loss %", value=1.0)
 
 if st.button("Iniciar Bot"):
     panel = st.empty()
+    grafico = st.empty()
     while True:
         url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
 
@@ -28,9 +29,13 @@ if st.button("Iniciar Bot"):
             closes.append(float(candle["close"]))
         precio_actual = closes[-1]
         df = pd.DataFrame(closes, columns=["close"])
-        st.line_chart(df["close"])
-        ema9 = df["close"].ewm(span=9).mean().iloc[-1]
-        ema21 = df["close"].ewm(span=21).mean().iloc[-1]
+        df["EMA9"] = df["close"].ewm(span=9).mean()
+        df["EMA21"] = df["close"].ewm(span=21).mean()
+
+        ema9 = df["EMA9"].iloc[-1]
+        ema21 = df["EMA21"].iloc[-1]
+
+        grafico.line_chart(df[["close", "EMA9", "EMA21"]])
 
         with panel.container():
 
@@ -55,6 +60,6 @@ if st.button("Iniciar Bot"):
 
             st.success(f"Bot iniciado para {crypto}")
 
-            for i in range(60, 0, -1):
+         for i in range(60, 0, -1):
                 contador.write(i)
                 time.sleep(1)
