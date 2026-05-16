@@ -69,55 +69,55 @@ if st.session_state.bot_activo:
         ema21 = df["EMA21"].iloc[-1]
         with grafico.container():
            
-        df.index = pd.date_range(
-            start="2024-01-01",
-            periods=len(df),
-            freq="1min"
-        )
+                df.index = pd.date_range(
+                    start="2024-01-01",
+                    periods=len(df),
+                    freq="1min"
+                )
 
-        apds = [
-            mpf.make_addplot(df["EMA9"], color="blue"),
-            mpf.make_addplot(df["EMA21"], color="red")
-        ]
+                apds = [
+                    mpf.make_addplot(df["EMA9"], color="blue"),
+                    mpf.make_addplot(df["EMA21"], color="red")
+                ]
 
-       fig, ax = mpf.plot(
-            df,
-            type="candle",
-            style="charles",
-            addplot=apds,
-            returnfig=True,
-            volume=False
-        )
+               fig, ax = mpf.plot(
+                    df,
+                    type="candle",
+                    style="charles",
+                    addplot=apds,
+                    returnfig=True,
+                    volume=False
+                )
 
-        st.pyplot(fig)
+                st.pyplot(fig)
         with panel.container():
 
-            cambio = precio_actual - closes[-2]
+                cambio = precio_actual - closes[-2]
 
-            st.metric(
-                "💰 Precio actual",
-                round(precio_actual, 2),
-                round(cambio, 2)
-            )
-            col1, col2, col3 = st.columns(3)
+                st.metric(
+                    "💰 Precio actual",
+                    round(precio_actual, 2),
+                    round(cambio, 2)
+                )
+                col1, col2, col3 = st.columns(3)
 
-            with col1:
-                st.write("EMA 9:",round(ema9, 2))
+                with col1:
+                    st.write("EMA 9:",round(ema9, 2))
 
-            with col2:
-                st.write("EMA 21:",round(ema21, 2))
+                with col2:
+                    st.write("EMA 21:",round(ema21, 2))
 
-            with col3:
-                contador = st.empty()
+                with col3:
+                    contador = st.empty()
 
-            if ema9 > ema21:
-                st.success("🚀COMPRA SPOT")
+                    if ema9 > ema21:
+                        st.success("🚀COMPRA SPOT")
 
-            elif ema9 < ema21:
-                st.error("📉VENTA SPOT")
+                    elif ema9 < ema21:
+                        st.error("📉VENTA SPOT")
 
-            st.success(f"Bot iniciado para {crypto}")
-        for i in range(60, 0, -1):
-            contador.write(i)
-            time.sleep(1)
-        st.rerun()
+                    st.success(f"Bot iniciado para {crypto}")
+                    for i in range(60, 0, -1):
+                        contador.write(i)
+                        time.sleep(1)
+                    st.rerun()
