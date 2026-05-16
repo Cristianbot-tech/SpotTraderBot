@@ -28,7 +28,7 @@ if st.button("Iniciar Bot"):
         for candle in data["data"]:
             closes.append(float(candle["close"]))
         precio_actual = closes[-1]
-        df = pd.DataFrame(closes, columns=["close"])
+        df = pd.DataFrame(closes[-100:], columns=["close"])
         df["EMA9"] = df["close"].ewm(span=9).mean()
         df["EMA21"] = df["close"].ewm(span=21).mean()
 
@@ -36,7 +36,7 @@ if st.button("Iniciar Bot"):
         ema21 = df["EMA21"].iloc[-1]
         with grafico.container():
             st.line_chart(
-                df[["EMA9", "EMA21"]],
+                df[["close", "EMA9", "EMA21"]],
                 height=400
             )
         with panel.container():
