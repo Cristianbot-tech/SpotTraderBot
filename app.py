@@ -15,7 +15,7 @@ tp = st.number_input("Take Profit %", value=1.5)
 sl = st.number_input("Stop Loss %", value=1.0)
 
 if st.button("Iniciar Bot"):
-   url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
+    url = f"https://api.coinex.com/v2/spot/kline?market={crypto.replace('/','')}&period=1min&limit=50"
 
     response = requests.get(url)
     data = response.json()
