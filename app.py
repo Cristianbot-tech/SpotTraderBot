@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
-# import plotly.graph_objects as go
+import mplfinance as mpf
+import matplotlib.pyplot as plt
 st.title("SpotTraderBot 🚀")
 
 st.write("Bot de trading spot para CoinEx")
@@ -67,10 +68,28 @@ if st.session_state.bot_activo:
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
         with grafico.container():
-            st.line_chart(
-                df[["close", "EMA9", "EMA21"]],
-                height=500
-            )
+           
+        df.index = pd.date_range(
+            start="2024-01-01",
+            periods=len(df),
+            freq="1min"
+        )
+
+        apds = [
+            mpf.make_addplot(df["EMA9"], color="blue"),
+            mpf.make_addplot(df["EMA21"], color="red")
+        ]
+
+       fig, ax = mpf.plot(
+            df,
+            type="candle",
+            style="charles",
+            addplot=apds,
+            returnfig=True,
+            volume=False
+        )
+
+        st.pyplot(fig)
         with panel.container():
 
             cambio = precio_actual - closes[-2]
