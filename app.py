@@ -80,7 +80,7 @@ if st.session_state.bot_activo:
                     mpf.make_addplot(df["EMA21"], color="red")
                 ]
 
-               fig, ax = mpf.plot(
+                fig, ax = mpf.plot(
                     df,
                     type="candle",
                     style="charles",
