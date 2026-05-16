@@ -2,3 +2,4 @@ stremlit
 pandas
 mplfinance
 requests
+matplotlib
