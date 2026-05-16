@@ -27,6 +27,9 @@ if st.button("Iniciar Bot"):
         for candle in data["data"]:
             closes.append(float(candle["close"]))
         precio_actual = closes[-1]
+        df = pd.DataFrame(closes, columns=["close"])
+        ema9 = df["close"].ewm(span=9).mean().iloc[-1]
+        ema21 = df["close"].ewm(span=21).mean().iloc[-1]
 
         with panel.container():
 
