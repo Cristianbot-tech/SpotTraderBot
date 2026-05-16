@@ -26,6 +26,9 @@ if st.button("Iniciar Bot"):
             closes.append(float(candle["close"]))
 
     df = pd.DataFrame(closes, columns=["close"])
+    if len(closes) == 0:
+        st.error(f"No hay datos disponibles para {crypto}")
+        st.stop()
 
     ema9 = df["close"].ewm(span=9).mean().iloc[-1]
     ema21 = df["close"].ewm(span=21).mean().iloc[-1]
