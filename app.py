@@ -66,6 +66,10 @@ if st.session_state.bot_activo:
         precio_actual = closes[-1]
         ema9 = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
+        
+        soporte = df['low'].tail(20).min()
+        resistencia = df['high'].tail(20).max()
+       
         with grafico.container():
             fig = go.Figure(data=[go.Candlestick(
                 x=df.index,
@@ -88,7 +92,19 @@ if st.session_state.bot_activo:
                 mode='lines',
                 name='EMA 21'
             ))
+            fig.add_hline(
+                y=soporte,
+                line_dash="dot",
+                line_color="green",
+                annotation_text="Soporte"
+            )
 
+            fig.add_hline(
+                y=resistencia,
+                line_dash="dot",
+                line_color="red",
+                annotation_text="Resistencia"
+            )
             fig.update_layout(
                 height=500
             )
