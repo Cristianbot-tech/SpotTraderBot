@@ -33,19 +33,19 @@ with col4:
     
 panel = st.empty()
 grafico = st.empty()
-col1, col2 = st.columns(2)
+top1, top2 = st.columns(2)
 
-with col1:
+with top1:
     timeframe = st.selectbox(
         "Temporalidad",
         ["1min", "5min", "15min", "1hour"],
         index=0
     )
 
-with col2:
+with top2:
     volumen_box = st.empty()
-if st.session_state.bot_activo:
-    while st.session_state.bot_activo:
+    if st.session_state.bot_activo:
+        while st.session_state.bot_activo:
         market = crypto.replace("/", "")
         url = (
             f"https://api.coinex.com/v2/spot/kline"
@@ -82,7 +82,7 @@ if st.session_state.bot_activo:
         
         soporte = df['low'].tail(20).min()
         resistencia = df['high'].tail(20).max()
-        st.metric(
+        volumen_box.metric(
             "📊 Volumen",
             round(df["volume"].iloc[-1], 2)   
         )
