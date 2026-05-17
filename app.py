@@ -74,25 +74,24 @@ if st.session_state.bot_activo:
                 low=df['low'],
                 close=df['close'],
                 name='BTC/USDT'
-           )])
+            )])
 
-           fig.add_trace(go.Scatter(
+            fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA9'],
                 mode='lines',
                 name='EMA 9'
-           ))
-
-           fig.add_trace(go.Scatter(
+            ))
+            fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA21'],
                 mode='lines',
                 name='EMA 21'
-           ))
+            ))
 
-           fig.update_layout(
+            fig.update_layout(
                 height=500
-           )
+            )
            
             st.plotly_chart(fig, use_container_width=True)
         with panel.container():
