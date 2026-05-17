@@ -118,7 +118,7 @@ if st.session_state.bot_activo:
                 line_color="red",
                 annotation_text="Resistencia"
             )
-          fig.update_layout(
+            fig.update_layout(
                height=500
             )
            
