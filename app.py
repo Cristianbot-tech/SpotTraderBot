@@ -71,15 +71,24 @@ if st.session_state.bot_activo:
         resistencia = df['high'].tail(20).max()
        
         with grafico.container():
-            fig = go.Figure(data=[go.Candlestick(
-                x=df.index,
-                open=df['open'],
-                high=df['high'],
-                low=df['low'],
-                close=df['close'],
-                name='BTC/USDT'
-            )])
+           fig = go.Figure(data=[go.Candlestick(
+               x=df.index,
+               open=df['open'],
+               high=df['high'],
+               low=df['low'],
+               close=df['close'],
+               name='BTC/USDT',
 
+               increasing=dict(
+                   line=dict(color='lime'),
+                   fillcolor='lime'
+               ),
+
+               decreasing=dict(
+                   line=dict(color='red'),
+                   fillcolor='red'
+               )
+            )])
             fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA9'],
