@@ -59,33 +59,33 @@ with top2:
             closes = []
             volumes = []
 
-        for candle in data["data"]:
-            opens.append(float(candle["open"]))
-            highs.append(float(candle["high"]))
-            lows.append(float(candle["low"]))
-            closes.append(float(candle["close"]))
-            volumes.append(float(candle["volume"]))
-        precio_actual = closes[-1]
-        df = pd.DataFrame({
-            "open": opens[-100:],
-            "high": highs[-100:],
-            "low": lows[-100:],
-            "close": closes[-100:],
-            "volume": volumes[-100:]
-        })
-        df["EMA9"] = df["close"].ewm(span=9).mean()
-        df["EMA21"] = df["close"].ewm(span=21).mean()
-        precio_actual = closes[-1]
-        ema9 = df["EMA9"].iloc[-1]
-        ema21 = df["EMA21"].iloc[-1]
+         for candle in data["data"]:
+             opens.append(float(candle["open"]))
+             highs.append(float(candle["high"]))
+             lows.append(float(candle["low"]))
+             closes.append(float(candle["close"]))
+             volumes.append(float(candle["volume"]))
+         precio_actual = closes[-1]
+         df = pd.DataFrame({
+             "open": opens[-100:],
+             "high": highs[-100:],
+             "low": lows[-100:],
+             "close": closes[-100:],
+             "volume": volumes[-100:]
+         })
+         df["EMA9"] = df["close"].ewm(span=9).mean()
+         df["EMA21"] = df["close"].ewm(span=21).mean()
+         precio_actual = closes[-1]
+         ema9 = df["EMA9"].iloc[-1]
+         ema21 = df["EMA21"].iloc[-1]
         
-        soporte = df['low'].tail(20).min()
-        resistencia = df['high'].tail(20).max()
-        volumen_box.metric(
-            "📊 Volumen",
-            round(df["volume"].iloc[-1], 2)   
-        )
-        with grafico.container():
+         soporte = df['low'].tail(20).min()
+         resistencia = df['high'].tail(20).max()
+         volumen_box.metric(
+             "📊 Volumen",
+             round(df["volume"].iloc[-1], 2)   
+         )
+         with grafico.container():
 
             fig = go.Figure(data=[go.Candlestick(
                 x=df.index,
