@@ -45,7 +45,6 @@ with top1:
 with top2:
     volumen_box = st.empty()
     if st.session_state.bot_activo:
-        while st.session_state.bot_activo:
             market = crypto.replace("/", "")
             url = (
                 f"https://api.coinex.com/v2/spot/kline"
