@@ -69,32 +69,36 @@ if st.session_state.bot_activo:
         
         soporte = df['low'].tail(20).min()
         resistencia = df['high'].tail(20).max()
-       
+
         with grafico.container():
-           fig = go.Figure(data=[go.Candlestick(
-               x=df.index,
-               open=df['open'],
-               high=df['high'],
-               low=df['low'],
-               close=df['close'],
-               name='BTC/USDT',
 
-               increasing=dict(
-                   line=dict(color='lime'),
-                   fillcolor='lime'
-               ),
+            fig = go.Figure(data=[go.Candlestick(
+                x=df.index,
+                open=df['open'],
+                high=df['high'],
+                low=df['low'],
+                close=df['close'],
+                name='BTC/USDT',
 
-               decreasing=dict(
-                   line=dict(color='red'),
-                   fillcolor='red'
-               )
+                increasing=dict(
+                    line=dict(color='lime'),
+                    fillcolor='lime'
+                ),
+
+                decreasing=dict(
+                    line=dict(color='red'),
+                    fillcolor='red'
+                )
+
             )])
-          fig.add_trace(go.Scatter(
+
+            fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA9'],
                 mode='lines',
                 name='EMA 9'
             ))
+
             fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA21'],
@@ -114,11 +118,11 @@ if st.session_state.bot_activo:
                 line_color="red",
                 annotation_text="Resistencia"
             )
-            fig.update_layout(
-                height=500
+          fig.update_layout(
+               height=500
             )
            
-            st.plotly_chart(fig, use_container_width=True)
+          st.plotly_chart(fig, use_container_width=True)
         with panel.container():
 
                 cambio = precio_actual - closes[-2]
