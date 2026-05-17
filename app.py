@@ -46,11 +46,6 @@ with top2:
 
     volumen_box = st.empty()
 
-    volumen_box.metric(
-        "📊 Volumen",
-        round(df["volume"].iloc[-1], 2)
-    )
-
     if st.session_state.bot_activo:
             market = crypto.replace("/", "")
             url = (
@@ -81,7 +76,12 @@ with top2:
                 "volume": volumes[-100:]
             })
             df["EMA9"] = df["close"].ewm(span=9).mean()
-            df["EMA21"] = df["close"].ewm(span=21).mean()
+            df["EMA21"] = df["close"].ewm(span=21).mean() 
+              volumen_box.metric(
+                  "📊 Volumen",
+                  round(df["volume"].iloc[-1], 2)
+            )
+
             precio_actual = closes[-1]
             ema9 = df["EMA9"].iloc[-1]
             ema21 = df["EMA21"].iloc[-1]
