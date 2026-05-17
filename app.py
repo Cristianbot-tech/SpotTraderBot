@@ -119,7 +119,7 @@ if st.session_state.bot_activo:
                 annotation_text="Resistencia"
             )
             fig.update_layout(
-               height=500
+               height=500,
                xaxis_rangeslider_visible=False
             )
            
