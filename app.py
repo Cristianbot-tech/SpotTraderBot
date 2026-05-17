@@ -59,19 +59,19 @@ with top2:
             closes = []
             volumes = []
 
-         for candle in data["data"]:
-             opens.append(float(candle["open"]))
-             highs.append(float(candle["high"]))
-             lows.append(float(candle["low"]))
-             closes.append(float(candle["close"]))
-             volumes.append(float(candle["volume"]))
-         precio_actual = closes[-1]
-         df = pd.DataFrame({
-             "open": opens[-100:],
-             "high": highs[-100:],
-             "low": lows[-100:],
-             "close": closes[-100:],
-             "volume": volumes[-100:]
+            for candle in data["data"]:
+                opens.append(float(candle["open"]))
+                highs.append(float(candle["high"]))
+                lows.append(float(candle["low"]))
+                closes.append(float(candle["close"]))
+                volumes.append(float(candle["volume"]))
+            precio_actual = closes[-1]
+            df = pd.DataFrame({
+                "open": opens[-100:],
+                "high": highs[-100:],
+                "low": lows[-100:],
+                "close": closes[-100:],
+                "volume": volumes[-100:]
          })
          df["EMA9"] = df["close"].ewm(span=9).mean()
          df["EMA21"] = df["close"].ewm(span=21).mean()
