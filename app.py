@@ -38,10 +38,6 @@ timeframe = st.selectbox(
     ["1min", "5min", "15min", "1hour"],
     index=0
 )    
-st.metric(
-    "📊 Volumen",
-    round(df["volume"].iloc[-1], 2)   
-)
 
 if st.session_state.bot_activo:
     while st.session_state.bot_activo:
@@ -81,7 +77,10 @@ if st.session_state.bot_activo:
         
         soporte = df['low'].tail(20).min()
         resistencia = df['high'].tail(20).max()
-
+        st.metric(
+            "📊 Volumen",
+            round(df["volume"].iloc[-1], 2)   
+        )
         with grafico.container():
 
             fig = go.Figure(data=[go.Candlestick(
