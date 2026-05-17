@@ -33,13 +33,22 @@ with col4:
     
 panel = st.empty()
 grafico = st.empty()
+timeframe = st.selectbox(
+    "Temporalidad",
+    ["1min", "5min", "15min", "1hour"],
+    index=0
+)    
+st.metric(
+    "📊 Volumen",
+    round(df["volume"].iloc[-1], 2)   
+)
 
 if st.session_state.bot_activo:
     while st.session_state.bot_activo:
         market = crypto.replace("/", "")
         url = (
             f"https://api.coinex.com/v2/spot/kline"
-            f"?market={market}&period=1min&limit=50"
+            f"?market={market}&period={timeframe}&limit=50"
         )
         response = requests.get(url)
         data = response.json()
@@ -48,18 +57,21 @@ if st.session_state.bot_activo:
         highs = []
         lows = []
         closes = []
+        volumes = []
 
         for candle in data["data"]:
             opens.append(float(candle["open"]))
             highs.append(float(candle["high"]))
             lows.append(float(candle["low"]))
             closes.append(float(candle["close"]))
+            volumes.append(float(candle["volume"]))
         precio_actual = closes[-1]
         df = pd.DataFrame({
             "open": opens[-100:],
             "high": highs[-100:],
             "low": lows[-100:],
-            "close": closes[-100:]
+            "close": closes[-100:],
+            "volume": volumes[-100:]
         })
         df["EMA9"] = df["close"].ewm(span=9).mean()
         df["EMA21"] = df["close"].ewm(span=21).mean()
