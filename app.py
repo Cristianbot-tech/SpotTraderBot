@@ -122,7 +122,7 @@ if st.session_state.bot_activo:
                height=500
             )
            
-          st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True)
         with panel.container():
 
                 cambio = precio_actual - closes[-2]
