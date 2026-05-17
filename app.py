@@ -33,12 +33,17 @@ with col4:
     
 panel = st.empty()
 grafico = st.empty()
-timeframe = st.selectbox(
-    "Temporalidad",
-    ["1min", "5min", "15min", "1hour"],
-    index=0
-)    
+col1, col2 = st.columns(2)
 
+with col1:
+    timeframe = st.selectbox(
+        "Temporalidad",
+        ["1min", "5min", "15min", "1hour"],
+        index=0
+    )
+
+with col2:
+    volumen_box = st.empty()
 if st.session_state.bot_activo:
     while st.session_state.bot_activo:
         market = crypto.replace("/", "")
