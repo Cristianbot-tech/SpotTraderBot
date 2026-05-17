@@ -89,7 +89,7 @@ if st.session_state.bot_activo:
                    fillcolor='red'
                )
             )])
-            fig.add_trace(go.Scatter(
+          fig.add_trace(go.Scatter(
                 x=df.index,
                 y=df['EMA9'],
                 mode='lines',
