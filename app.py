@@ -77,9 +77,9 @@ with top2:
             })
             df["EMA9"] = df["close"].ewm(span=9).mean()
             df["EMA21"] = df["close"].ewm(span=21).mean() 
-              volumen_box.metric(
-                  "📊 Volumen",
-                  round(df["volume"].iloc[-1], 2)
+            volumen_box.metric(
+                "📊 Volumen",
+                 round(df["volume"].iloc[-1], 2)
             )
 
             precio_actual = closes[-1]
