@@ -43,7 +43,14 @@ with top1:
     )
 
 with top2:
+
     volumen_box = st.empty()
+
+    volumen_box.metric(
+        "📊 Volumen",
+        round(df["volume"].iloc[-1], 2)
+    )
+
     if st.session_state.bot_activo:
             market = crypto.replace("/", "")
             url = (
@@ -81,10 +88,7 @@ with top2:
         
             soporte = df['low'].tail(20).min()
             resistencia = df['high'].tail(20).max()
-            volumen_box.metric(
-                "📊 Volumen",
-                round(df["volume"].iloc[-1], 2)   
-            )
+           
             with grafico.container():
 
                fig = go.Figure(data=[go.Candlestick(
