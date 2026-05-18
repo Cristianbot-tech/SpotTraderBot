@@ -141,10 +141,13 @@ with top2:
                   xaxis_rangeslider_visible=False
                )
                fig.update_layout(
-                   height=700,
-                   width=1200
+                   autosize=True,
+                   height=800
                )
-               st.plotly_chart(fig, use_container_width=True)
+
+               fig.update_xaxes(rangeslider_visible=False)
+
+               st.plotly_chart(fig, use_container_width=False)
                with panel.container():
 
                    cambio = precio_actual - closes[-2]
