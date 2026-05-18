@@ -94,10 +94,13 @@ if pagina == "HOME":
     <div class="main-title">
         TRADING
         <br>
+
         <span class="red">
             ALGORÍTMICO
         </span>
+
         <br>
+
         DE PRECISIÓN
     </div>
 
@@ -108,29 +111,21 @@ if pagina == "HOME":
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    
     <div class="card">
-    
+
         <div style="color:#ff2b2b; font-size:26px; font-weight:bold;">
-    
             LIVE PERFORMANCE
-    
         </div>
-    
+
         <div style="color:white; font-size:60px; font-weight:900;">
-    
             +324%
-    
         </div>
-    
+
         <div style="color:gray; font-size:18px;">
-    
             PROFIT TOTAL
-    
         </div>
-    
+
     </div>
-    
     """, unsafe_allow_html=True)
 if pagina == "LIVE TRADING":        
     col1, col2, col3, col4 = st.columns(4)
