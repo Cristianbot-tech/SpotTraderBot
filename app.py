@@ -34,10 +34,6 @@ if not st.session_state.auth:
 
     st.stop()
 
-if clave != "CRYPTOSCALPER123":
-    st.error("Contraseña incorrecta")
-    st.stop()
-
 st.image("logo.png", width=220)
 
 st.markdown(
