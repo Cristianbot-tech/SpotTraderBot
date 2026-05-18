@@ -140,6 +140,10 @@ with top2:
                   height=500,
                   xaxis_rangeslider_visible=False
                )
+               fig.update_layout(
+                   height=700,
+                   width=1200
+               )
                st.plotly_chart(fig, use_container_width=True)
                with panel.container():
 
