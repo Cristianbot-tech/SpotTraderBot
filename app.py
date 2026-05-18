@@ -9,9 +9,20 @@ st.set_page_config(
     layout="wide"
 )
 
-clave = st.text_input("Contraseña", type="password")
+with st.form("login"):
+
+    clave = st.text_input(
+        "Introduce contraseña",
+        type="password"
+    )
+
+    entrar = st.form_submit_button("ENTRAR")
+
+if not entrar:
+    st.stop()
 
 if clave != "CRYPTOSCALPER123":
+    st.error("Contraseña incorrecta")
     st.stop()
 
 st.image("logo.png", width=220)
