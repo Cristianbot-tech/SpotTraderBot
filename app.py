@@ -32,7 +32,6 @@ with col4:
         st.session_state.bot_activo = False
     
 panel = st.empty()
-grafico = st.empty()
 top1, top2 = st.columns(2)
 
 with top1:
@@ -89,7 +88,7 @@ with top2:
             soporte = df['low'].tail(20).min()
             resistencia = df['high'].tail(20).max()
            
-            with grafico.container():
+            with st.container():
 
                fig = go.Figure(data=[go.Candlestick(
                    x=df.index,
