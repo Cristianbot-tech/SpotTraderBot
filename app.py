@@ -5,7 +5,7 @@ import time
 import plotly.graph_objects as go
 st.set_page_config(
     page_title="CRYPTOSCALPER",
-    page_icon="💀",
+    page_icon="favicon.png",
     layout="wide"
 )
 
