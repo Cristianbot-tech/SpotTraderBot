@@ -57,159 +57,73 @@ st.markdown(
 )
 if pagina == "HOME":
 
-    st.markdown(
-        """
-        <style>
+    st.markdown("""
+    <style>
 
-        .hero-container{
-            padding-top:40px;
-            padding-bottom:60px;
-        }
+    .main-title{
+        font-size:90px;
+        font-weight:900;
+        color:white;
+        line-height:0.9;
+    }
 
-        .topbar{
-            display:flex;
-            align-items:center;
-            gap:15px;
-            margin-bottom:60px;
-        }
+    .red{
+        color:#ff2b2b;
+        text-shadow:0px 0px 20px red;
+    }
 
-        .logo{
-            width:55px;
-            border-radius:12px;
-            box-shadow:0px 0px 25px red;
-        }
+    .subtitle{
+        color:#888;
+        font-size:22px;
+        margin-top:30px;
+    }
 
-        .brand{
-            color:white;
-            font-size:22px;
-            font-weight:bold;
-            letter-spacing:2px;
-        }
+    .card{
+        background:#111;
+        padding:30px;
+        border-radius:20px;
+        margin-top:30px;
+        border:1px solid #222;
+        box-shadow:0px 0px 20px rgba(255,0,0,0.2);
+    }
 
-        .small-red{
-            color:#ff2b2b;
-            font-size:14px;
-            letter-spacing:3px;
-        }
+    </style>
+    """, unsafe_allow_html=True)
 
-        .main-title{
-            font-size:95px;
-            font-weight:900;
-            color:white;
-            line-height:0.95;
-        }
+    st.markdown("""
+    <div class="main-title">
+        TRADING
+        <br>
+        <span class="red">
+            ALGORÍTMICO
+        </span>
+        <br>
+        DE PRECISIÓN
+    </div>
 
-        .red-glow{
-            color:#ff2b2b;
-            text-shadow:0px 0px 20px red;
-        }
+    <div class="subtitle">
+        Sistema avanzado de trading con inteligencia artificial,
+        señales premium y ejecución profesional en tiempo real.
+    </div>
+    """, unsafe_allow_html=True)
 
-        .subtitle{
-            color:#888;
-            font-size:22px;
-            margin-top:30px;
-            max-width:800px;
-        }
+    st.markdown("""
+    <div class="card">
 
-        .card{
-            background:#111;
-            border:1px solid #222;
-            padding:30px;
-            border-radius:25px;
-            margin-top:25px;
-            box-shadow:0px 0px 20px rgba(255,0,0,0.15);
-        }
+        <h2 style="color:#ff2b2b;">
+            LIVE PERFORMANCE
+        </h2>
 
-        .card-title{
-            color:#ff2b2b;
-            font-size:24px;
-            font-weight:bold;
-            margin-bottom:20px;
-        }
+        <h1 style="color:white;">
+            +324%
+        </h1>
 
-        .metric{
-            color:white;
-            font-size:40px;
-            font-weight:bold;
-        }
+        <p style="color:gray;">
+            PROFIT TOTAL
+        </p>
 
-        .metric-sub{
-            color:#777;
-            font-size:15px;
-        }
-
-        </style>
-
-        <div class="hero-container">
-
-            <div class="topbar">
-
-                <img src="logo.png" class="logo">
-
-                <div>
-                    <div class="brand">
-                        CRYPTOSCALPER
-                    </div>
-
-                    <div class="small-red">
-                        BOT PRO
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="main-title">
-                TRADING
-                <br>
-                <span class="red-glow">
-                    ALGORÍTMICO
-                </span>
-                <br>
-                DE PRECISIÓN
-            </div>
-
-            <div class="subtitle">
-                Sistema avanzado de trading con inteligencia artificial,
-                gestión de riesgo automática y ejecución profesional
-                en tiempo real.
-            </div>
-
-            <div class="card">
-
-                <div class="card-title">
-                    LIVE PERFORMANCE
-                </div>
-
-                <div class="metric">
-                    +324%
-                </div>
-
-                <div class="metric-sub">
-                    PROFIT TOTAL
-                </div>
-
-            </div>
-
-            <div class="card">
-
-                <div class="card-title">
-                    WIN RATE
-                </div>
-
-                <div class="metric">
-                    87%
-                </div>
-
-                <div class="metric-sub">
-                    EFECTIVIDAD GLOBAL
-                </div>
-
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
 if pagina == "LIVE TRADING":        
     col1, col2, col3, col4 = st.columns(4)
     
