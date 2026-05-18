@@ -45,12 +45,12 @@ with top2:
 
     volumen_box = st.empty()
 
-    if st.session_state.bot_activo:
-            market = crypto.replace("/", "")
-            url = (
-                f"https://api.coinex.com/v2/spot/kline"
-                f"?market={market}&period={timeframe}&limit=50"
-            )
+if st.session_state.bot_activo:
+    market = crypto.replace("/", "")
+    url = (
+        f"https://api.coinex.com/v2/spot/kline"
+        f"?market={market}&period={timeframe}&limit=50"
+    )
             response = requests.get(url)
             data = response.json()
 
