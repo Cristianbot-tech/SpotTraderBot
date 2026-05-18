@@ -9,16 +9,29 @@ st.set_page_config(
     layout="wide"
 )
 
-with st.form("login"):
+if "auth" not in st.session_state:
+    st.session_state.auth = False
 
-    clave = st.text_input(
-        "Introduce contraseña",
-        type="password"
-    )
+if not st.session_state.auth:
 
-    entrar = st.form_submit_button("ENTRAR")
+    with st.form("login"):
 
-if not entrar:
+        clave = st.text_input(
+            "Introduce contraseña",
+            type="password"
+        )
+
+        entrar = st.form_submit_button("ENTRAR")
+
+    if entrar:
+
+        if clave == "CRYPTOSCALPER123":
+            st.session_state.auth = True
+            st.rerun()
+
+        else:
+            st.error("Contraseña incorrecta")
+
     st.stop()
 
 if clave != "CRYPTOSCALPER123":
