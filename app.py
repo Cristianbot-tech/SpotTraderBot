@@ -137,17 +137,12 @@ with top2:
                    annotation_text="Resistencia"
                )
                fig.update_layout(
-                  height=500,
-                  xaxis_rangeslider_visible=False
-               )
-               fig.update_layout(
-                   autosize=True,
-                   height=800
+                   height=700,
+                   xaxis_rangeslider_visible=False
                )
 
-               fig.update_xaxes(rangeslider_visible=False)
+               st.plotly_chart(fig, use_container_width=True)
 
-               st.plotly_chart(fig, use_container_width=False)
                with panel.container():
 
                    cambio = precio_actual - closes[-2]
