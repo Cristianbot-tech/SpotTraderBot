@@ -61,26 +61,86 @@ if pagina == "HOME":
 
     st.markdown(
         """
-        <h1 style='color:red; text-align:center;'>
-            CRYPTOSCALPER
-        </h1>
+        <div style='text-align:center;'>
+
+            <div style='
+                background:#1a0000;
+                padding:12px;
+                border-radius:20px;
+                color:red;
+                font-size:18px;
+                margin-bottom:30px;
+            '>
+                ● SISTEMA OPERANDO 24/7
+            </div>
+
+            <h1 style='
+                color:white;
+                font-size:70px;
+                line-height:1.0;
+            '>
+                TRADING
+                <br>
+                <span style="color:red;">
+                    ALGORÍTMICO
+                </span>
+                <br>
+                DE PRECISIÓN
+            </h1>
+
+            <p style='
+                color:gray;
+                font-size:22px;
+                margin-top:30px;
+            '>
+                Automatiza tus operaciones con IA,
+                gestión de riesgo avanzada y señales
+                profesionales en tiempo real.
+            </p>
+
+        </div>
         """,
         unsafe_allow_html=True
     )
 
-    c1, c2, c3, c4 = st.columns(4)
+    st.markdown("##")
 
-    with c1:
-        st.metric("WIN RATE", "87%")
+    st.metric("WIN RATE", "87%")
+    st.metric("PROFIT TOTAL", "+324%")
+    st.metric("TRADES EJECUTADOS", "2,581")
+    st.metric("BOT STATUS", "ONLINE")
 
-    with c2:
-        st.metric("PROFIT", "+324%")
+    st.markdown("##")
 
-    with c3:
-        st.metric("TRADES", "1,284")
+    st.markdown(
+        """
+        <div style='
+            background:#0f0f0f;
+            padding:25px;
+            border-radius:20px;
+            border:1px solid #222;
+        '>
 
-    with c4:
-        st.metric("STATUS", "ONLINE")
+        <h2 style='color:red;'>
+            LIVE FEED
+        </h2>
+
+        <p style='color:white;'>
+            BTC/USDT → LONG → +0.64%
+        </p>
+
+        <p style='color:white;'>
+            ETH/USDT → SHORT → +0.27%
+        </p>
+
+        <p style='color:white;'>
+            SOL/USDT → LONG → +1.14%
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 if pagina == "LIVE TRADING":        
     col1, col2, col3, col4 = st.columns(4)
     
