@@ -140,7 +140,6 @@ with top2:
                   height=500,
                   xaxis_rangeslider_visible=False
                )
-               with grafico.container():
                   st.plotly_chart(fig, use_container_width=True)
                with panel.container():
 
