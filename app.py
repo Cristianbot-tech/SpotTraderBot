@@ -3,9 +3,36 @@ import pandas as pd
 import requests
 import time
 import plotly.graph_objects as go
-st.title("SpotTraderBot 🚀")
+st.set_page_config(
+    page_title="CRYPTOSCALPER",
+    page_icon="💀",
+    layout="wide"
+)
 
-st.write("Bot de trading spot para CoinEx")
+clave = st.text_input("Contraseña", type="password")
+
+if clave != "CRYPTOSCALPER123":
+    st.stop()
+
+st.image("logo.png", width=220)
+
+st.markdown(
+    """
+    <h1 style='color:red; text-align:center;'>
+        CRYPTOSCALPER
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <h3 style='color:white; text-align:center;'>
+        BOT PRO
+    </h3>
+    """,
+    unsafe_allow_html=True
+)
 
 col1, col2, col3, col4 = st.columns(4)
 
