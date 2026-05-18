@@ -34,8 +34,6 @@ if not st.session_state.auth:
 
     st.stop()
 
-st.image("logo.png", width=220)
-
 st.markdown(
     """
     <h1 style='color:red; text-align:center;'>
@@ -61,81 +59,152 @@ if pagina == "HOME":
 
     st.markdown(
         """
-        <div style='text-align:center;'>
+        <style>
 
-            <div style='
-                background:#1a0000;
-                padding:12px;
-                border-radius:20px;
-                color:red;
-                font-size:18px;
-                margin-bottom:30px;
-            '>
-                ● SISTEMA OPERANDO 24/7
+        .hero-container{
+            padding-top:40px;
+            padding-bottom:60px;
+        }
+
+        .topbar{
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:60px;
+        }
+
+        .logo{
+            width:55px;
+            border-radius:12px;
+            box-shadow:0px 0px 25px red;
+        }
+
+        .brand{
+            color:white;
+            font-size:22px;
+            font-weight:bold;
+            letter-spacing:2px;
+        }
+
+        .small-red{
+            color:#ff2b2b;
+            font-size:14px;
+            letter-spacing:3px;
+        }
+
+        .main-title{
+            font-size:95px;
+            font-weight:900;
+            color:white;
+            line-height:0.95;
+        }
+
+        .red-glow{
+            color:#ff2b2b;
+            text-shadow:0px 0px 20px red;
+        }
+
+        .subtitle{
+            color:#888;
+            font-size:22px;
+            margin-top:30px;
+            max-width:800px;
+        }
+
+        .card{
+            background:#111;
+            border:1px solid #222;
+            padding:30px;
+            border-radius:25px;
+            margin-top:25px;
+            box-shadow:0px 0px 20px rgba(255,0,0,0.15);
+        }
+
+        .card-title{
+            color:#ff2b2b;
+            font-size:24px;
+            font-weight:bold;
+            margin-bottom:20px;
+        }
+
+        .metric{
+            color:white;
+            font-size:40px;
+            font-weight:bold;
+        }
+
+        .metric-sub{
+            color:#777;
+            font-size:15px;
+        }
+
+        </style>
+
+        <div class="hero-container">
+
+            <div class="topbar">
+
+                <img src="logo.png" class="logo">
+
+                <div>
+                    <div class="brand">
+                        CRYPTOSCALPER
+                    </div>
+
+                    <div class="small-red">
+                        BOT PRO
+                    </div>
+                </div>
+
             </div>
 
-            <h1 style='
-                color:white;
-                font-size:70px;
-                line-height:1.0;
-            '>
+            <div class="main-title">
                 TRADING
                 <br>
-                <span style="color:red;">
+                <span class="red-glow">
                     ALGORÍTMICO
                 </span>
                 <br>
                 DE PRECISIÓN
-            </h1>
+            </div>
 
-            <p style='
-                color:gray;
-                font-size:22px;
-                margin-top:30px;
-            '>
-                Automatiza tus operaciones con IA,
-                gestión de riesgo avanzada y señales
-                profesionales en tiempo real.
-            </p>
+            <div class="subtitle">
+                Sistema avanzado de trading con inteligencia artificial,
+                gestión de riesgo automática y ejecución profesional
+                en tiempo real.
+            </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+            <div class="card">
 
-    st.markdown("##")
+                <div class="card-title">
+                    LIVE PERFORMANCE
+                </div>
 
-    st.metric("WIN RATE", "87%")
-    st.metric("PROFIT TOTAL", "+324%")
-    st.metric("TRADES EJECUTADOS", "2,581")
-    st.metric("BOT STATUS", "ONLINE")
+                <div class="metric">
+                    +324%
+                </div>
 
-    st.markdown("##")
+                <div class="metric-sub">
+                    PROFIT TOTAL
+                </div>
 
-    st.markdown(
-        """
-        <div style='
-            background:#0f0f0f;
-            padding:25px;
-            border-radius:20px;
-            border:1px solid #222;
-        '>
+            </div>
 
-        <h2 style='color:red;'>
-            LIVE FEED
-        </h2>
+            <div class="card">
 
-        <p style='color:white;'>
-            BTC/USDT → LONG → +0.64%
-        </p>
+                <div class="card-title">
+                    WIN RATE
+                </div>
 
-        <p style='color:white;'>
-            ETH/USDT → SHORT → +0.27%
-        </p>
+                <div class="metric">
+                    87%
+                </div>
 
-        <p style='color:white;'>
-            SOL/USDT → LONG → +1.14%
-        </p>
+                <div class="metric-sub">
+                    EFECTIVIDAD GLOBAL
+                </div>
+
+            </div>
 
         </div>
         """,
