@@ -86,11 +86,8 @@ if pagina == "HOME":
         border:1px solid #222;
         box-shadow:0px 0px 20px rgba(255,0,0,0.2);
     }
-
-    </style>
-    """, unsafe_allow_html=True)
-
     st.markdown("""
+    </style>
     <div class="main-title">
         TRADING
         <br>
