@@ -88,42 +88,71 @@ if pagina == "HOME":
     }
     st.markdown("""
     <style>
+    
+    .main-title{
+        font-size:90px;
+        font-weight:900;
+        color:white;
+        line-height:0.9;
+    }
+    
+    .red{
+        color:#ff2b2b;
+        text-shadow:0px 0px 20px red;
+    }
+    
+    .subtitle{
+        color:#888;
+        font-size:22px;
+        margin-top:30px;
+    }
+    
+    .card{
+        background:#111;
+        padding:30px;
+        border-radius:20px;
+        margin-top:30px;
+        border:1px solid #222;
+        box-shadow:0px 0px 20px rgba(255,0,0,0.2);
+    }
+    
+    </style>
+    
     <div class="main-title">
-        TRADING
-        <br>
-
-        <span class="red">
-            ALGORÍTMICO
-        </span>
-
-        <br>
-
-        DE PRECISIÓN
+    TRADING
+    <br>
+    
+    <span class="red">
+    ALGORÍTMICO
+    </span>
+    
+    <br>
+    DE PRECISIÓN
     </div>
-
+    
     <div class="subtitle">
-        Sistema avanzado de trading con inteligencia artificial,
-        señales premium y ejecución profesional en tiempo real.
+    Sistema avanzado de trading con inteligencia artificial,
+    señales premium y ejecución profesional en tiempo real.
     </div>
     """, unsafe_allow_html=True)
-
+    
     st.markdown("""
     <div class="card">
-
-        <div style="color:#ff2b2b; font-size:26px; font-weight:bold;">
-            LIVE PERFORMANCE
-        </div>
-
-        <div style="color:white; font-size:42px; font-weight:900;">
-            +324%
-        </div>
-
-        <div style="color:gray; font-size:18px;">
-            PROFIT TOTAL
-        </div>
-
+    
+    <div style="color:#ff2b2b; font-size:26px; font-weight:bold;">
+    LIVE PERFORMANCE
     </div>
-    """, unsafe_allow_html=True)
+    
+    <div style="color:white; font-size:42px; font-weight:900;">
+    +324%
+    </div>
+    
+    <div style="color:gray; font-size:18px;">
+    PROFIT TOTAL
+    </div>
+    
+    </div>
+    """, unsafe_allow_html=True) 
 if pagina == "LIVE TRADING":        
     col1, col2, col3, col4 = st.columns(4)
     
