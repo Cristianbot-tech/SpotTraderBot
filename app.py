@@ -161,11 +161,16 @@ if pagina == "LIVE TRADING":
             value=1.00
         )
 
-    with col4:
+ with col4:
 
-        if "bot_activo" not in st.session_state:
-            st.session_state.bot_activo = False
+    if "bot_activo" not in st.session_state:
+        st.session_state.bot_activo = False
 
+    if st.button("Iniciar Bot", key="btn_iniciar"):
+        st.session_state.bot_activo = True
+
+    if st.button("Detener Bot", key="btn_detener"):
+        st.session_state.bot_activo = False
         if st.button("Iniciar Bot"):
             st.session_state.bot_activo = True
 
