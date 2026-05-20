@@ -87,7 +87,7 @@ if pagina == "HOME":
         box-shadow:0px 0px 20px rgba(255,0,0,0.2);
     }
     st.markdown("""
-    </style>
+    <style>
     <div class="main-title">
         TRADING
         <br>
