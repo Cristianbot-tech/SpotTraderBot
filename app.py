@@ -61,7 +61,7 @@ if pagina == "HOME":
     <style>
 
     .main-title{
-        font-size:90px;
+        font-size:55px;
         font-weight:900;
         color:white;
         line-height:0.9;
@@ -74,7 +74,7 @@ if pagina == "HOME":
 
     .subtitle{
         color:#888;
-        font-size:22px;
+        font-size:18px;
         margin-top:30px;
     }
 
@@ -117,7 +117,7 @@ if pagina == "HOME":
             LIVE PERFORMANCE
         </div>
 
-        <div style="color:white; font-size:60px; font-weight:900;">
+        <div style="color:white; font-size:42px; font-weight:900;">
             +324%
         </div>
 
