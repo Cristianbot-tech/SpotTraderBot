@@ -106,7 +106,6 @@ if pagina == "HOME":
         font-size:22px;
         margin-top:30px;
     }
-    
     .card{
         background:#111;
         padding:30px;
