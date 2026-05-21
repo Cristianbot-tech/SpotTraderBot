@@ -203,13 +203,13 @@ footer { display: none !important; }
 # SESSION STATE
 
 if "auth" not in st.session_state:
-st.session_state.auth = False
+    st.session_state.auth = False
 
 if "bot_activo" not in st.session_state:
-st.session_state.bot_activo = False
+    st.session_state.bot_activo = False
 
 if "pagina" not in st.session_state:
-st.session_state.pagina = "HOME"
+    st.session_state.pagina = "HOME"
 
 # LOGIN
 
