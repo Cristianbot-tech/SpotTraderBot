@@ -6,10 +6,10 @@ import plotly.graph_objects as go
 import base64
 
 st.set_page_config(
-page_title="CRYPTOSCALPER BOT PRO",
-page_icon="💀",
-layout="wide",
-initial_sidebar_state="collapsed"
+    page_title="CRYPTOSCALPER BOT PRO",
+    page_icon="💀",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # Cargar logo
@@ -285,16 +285,15 @@ with col_b:
     if st.button("⚡ LIVE TRADING", use_container_width=True):
         st.s
 
-    pagina = st.session_state.pagina
-
- if pagina == "HOME":
+pagina = st.session_state.pagina
+if pagina == "HOME":
 
     st.markdown("""
 
     <div class="cs-hero">
 
       <div class="cs-badge">
-        <span class="cs-pulse"></span>
+      <span class="cs-pulse"></span>
         Sistema operando en vivo
       </div>
 
