@@ -287,34 +287,34 @@ with col_b:
 
     pagina = st.session_state.pagina
 
-    if pagina == "HOME":
+ if pagina == "HOME":
 
-st.markdown("""
+    st.markdown("""
 
-<div class="cs-hero">
+    <div class="cs-hero">
 
-  <div class="cs-badge">
-    <span class="cs-pulse"></span>
-    Sistema operando en vivo
-  </div>
+      <div class="cs-badge">
+        <span class="cs-pulse"></span>
+        Sistema operando en vivo
+      </div>
 
-  <div class="cs-h1">
-    Trading Algorítmico
-    <br>
-    de Precisión
-  </div>
+      <div class="cs-h1">
+        Trading Algorítmico
+        <br>
+        de Precisión
+      </div>
 
-  <div class="cs-sub">
-    Genera ingresos en automático
-  </div>
+      <div class="cs-sub">
+        Genera ingresos en automático
+      </div>
 
-  <div class="cs-desc">
-    Automatiza tus operaciones en CoinEx con señales EMA inteligentes,
-    gestión de riesgo avanzada y ejecución profesional.
-    Sin emociones, 24/7.
-  </div>
+      <div class="cs-desc">
+        Automatiza tus operaciones en CoinEx con señales EMA inteligentes,
+        gestión de riesgo avanzada y ejecución profesional.
+        Sin emociones, 24/7.
+      </div>
 
-  <div class="cs-btns">
+      <div class="cs-btns">
 
     <a class="cs-btn-red" href="#">
         ⚡ Comenzar Ahora
