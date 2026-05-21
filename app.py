@@ -459,7 +459,7 @@ for t in trades_data:
 
     """
 
-st.markdown(f"""
+st.markdown(f'''
 
 <div class="cs-section">
 
@@ -490,13 +490,13 @@ st.markdown(f"""
 
     </div>
 
-    {rows}
+ ROWS
 
   </div>
 
 </div>
 
-""", unsafe_allow_html=True)
+''', replace('ROWS', rows), unsafe_allow_html=True)
 
 st.markdown('''
 
