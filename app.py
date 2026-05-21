@@ -15,11 +15,11 @@ initial_sidebar_state="collapsed"
 # Cargar logo
 
 def get_logo():
-try:
-with open("Untitled_design.png", "rb") as f:
-return base64.b64encode(f.read()).decode()
-except:
-return ""
+    try:
+        with open("Untitled_design.png", "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    except:
+        return ""
 
 LOGO = get_logo()
 
