@@ -215,7 +215,6 @@ if "pagina" not in st.session_state:
 
 if not st.session_state.auth:
 
-```
 logo_html = f'<img src="data:image/png;base64,{LOGO}" style="width:90px;margin-bottom:16px;">' if LOGO else '<div style="font-size:60px;margin-bottom:16px;">💀</div>'
 
 st.markdown(f"""
@@ -251,8 +250,6 @@ if entrar:
         st.error("Contraseña incorrecta")
 
 st.stop()
-```
-# ─── NAV ───────────────────────────────────────────────────────────────────────
 
 logo_img = f'<img src="data:image/png;base64,{LOGO}" style="width:50px;height:50px;object-fit:contain;">' if LOGO else '<div style="font-size:32px;">💀</div>'
 
@@ -274,35 +271,24 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ─── MENU ──────────────────────────────────────────────────────────────────────
-
 col_a, col_b = st.columns(2)
 
 with col_a:
 
-```
+
 if st.button("🏠 HOME", use_container_width=True):
     st.session_state.pagina = "HOME"
-```
+
 
 with col_b:
 
-```
 if st.button("⚡ LIVE TRADING", use_container_width=True):
-    st.session_state.pagina = "LIVE"
-```
+    st.s
 
 pagina = st.session_state.pagina
 
-# ══════════════════════════════════════════════════════════════════════════════
-
-# HOME
-
-# ══════════════════════════════════════════════════════════════════════════════
-
 if pagina == "HOME":
 
-```
 st.markdown("""
 
 <div class="cs-hero">
@@ -386,8 +372,7 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
-```
-```
+
 st.markdown("""
 
 <div class="cs-stats">
@@ -513,8 +498,7 @@ st.markdown(f"""
 </div>
 
 """, unsafe_allow_html=True)
-```
-```
+
 st.markdown("""
 
 <div class="cs-features">
@@ -631,17 +615,16 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
-```
 
-# ══════════════════════════════════════════════════════════════════════════════
+
+
 
 # LIVE TRADING
 
-# ══════════════════════════════════════════════════════════════════════════════
 
 elif pagina == "LIVE":
 
-```
+
 st.markdown(
     '<div style="padding:20px;">',
     unsafe_allow_html=True
@@ -651,8 +634,7 @@ st.markdown(
     '<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">⚡ LIVE TRADING</div>',
     unsafe_allow_html=True
 )
-```
-```
+
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -802,8 +784,7 @@ if st.session_state.bot_activo:
                 '<div class="cs-signal-sell">📉 SEÑAL: VENTA SPOT</div>',
                 unsafe_allow_html=True
             )
-```
-```
+
         s1, s2 = st.columns(2)
 
         with s1:
@@ -944,4 +925,4 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True
 )
-```
+
