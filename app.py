@@ -3,208 +3,733 @@ import pandas as pd
 import requests
 import time
 import plotly.graph_objects as go
+import base64
 
 st.set_page_config(
-    page_title="CRYPTOSCALPER",
-    page_icon="favicon.png",
-    layout="wide"
+page_title="CRYPTOSCALPER BOT PRO",
+page_icon="💀",
+layout="wide",
+initial_sidebar_state="collapsed"
 )
+
+# Cargar logo
+
+def get_logo():
+try:
+with open("Untitled_design.png", "rb") as f:
+return base64.b64encode(f.read()).decode()
+except:
+return ""
+
+LOGO = get_logo()
+
+st.markdown("""
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+    background: #080808 !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+[data-testid="stHeader"] { background: transparent !important; }
+[data-testid="stSidebar"] { display: none; }
+
+.block-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+footer { display: none !important; }
+#MainMenu { display: none !important; }
+
+.cs-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid #1e1e1e;
+    background: rgba(8,8,8,0.97);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.cs-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cs-nav-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+}
+
+.cs-nav-name span {
+    color: #e82929;
+}
+
+.cs-hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cs-hamburger span {
+    width: 26px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    display: block;
+}
+
+.cs-hero {
+    padding: 50px 20px 40px;
+    text-align: center;
+}
+
+.cs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,41,41,0.10);
+    border: 1px solid rgba(232,41,41,0.30);
+    color: #e82929;
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+}
+
+.cs-pulse {
+    width: 8px;
+    height: 8px;
+    background: #e82929;
+    border-radius: 50%;
+    animation: cspulse 1.4s infinite;
+    display: inline-block;
+}
+
+@keyframes cspulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:.3; transform:scale(.7); }
+}
+
+.cs-h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 14px;
+}
+
+.cs-sub {
+    color: #e82929;
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 18px;
+}
+
+.cs-desc {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 360px;
+    margin: 0 auto 32px;
+}
+
+.cs-btn-red {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #e82929;
+    color: #fff;
+    padding: 15px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 0 28px rgba(232,41,41,0.35);
+    margin-bottom: 10px;
+    text-decoration: none;
+}
+
+.cs-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #fff;
+    padding: 15px 32px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid #1e1e1e;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    text-decoration: none;
+}
+
+.stButton > button {
+    background: #e82929 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 20px rgba(232,41,41,0.3) !important;
+}
+
+.stButton > button:hover {
+    background: #c0392b !important;
+}
+</style>
+
+""", unsafe_allow_html=True)
+
+# SESSION STATE
+
+if "auth" not in st.session_state:
+st.session_state.auth = False
+
+if "bot_activo" not in st.session_state:
+st.session_state.bot_activo = False
+
+if "pagina" not in st.session_state:
+st.session_state.pagina = "HOME"
 
 # LOGIN
 
-if "auth" not in st.session_state:
-    st.session_state.auth = False
-
 if not st.session_state.auth:
 
-    with st.form("login"):
+```
+logo_html = f'<img src="data:image/png;base64,{LOGO}" style="width:90px;margin-bottom:16px;">' if LOGO else '<div style="font-size:60px;margin-bottom:16px;">💀</div>'
 
-        clave = st.text_input(
-            "Introduce contraseña",
-            type="password"
-        )
+st.markdown(f"""
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+<div style="background:#101010;border:1px solid #1e1e1e;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;text-align:center;">
+    {logo_html}
+    <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:2px;color:#fff;margin-bottom:4px;">
+        CRYPTO<span style="color:#e82929;">SCALPER</span>
+    </div>
+    <div style="color:#666;font-size:13px;margin-bottom:28px;">
+        BOT PRO — Acceso exclusivo
+    </div>
+</div></div>
+""", unsafe_allow_html=True)
 
-        entrar = st.form_submit_button("ENTRAR")
+with st.form("login", clear_on_submit=True):
 
-    if entrar:
+    clave = st.text_input(
+        "",
+        placeholder="Introduce contraseña",
+        type="password"
+    )
 
-        if clave == "CRYPTOSCALPER123":
-            st.session_state.auth = True
-            st.rerun()
+    entrar = st.form_submit_button("⚡ ENTRAR")
 
-        else:
-            st.error("Contraseña incorrecta")
+if entrar:
 
-    st.stop()
+    if clave == "CRYPTOSCALPER123":
+        st.session_state.auth = True
+        st.rerun()
 
-# TITULO
+    else:
+        st.error("Contraseña incorrecta")
 
-st.markdown(
-    """
-    <h1 style='color:red; text-align:center;'>
-        CRYPTOSCALPER
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
+st.stop()
+```
+# ─── NAV ───────────────────────────────────────────────────────────────────────
 
-# MENU
+logo_img = f'<img src="data:image/png;base64,{LOGO}" style="width:50px;height:50px;object-fit:contain;">' if LOGO else '<div style="font-size:32px;">💀</div>'
 
-pagina = st.radio(
-    "",
-    ["HOME", "LIVE TRADING"],
-    horizontal=True
-)
+st.markdown(f"""
+
+<div class="cs-nav">
+  <div class="cs-nav-logo">
+    {logo_img}
+    <div class="cs-nav-name">
+        CRYPTO<span>SCALPER</span>
+    </div>
+  </div>
+
+  <div class="cs-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ─── MENU ──────────────────────────────────────────────────────────────────────
+
+col_a, col_b = st.columns(2)
+
+with col_a:
+
+```
+if st.button("🏠 HOME", use_container_width=True):
+    st.session_state.pagina = "HOME"
+```
+
+with col_b:
+
+```
+if st.button("⚡ LIVE TRADING", use_container_width=True):
+    st.session_state.pagina = "LIVE"
+```
+
+pagina = st.session_state.pagina
+
+# ══════════════════════════════════════════════════════════════════════════════
 
 # HOME
 
+# ══════════════════════════════════════════════════════════════════════════════
+
 if pagina == "HOME":
 
-    st.markdown("""
-    <style>
+```
+st.markdown("""
 
-    .main-title{
-        font-size:55px;
-        font-weight:900;
-        color:white;
-        line-height:0.9;
-    }
+<div class="cs-hero">
 
-    .red{
-        color:#ff2b2b;
-        text-shadow:0px 0px 20px red;
-    }
+  <div class="cs-badge">
+    <span class="cs-pulse"></span>
+    Sistema operando en vivo
+  </div>
 
-    .subtitle{
-        color:#888;
-        font-size:18px;
-        margin-top:30px;
-    }
+  <div class="cs-h1">
+    Trading Algorítmico
+    <br>
+    de Precisión
+  </div>
 
-    .card{
-        background:#111;
-        padding:30px;
-        border-radius:20px;
-        margin-top:30px;
-        border:1px solid #222;
-        box-shadow:0px 0px 20px rgba(255,0,0,0.2);
-    }
+  <div class="cs-sub">
+    Genera ingresos en automático
+  </div>
 
-    </style>
+  <div class="cs-desc">
+    Automatiza tus operaciones en CoinEx con señales EMA inteligentes,
+    gestión de riesgo avanzada y ejecución profesional.
+    Sin emociones, 24/7.
+  </div>
 
-    <div class="main-title">
-        TRADING
-        <br>
+  <div class="cs-btns">
 
-        <span class="red">
-            ALGORÍTMICO
-        </span>
+    <a class="cs-btn-red" href="#">
+        ⚡ Comenzar Ahora
+    </a>
 
-        <br>
+    <a class="cs-btn-outline" href="#">
+        ↓ Ver Features
+    </a>
 
-        DE PRECISIÓN
+  </div>
+
+</div>
+
+""", unsafe_allow_html=True)
+
+st.markdown("""
+
+<div class="cs-strip">
+
+  <div class="cs-icon-item">
+    <div class="cs-icon-box">📈</div>
+    <div class="cs-icon-lbl">
+        Scalping<br>Algorítmico
+    </div>
+  </div>
+
+  <div class="cs-icon-item">
+    <div class="cs-icon-box">📡</div>
+    <div class="cs-icon-lbl">
+        Señales<br>Tiempo Real
+    </div>
+  </div>
+
+  <div class="cs-icon-item">
+    <div class="cs-icon-box">🤖</div>
+    <div class="cs-icon-lbl">
+        Inteligencia<br>Artificial
+    </div>
+  </div>
+
+  <div class="cs-icon-item">
+    <div class="cs-icon-box">⚡</div>
+    <div class="cs-icon-lbl">
+        Ejecución<br>Ultra Rápida
+    </div>
+  </div>
+
+  <div class="cs-icon-item">
+    <div class="cs-icon-box">🛡️</div>
+    <div class="cs-icon-lbl">
+        Gestión<br>de Riesgo
+    </div>
+  </div>
+
+</div>
+
+""", unsafe_allow_html=True)
+```
+```
+st.markdown("""
+
+<div class="cs-stats">
+
+  <div class="cs-stat">
+    <div class="cs-stat-num">3,032</div>
+    <div class="cs-stat-lbl">
+        Trades Ejecutados
+    </div>
+  </div>
+
+  <div class="cs-stat">
+    <div class="cs-stat-num">16</div>
+    <div class="cs-stat-lbl">
+        Usuarios Activos
+    </div>
+  </div>
+
+  <div class="cs-stat">
+    <div class="cs-stat-num">
+        99.9<span class="acc">%</span>
     </div>
 
-    <div class="subtitle">
-        Sistema avanzado de trading con inteligencia artificial,
-        señales premium y ejecución profesional en tiempo real.
+    <div class="cs-stat-lbl">
+        Uptime
+    </div>
+  </div>
+
+  <div class="cs-stat">
+    <div class="cs-stat-num">
+        89<span class="acc">%</span>
     </div>
 
-    """, unsafe_allow_html=True)
+    <div class="cs-stat-lbl">
+        Win Rate
+    </div>
+  </div>
 
-    st.markdown("""
-    <div class="card">
+</div>
 
-        <div style="color:#ff2b2b; font-size:26px; font-weight:bold;">
-            LIVE PERFORMANCE
-        </div>
+""", unsafe_allow_html=True)
 
-        <div style="color:white; font-size:42px; font-weight:900;">
-            +324%
-        </div>
+trades_data = [
 
-        <div style="color:gray; font-size:18px;">
-            PROFIT TOTAL
-        </div>
+    ("12:55:07", "BTC/USDT",  "LONG",  "+0.92%", True),
+    ("13:10:22", "ETH/USDT",  "LONG",  "+0.61%", True),
+    ("13:18:53", "SOL/USDT",  "SHORT", "+0.51%", True),
+    ("13:21:57", "XRP/USDT",  "LONG",  "+0.43%", True),
+    ("13:28:17", "BNB/USDT",  "LONG",  "+0.75%", True),
+    ("13:28:47", "SOL/USDT",  "LONG",  "+0.45%", True),
+    ("13:32:47", "DOGE/USDT", "SHORT", "-1.00%", False),
+
+]
+
+rows = ""
+
+for t in trades_data:
+
+    tag_cls = "cs-tl" if t[2] == "LONG" else "cs-ts"
+    pnl_cls = "cs-pos" if t[4] else "cs-neg"
+
+    rows += f"""
+
+    <div class="cs-trade">
+
+      <span class="cs-arr">></span>
+
+      <span class="cs-time">
+        {t[0]}
+      </span>
+
+      <span class="cs-pair">
+        {t[1]}
+      </span>
+
+      <span class="cs-tag {tag_cls}">
+        {t[2]}
+      </span>
+
+      <span class="cs-pnl {pnl_cls}">
+        {t[3]}
+      </span>
 
     </div>
-    """, unsafe_allow_html=True)
+
+    """
+
+st.markdown(f"""
+
+<div class="cs-section">
+
+  <div class="cs-sec-badge">
+    <span class="cs-pulse"></span>
+    LIVE FEED
+  </div>
+
+  <div class="cs-sec-h2">
+    Mira el bot trabajando
+  </div>
+
+  <div class="cs-sec-desc">
+    Trades cerrados en vivo de CRYPTOSCALPER.
+  </div>
+
+  <div class="cs-terminal">
+
+    <div class="cs-term-head">
+
+      <span class="cs-dot cs-dr"></span>
+      <span class="cs-dot cs-dy"></span>
+      <span class="cs-dot cs-dg"></span>
+
+      <span class="cs-stream-lbl">
+        ● STREAMING
+      </span>
+
+    </div>
+
+    {rows}
+
+  </div>
+
+</div>
+
+""", unsafe_allow_html=True)
+```
+```
+st.markdown("""
+
+<div class="cs-features">
+
+  <div style="text-align:center;margin-bottom:26px;">
+
+    <div class="cs-feat-tag">
+        ⚙️ TECNOLOGÍA
+    </div>
+
+    <div class="cs-feat-h2">
+        Todo lo que necesitas para operar
+    </div>
+
+    <div class="cs-feat-p">
+        Herramientas de trading algorítmico accesibles para todos.
+    </div>
+
+  </div>
+
+  <div class="cs-fcard">
+
+    <div class="cs-ficon">📊</div>
+
+    <h3>Dashboard Pro</h3>
+
+    <p>
+        Métricas en tiempo real,
+        gráfico de velas con EMA 9/21,
+        soporte y resistencia automáticos.
+    </p>
+
+  </div>
+
+  <div class="cs-fcard">
+
+    <div class="cs-ficon">🛡️</div>
+
+    <h3>Gestión de Riesgo</h3>
+
+    <p>
+        Take Profit y Stop Loss configurables.
+        Protege tu capital en cada operación.
+    </p>
+
+  </div>
+
+  <div class="cs-fcard">
+
+    <div class="cs-ficon">📡</div>
+
+    <h3>Ejecución 24/7</h3>
+
+    <p>
+        Conexión directa a CoinEx Spot.
+        Monitoreo constante sin interrupciones.
+    </p>
+
+  </div>
+
+  <div class="cs-fcard">
+
+    <div class="cs-ficon">📈</div>
+
+    <h3>Señales EMA</h3>
+
+    <p>
+        Cruce de medias exponenciales EMA 9/21.
+        Señales claras de COMPRA y VENTA.
+    </p>
+
+  </div>
+
+  <div class="cs-fcard">
+
+    <div class="cs-ficon">🔒</div>
+
+    <h3>Acceso Seguro</h3>
+
+    <p>
+        Login con contraseña y protección de sesión.
+    </p>
+
+  </div>
+
+</div>
+
+""", unsafe_allow_html=True)
+
+st.markdown("""
+
+<div style="text-align:center;
+            padding:26px 20px;
+            border-top:1px solid #1e1e1e;
+            color:#666;
+            font-size:12px;">
+
+  <div>
+    © 2026 CRYPTOSCALPER BOT PRO.
+    Todos los derechos reservados.
+  </div>
+
+  <div style="display:inline-block;
+              background:#141414;
+              border:1px solid #1e1e1e;
+              padding:9px 26px;
+              border-radius:100px;
+              margin-top:10px;">
+
+    cryptoscalper.app
+
+  </div>
+
+</div>
+
+""", unsafe_allow_html=True)
+```
+
+# ══════════════════════════════════════════════════════════════════════════════
 
 # LIVE TRADING
 
-if pagina == "LIVE TRADING":
+# ══════════════════════════════════════════════════════════════════════════════
 
-    col1, col2, col3, col4 = st.columns(4)
+elif pagina == "LIVE":
 
-    with col1:
-        crypto = st.selectbox(
-            "Selecciona par",
-            [
-                "BTC/USDT",
-                "ETH/USDT",
-                "SOL/USDT",
-                "XRP/USDT",
-                "DOGE/USDT",
-                "BNB/USDT"
-            ]
-        )
+```
+st.markdown(
+    '<div style="padding:20px;">',
+    unsafe_allow_html=True
+)
 
-    with col2:
-        tp = st.number_input(
-            "Take Profit %",
-            value=1.50
-        )
+st.markdown(
+    '<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">⚡ LIVE TRADING</div>',
+    unsafe_allow_html=True
+)
+```
+```
+col1, col2, col3, col4 = st.columns(4)
 
-    with col3:
-        sl = st.number_input(
-            "Stop Loss %",
-            value=1.00
-        )
+with col1:
 
-    with col4:
-    
-        if "bot_activo" not in st.session_state:
-            st.session_state.bot_activo = False
-        
-        if st.button("Iniciar Bot", key="btn_iniciar"):
-            st.session_state.bot_activo = True
-        
-        if st.button("Detener Bot", key="btn_detener"):
-            st.session_state.bot_activo = False
-        if st.button("Iniciar Bot"):
-            st.session_state.bot_activo = True
+    crypto = st.selectbox(
+        "Par",
+        [
+            "BTC/USDT",
+            "ETH/USDT",
+            "SOL/USDT",
+            "XRP/USDT",
+            "DOGE/USDT",
+            "BNB/USDT"
+        ]
+    )
 
-        if st.button("Detener Bot"):
-            st.session_state.bot_activo = False
+with col2:
 
-    panel = st.empty()
+    tp = st.number_input(
+        "Take Profit %",
+        value=1.50
+    )
 
-    top1, top2 = st.columns(2)
+with col3:
 
-    with top1:
-        timeframe = st.selectbox(
-            "Temporalidad",
-            ["1min", "5min", "15min", "1hour"]
-        )
+    sl = st.number_input(
+        "Stop Loss %",
+        value=1.00
+    )
 
-    with top2:
-        volumen_box = st.empty()
+with col4:
 
-    if st.session_state.bot_activo:
+    timeframe = st.selectbox(
+        "Temporalidad",
+        [
+            "1min",
+            "5min",
+            "15min",
+            "1hour"
+        ]
+    )
 
-        market = crypto.replace("/", "")
+c1, c2 = st.columns(2)
 
-        url = (
-            f"https://api.coinex.com/v2/spot/kline"
-            f"?market={market}&period={timeframe}&limit=50"
-        )
+with c1:
 
-        response = requests.get(url)
+    if st.button(
+        "▶ Iniciar Bot",
+        use_container_width=True
+    ):
+
+        st.session_state.bot_activo = True
+
+with c2:
+
+    if st.button(
+        "⏹ Detener Bot",
+        use_container_width=True
+    ):
+
+        st.session_state.bot_activo = False
+
+if st.session_state.bot_activo:
+
+    market = crypto.replace("/", "")
+
+    url = f"https://api.coinex.com/v2/spot/kline?market={market}&period={timeframe}&limit=50"
+
+    try:
+
+        response = requests.get(url, timeout=10)
+
         data = response.json()
 
-        opens = []
-        highs = []
-        lows = []
+        opens  = []
+        highs  = []
+        lows   = []
         closes = []
         volumes = []
 
@@ -224,69 +749,160 @@ if pagina == "LIVE TRADING":
             "volume": volumes
         })
 
-        df["EMA9"] = df["close"].ewm(span=9).mean()
+        df["EMA9"]  = df["close"].ewm(span=9).mean()
         df["EMA21"] = df["close"].ewm(span=21).mean()
 
         precio_actual = closes[-1]
-        ema9 = df["EMA9"].iloc[-1]
+        ema9  = df["EMA9"].iloc[-1]
         ema21 = df["EMA21"].iloc[-1]
 
+        cambio = precio_actual - closes[-2]
+
         soporte = df["low"].tail(20).min()
+
         resistencia = df["high"].tail(20).max()
 
-        volumen_box.metric(
-            "📊 Volumen",
-            round(df["volume"].iloc[-1], 2)
-        )
+        m1, m2, m3, m4 = st.columns(4)
+
+        with m1:
+            st.metric(
+                "💰 Precio",
+                f"{precio_actual:,.2f}",
+                f"{cambio:+.2f}"
+            )
+
+        with m2:
+            st.metric(
+                "📊 EMA 9",
+                f"{ema9:,.2f}"
+            )
+
+        with m3:
+            st.metric(
+                "📊 EMA 21",
+                f"{ema21:,.2f}"
+            )
+
+        with m4:
+            st.metric(
+                "📈 Volumen",
+                f"{df['volume'].iloc[-1]:,.0f}"
+            )
+
+        if ema9 > ema21:
+
+            st.markdown(
+                '<div class="cs-signal-buy">🚀 SEÑAL: COMPRA SPOT</div>',
+                unsafe_allow_html=True
+            )
+
+        else:
+
+            st.markdown(
+                '<div class="cs-signal-sell">📉 SEÑAL: VENTA SPOT</div>',
+                unsafe_allow_html=True
+            )
+```
+```
+        s1, s2 = st.columns(2)
+
+        with s1:
+
+            st.metric(
+                "🟢 Soporte",
+                f"{soporte:,.2f}"
+            )
+
+        with s2:
+
+            st.metric(
+                "🔴 Resistencia",
+                f"{resistencia:,.2f}"
+            )
 
         fig = go.Figure(data=[go.Candlestick(
+
             x=df.index,
+
             open=df["open"],
             high=df["high"],
             low=df["low"],
             close=df["close"],
 
             increasing=dict(
-                line=dict(color="lime"),
-                fillcolor="lime")
-            ,
+                line=dict(color="#00e676"),
+                fillcolor="#00e676"
+            ),
 
             decreasing=dict(
-                line=dict(color="red"),
-                fillcolor="red")
+                line=dict(color="#e82929"),
+                fillcolor="#e82929"
+            )
+
         )])
 
         fig.add_trace(go.Scatter(
             x=df.index,
             y=df["EMA9"],
             mode="lines",
-            name="EMA 9"
+            name="EMA 9",
+            line=dict(color="#e82929", width=1.5)
         ))
 
         fig.add_trace(go.Scatter(
             x=df.index,
             y=df["EMA21"],
             mode="lines",
-            name="EMA 21"
+            name="EMA 21",
+            line=dict(color="#ffa726", width=1.5)
         ))
 
         fig.add_hline(
             y=soporte,
             line_dash="dot",
-            line_color="green",
+            line_color="#00e676",
             annotation_text="Soporte"
         )
 
         fig.add_hline(
             y=resistencia,
             line_dash="dot",
-            line_color="red",
+            line_color="#e82929",
             annotation_text="Resistencia"
         )
 
         fig.update_layout(
-            height=700,
-            xaxis_rangeslider_visible=False
+
+            height=520,
+
+            paper_bgcolor="#080808",
+
+            plot_bgcolor="#0c0c0c",
+
+            xaxis=dict(
+                showgrid=False,
+                color="#444"
+            ),
+
+            yaxis=dict(
+                showgrid=True,
+                gridcolor="#1e1e1e",
+                color="#444"
+            ),
+
+            xaxis_rangeslider_visible=False,
+
+            legend=dict(
+                bgcolor="rgba(0,0,0,0)",
+                font=dict(color="#888")
+            ),
+
+            margin=dict(
+                l=10,
+                r=10,
+                t=10,
+                b=10
+            )
         )
 
         st.plotly_chart(
@@ -294,36 +910,38 @@ if pagina == "LIVE TRADING":
             use_container_width=True
         )
 
-        cambio = precio_actual - closes[-2]
+    except Exception as e:
 
-        st.metric(
-            "💰 Precio actual",
-            round(precio_actual, 2),
-            round(cambio, 2)
+        st.error(
+            f"Error al conectar con CoinEx: {e}"
         )
 
-        c1, c2, c3 = st.columns(3)
+    st.success(
+        f"✅ Bot activo — {crypto} | TP: {tp}% | SL: {sl}%"
+    )
 
-        with c1:
-            st.write("EMA 9:", round(ema9, 2))
+    contador = st.empty()
 
-        with c2:
-            st.write("EMA 21:", round(ema21, 2))
+    for i in range(60, 0, -1):
 
-        with c3:
+        contador.markdown(
+            f'<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en {i}s...</div>',
+            unsafe_allow_html=True
+        )
 
-            if ema9 > ema21:
-                st.success("🚀 COMPRA SPOT")
+        time.sleep(1)
 
-            elif ema9 < ema21:
-                st.error("📉 VENTA SPOT")
+    st.rerun()
 
-        st.success(f"Bot iniciado para {crypto}")
+else:
 
-        contador = st.empty()
+    st.markdown(
+        '<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">Bot detenido — Pulsa <b style="color:#e82929">Iniciar Bot</b> para comenzar</div>',
+        unsafe_allow_html=True
+    )
 
-        for i in range(60, 0, -1):
-            contador.write(i)
-            time.sleep(1)
-
-        st.rerun()
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
+```
