@@ -587,13 +587,13 @@ st.markdown('''
 
 ''', unsafe_allow_html=True)
 
-    st.markdown(
-        '<div style="text-align:center;padding:26px 20px;border-top:1px solid #1e1e1e;color:#666;font-size:12px;">'
-        '<div>© 2026 CRYPTOSCALPER BOT PRO. Todos los derechos reservados.</div>'
-        '<div style="display:inline-block;background:#141414;border:1px solid #1e1e1e;padding:9px 26px;border-radius:100px;margin-top:10px;">cryptoscalper.app</div>'
-        '</div>',
-        unsafe_allow_html=True
-    )
+st.markdown(
+    '<div style="text-align:center;padding:26px 20px;border-top:1px solid #1e1e1e;color:#666;font-size:12px;">'
+    '<div>© 2026 CRYPTOSCALPER BOT PRO. Todos los derechos reservados.</div>'
+    '<div style="display:inline-block;background:#141414;border:1px solid #1e1e1e;padding:9px 26px;border-radius:100px;margin-top:10px;">cryptoscalper.app</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
 
 elif pagina == "LIVE":
 
