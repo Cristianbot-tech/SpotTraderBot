@@ -215,20 +215,20 @@ if "pagina" not in st.session_state:
 
 if not st.session_state.auth:
 
-logo_html = f'<img src="data:image/png;base64,{LOGO}" style="width:90px;margin-bottom:16px;">' if LOGO else '<div style="font-size:60px;margin-bottom:16px;">💀</div>'
+    logo_html = f'<img src="data:image/png;base64,{LOGO}" style="width:90px;margin-bottom:16px;">' if LOGO else '<div style="font-size:60px;margin-bottom:16px;">💀</div>'
 
-st.markdown(f"""
-<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
-<div style="background:#101010;border:1px solid #1e1e1e;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;text-align:center;">
-    {logo_html}
-    <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:2px;color:#fff;margin-bottom:4px;">
-        CRYPTO<span style="color:#e82929;">SCALPER</span>
-    </div>
-    <div style="color:#666;font-size:13px;margin-bottom:28px;">
-        BOT PRO — Acceso exclusivo
-    </div>
-</div></div>
-""", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <div style="background:#101010;border:1px solid #1e1e1e;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;text-align:center;">
+        {logo_html}
+        <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:2px;color:#fff;margin-bottom:4px;">
+            CRYPTO<span style="color:#e82929;">SCALPER</span>
+        </div>
+        <div style="color:#666;font-size:13px;margin-bottom:28px;">
+            BOT PRO — Acceso exclusivo
+        </div>
+    </div></div>
+    """, unsafe_allow_html=True)
 
 with st.form("login", clear_on_submit=True):
 
