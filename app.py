@@ -12,6 +12,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+TELEGRAM_TOKEN = "8701343118:AAHKTO4S-xZd4JYhJa0MDtzmGn_A0DisHig"
+TELEGRAM_CHAT_ID = "8368425947"
+
+def enviar_telegram(mensaje):
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        requests.post(url, data={"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "HTML"})
+    except:
+        pass
+
 def get_logo():
     try:
         with open("Untitled_design.png", "rb") as f:
@@ -145,6 +155,8 @@ if "bot_activo" not in st.session_state:
     st.session_state.bot_activo = False
 if "pagina" not in st.session_state:
     st.session_state.pagina = "HOME"
+if "ultima_senal" not in st.session_state:
+    st.session_state.ultima_senal = ""
 
 if not st.session_state.auth:
     if LOGO:
@@ -162,14 +174,14 @@ if not st.session_state.auth:
         unsafe_allow_html=True
     )
     with st.form("login", clear_on_submit=True):
-        clave = st.text_input("", placeholder="Introduce contraseña", type="password")
-        entrar = st.form_submit_button("⚡ ENTRAR")
+        clave = st.text_input("", placeholder="Introduce contrasena", type="password")
+        entrar = st.form_submit_button("ENTRAR")
     if entrar:
         if clave == "CRYPTOSCALPER123":
             st.session_state.auth = True
             st.rerun()
         else:
-            st.error("Contraseña incorrecta")
+            st.error("Contrasena incorrecta")
     st.stop()
 
 if LOGO:
@@ -190,10 +202,10 @@ st.markdown(
 
 col_a, col_b = st.columns(2)
 with col_a:
-    if st.button("🏠  HOME", use_container_width=True):
+    if st.button("HOME", use_container_width=True):
         st.session_state.pagina = "HOME"
 with col_b:
-    if st.button("⚡  LIVE TRADING", use_container_width=True):
+    if st.button("LIVE TRADING", use_container_width=True):
         st.session_state.pagina = "LIVE"
 
 pagina = st.session_state.pagina
@@ -323,9 +335,11 @@ elif pagina == "LIVE":
     with c1:
         if st.button("Iniciar Bot", use_container_width=True):
             st.session_state.bot_activo = True
+            enviar_telegram("CRYPTOSCALPER iniciado para " + crypto)
     with c2:
         if st.button("Detener Bot", use_container_width=True):
             st.session_state.bot_activo = False
+            enviar_telegram("CRYPTOSCALPER detenido.")
 
     if st.session_state.bot_activo:
         market = crypto.replace("/", "")
@@ -365,9 +379,25 @@ elif pagina == "LIVE":
                 st.metric("Volumen", f"{df['volume'].iloc[-1]:,.0f}")
 
             if ema9 > ema21:
+                senal = "COMPRA"
                 st.markdown('<div class="cs-signal-buy">SENAL: COMPRA SPOT</div>', unsafe_allow_html=True)
             else:
+                senal = "VENTA"
                 st.markdown('<div class="cs-signal-sell">SENAL: VENTA SPOT</div>', unsafe_allow_html=True)
+
+            if senal != st.session_state.ultima_senal:
+                st.session_state.ultima_senal = senal
+                emoji = "🟢" if senal == "COMPRA" else "🔴"
+                mensaje = (
+                    emoji + " <b>CRYPTOSCALPER SENAL</b>\n"
+                    "Par: " + crypto + "\n"
+                    "Senal: " + senal + " SPOT\n"
+                    "Precio: " + str(round(precio_actual, 4)) + "\n"
+                    "EMA9: " + str(round(ema9, 4)) + "\n"
+                    "EMA21: " + str(round(ema21, 4)) + "\n"
+                    "TP: " + str(tp) + "% | SL: " + str(sl) + "%"
+                )
+                enviar_telegram(mensaje)
 
             s1, s2 = st.columns(2)
             with s1:
@@ -400,12 +430,12 @@ elif pagina == "LIVE":
         except Exception as e:
             st.error(f"Error al conectar con CoinEx: {e}")
 
-        st.success(f"Bot activo: {crypto} | TP: {tp}% | SL: {sl}%")
+        st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
 
         contador = st.empty()
         for i in range(60, 0, -1):
             contador.markdown(
-                f'<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en {i}s...</div>',
+                '<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en ' + str(i) + 's...</div>',
                 unsafe_allow_html=True
             )
             time.sleep(1)
