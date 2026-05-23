@@ -12,9 +12,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-TELEGRAM_TOKEN = "8701343118:AAHKTO4S-xZd4JYhJa0MDtzmGn_A0DisHig"
-TELEGRAM_CHAT_ID = "8368425947"
-
+import os
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 def enviar_telegram(mensaje):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
