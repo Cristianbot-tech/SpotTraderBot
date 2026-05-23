@@ -4,23 +4,31 @@ import requests
 import time
 import plotly.graph_objects as go
 import base64
+import os
 
 st.set_page_config(
     page_title="CRYPTOSCALPER BOT PRO",
-    page_icon="favicon.png",
+    page_icon="💀",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-import os
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+
 def enviar_telegram(mensaje):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
         requests.post(url, data={"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "HTML"})
     except:
         pass
+
+def calcular_rsi(series, periodo=7):
+    delta = series.diff()
+    ganancia = delta.where(delta > 0, 0).rolling(window=periodo).mean()
+    perdida = -delta.where(delta < 0, 0).rolling(window=periodo).mean()
+    rs = ganancia / perdida
+    return 100 - (100 / (1 + rs))
 
 def get_logo():
     try:
@@ -139,6 +147,11 @@ footer { display: none !important; }
 
 .cs-signal-buy { background: rgba(0,230,118,.08); border: 1px solid rgba(0,230,118,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #00e676; margin: 16px 0; }
 .cs-signal-sell { background: rgba(232,41,41,.08); border: 1px solid rgba(232,41,41,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #e82929; margin: 16px 0; }
+.cs-signal-wait { background: rgba(255,167,38,.08); border: 1px solid rgba(255,167,38,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #ffa726; margin: 16px 0; }
+
+.cs-filter-ok { color: #00e676; font-size: 13px; }
+.cs-filter-no { color: #e82929; font-size: 13px; }
+.cs-filter-box { background: #101010; border: 1px solid #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 
 .stButton > button { background: #e82929 !important; color: #fff !important; border: none !important; border-radius: 10px !important; font-weight: 700 !important; box-shadow: 0 0 20px rgba(232,41,41,0.3) !important; }
 .stButton > button:hover { background: #c0392b !important; }
@@ -217,7 +230,7 @@ if pagina == "HOME":
         '<div class="cs-badge"><span class="cs-pulse"></span> Sistema operando en vivo</div>'
         '<div class="cs-h1">Trading Algoritmico<br>de Precision</div>'
         '<div class="cs-sub">Genera ingresos en automatico</div>'
-        '<div class="cs-desc">Automatiza tus operaciones en CoinEx con senales EMA inteligentes, gestion de riesgo avanzada y ejecucion profesional. Sin emociones, 24/7.</div>'
+        '<div class="cs-desc">Automatiza tus operaciones en CoinEx con estrategia EMA + RSI + Volumen. Sin emociones, 24/7.</div>'
         '<div class="cs-btns">'
         '<a class="cs-btn-red" href="#">Comenzar Ahora</a>'
         '<a class="cs-btn-outline" href="#">Ver Features</a>'
@@ -241,23 +254,23 @@ if pagina == "HOME":
         '<div class="cs-stat"><div class="cs-stat-num">3,032</div><div class="cs-stat-lbl">Trades Ejecutados</div></div>'
         '<div class="cs-stat"><div class="cs-stat-num">16</div><div class="cs-stat-lbl">Usuarios Activos</div></div>'
         '<div class="cs-stat"><div class="cs-stat-num">99.9<span class="acc">%</span></div><div class="cs-stat-lbl">Uptime</div></div>'
-        '<div class="cs-stat"><div class="cs-stat-num">89<span class="acc">%</span></div><div class="cs-stat-lbl">Win Rate</div></div>'
+        '<div class="cs-stat"><div class="cs-stat-num">75<span class="acc">%</span></div><div class="cs-stat-lbl">Win Rate</div></div>'
         '</div>',
         unsafe_allow_html=True
     )
 
     trades_data = [
-        ("12:55:07", "BTC/USDT",  "LONG",  "+0.92%", True),
-        ("13:10:22", "ETH/USDT",  "LONG",  "+0.61%", True),
-        ("13:18:53", "SOL/USDT",  "SHORT", "+0.51%", True),
-        ("13:21:57", "XRP/USDT",  "LONG",  "+0.43%", True),
-        ("13:28:17", "BNB/USDT",  "LONG",  "+0.75%", True),
-        ("13:28:47", "SOL/USDT",  "LONG",  "+0.45%", True),
-        ("13:32:47", "DOGE/USDT", "SHORT", "-1.00%", False),
+        ("12:55:07", "BTC/USDT",  "COMPRA", "+0.92%", True),
+        ("13:10:22", "ETH/USDT",  "COMPRA", "+0.61%", True),
+        ("13:18:53", "SOL/USDT",  "VENTA",  "+0.51%", True),
+        ("13:21:57", "XRP/USDT",  "COMPRA", "+0.43%", True),
+        ("13:28:17", "BNB/USDT",  "COMPRA", "+0.75%", True),
+        ("13:28:47", "SOL/USDT",  "COMPRA", "+0.45%", True),
+        ("13:32:47", "DOGE/USDT", "VENTA",  "-1.00%", False),
     ]
     rows = ""
     for t in trades_data:
-        tag_cls = "cs-tl" if t[2] == "LONG" else "cs-ts"
+        tag_cls = "cs-tl" if t[2] == "COMPRA" else "cs-ts"
         pnl_cls = "cs-pos" if t[4] else "cs-neg"
         rows += (
             '<div class="cs-trade">'
@@ -293,11 +306,11 @@ if pagina == "HOME":
         '<div class="cs-feat-h2">Todo lo que necesitas para operar</div>'
         '<div class="cs-feat-p">Herramientas de trading algoritmico accesibles para todos.</div>'
         '</div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Dashboard Pro</h3><p>Metricas en tiempo real, grafico de velas con EMA 9/21, soporte y resistencia automaticos.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>Gestion de Riesgo</h3><p>Take Profit y Stop Loss configurables. Protege tu capital en cada operacion.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Ejecucion 24/7</h3><p>Conexion directa a CoinEx Spot. Monitoreo constante sin interrupciones.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📈</div><h3>Senales EMA</h3><p>Cruce de medias exponenciales EMA 9/21. Senales claras de COMPRA y VENTA.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">🔒</div><h3>Acceso Seguro</h3><p>Login con contrasena y proteccion de sesion.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA9/21 + RSI(7) + Volumen. Los 3 deben confirmar antes de dar senal. Maxima precision.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>Gestion de Riesgo</h3><p>Take Profit y Stop Loss configurables. Salida automatica por RSI sobrecomprado.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea en tu telefono cuando el bot detecta una senal valida.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📈</div><h3>Solo Spot COMPRA</h3><p>Disenado para mercado spot. Solo entra en compras confirmadas, nunca en corto.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">🔒</div><h3>Acceso Seguro</h3><p>Login con contrasena y variables de entorno protegidas en Render.</p></div>'
         '</div>',
         unsafe_allow_html=True
     )
@@ -312,10 +325,7 @@ if pagina == "HOME":
 
 elif pagina == "LIVE":
 
-    st.markdown(
-        '<div style="padding:20px;">',
-        unsafe_allow_html=True
-    )
+    st.markdown('<div style="padding:20px;">', unsafe_allow_html=True)
     st.markdown(
         '<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">LIVE TRADING</div>',
         unsafe_allow_html=True
@@ -358,52 +368,89 @@ elif pagina == "LIVE":
                 volumes.append(float(candle["volume"]))
 
             df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes, "volume": volumes})
-            df["EMA9"] = df["close"].ewm(span=9).mean()
+            df["EMA9"]  = df["close"].ewm(span=9).mean()
             df["EMA21"] = df["close"].ewm(span=21).mean()
+            df["RSI"]   = calcular_rsi(df["close"], 7)
+            df["VOL_MA"] = df["volume"].rolling(window=10).mean()
 
             precio_actual = closes[-1]
-            ema9 = df["EMA9"].iloc[-1]
+            ema9  = df["EMA9"].iloc[-1]
             ema21 = df["EMA21"].iloc[-1]
+            rsi   = df["RSI"].iloc[-1]
+            vol_actual  = df["volume"].iloc[-1]
+            vol_promedio = df["VOL_MA"].iloc[-1]
             cambio = precio_actual - closes[-2]
-            soporte = df["low"].tail(20).min()
+            soporte     = df["low"].tail(20).min()
             resistencia = df["high"].tail(20).max()
+
+            # FILTROS
+            filtro_ema    = ema9 > ema21
+            filtro_rsi    = 35 < rsi < 65
+            filtro_volumen = vol_actual > vol_promedio
+            filtro_rsi_venta = rsi > 75
 
             m1, m2, m3, m4 = st.columns(4)
             with m1:
-                st.metric("Precio", f"{precio_actual:,.2f}", f"{cambio:+.2f}")
+                st.metric("Precio", f"{precio_actual:,.4f}", f"{cambio:+.4f}")
             with m2:
-                st.metric("EMA 9", f"{ema9:,.2f}")
+                st.metric("EMA 9", f"{ema9:,.4f}")
             with m3:
-                st.metric("EMA 21", f"{ema21:,.2f}")
+                st.metric("EMA 21", f"{ema21:,.4f}")
             with m4:
-                st.metric("Volumen", f"{df['volume'].iloc[-1]:,.0f}")
+                st.metric("RSI(7)", f"{rsi:.1f}")
 
-            if ema9 > ema21:
+            # PANEL DE FILTROS
+            st.markdown(
+                '<div class="cs-filter-box">'
+                '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
+                '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' +
+                ("OK" if filtro_ema else "NO") + ' — EMA9 (' + str(round(ema9, 4)) + ') ' +
+                ("mayor" if filtro_ema else "menor") + ' que EMA21 (' + str(round(ema21, 4)) + ')</div>'
+                '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' +
+                ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita entre 35 y 65)</div>'
+                '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' +
+                ("OK" if filtro_volumen else "NO") + ' — Volumen: ' + str(round(vol_actual, 2)) + ' vs promedio ' + str(round(vol_promedio, 2)) + '</div>'
+                '</div>',
+                unsafe_allow_html=True
+            )
+
+            # SENAL FINAL
+            if filtro_ema and filtro_rsi and filtro_volumen:
                 senal = "COMPRA"
-                st.markdown('<div class="cs-signal-buy">SENAL: COMPRA SPOT</div>', unsafe_allow_html=True)
-            else:
+                st.markdown('<div class="cs-signal-buy">SENAL CONFIRMADA: COMPRA SPOT</div>', unsafe_allow_html=True)
+            elif filtro_rsi_venta:
                 senal = "VENTA"
-                st.markdown('<div class="cs-signal-sell">SENAL: VENTA SPOT</div>', unsafe_allow_html=True)
+                st.markdown('<div class="cs-signal-sell">SENAL: VENDER — RSI SOBRECOMPRADO</div>', unsafe_allow_html=True)
+            elif not filtro_ema and not filtro_rsi:
+                senal = "VENTA"
+                st.markdown('<div class="cs-signal-sell">SENAL: VENDER — TENDENCIA BAJISTA</div>', unsafe_allow_html=True)
+            else:
+                senal = "ESPERAR"
+                st.markdown('<div class="cs-signal-wait">ESPERANDO CONFIRMACION...</div>', unsafe_allow_html=True)
 
-            if senal != st.session_state.ultima_senal:
+            if senal != "ESPERAR" and senal != st.session_state.ultima_senal:
                 st.session_state.ultima_senal = senal
                 emoji = "🟢" if senal == "COMPRA" else "🔴"
+                filtros_txt = (
+                    "EMA: " + ("OK" if filtro_ema else "NO") + "\n"
+                    "RSI: " + ("OK" if filtro_rsi else "NO") + " (" + str(round(rsi, 1)) + ")\n"
+                    "Volumen: " + ("OK" if filtro_volumen else "NO")
+                )
                 mensaje = (
                     emoji + " <b>CRYPTOSCALPER SENAL</b>\n"
                     "Par: " + crypto + "\n"
                     "Senal: " + senal + " SPOT\n"
                     "Precio: " + str(round(precio_actual, 4)) + "\n"
-                    "EMA9: " + str(round(ema9, 4)) + "\n"
-                    "EMA21: " + str(round(ema21, 4)) + "\n"
-                    "TP: " + str(tp) + "% | SL: " + str(sl) + "%"
+                    "TP: " + str(tp) + "% | SL: " + str(sl) + "%\n\n"
+                    + filtros_txt
                 )
                 enviar_telegram(mensaje)
 
             s1, s2 = st.columns(2)
             with s1:
-                st.metric("Soporte", f"{soporte:,.2f}")
+                st.metric("Soporte", f"{soporte:,.4f}")
             with s2:
-                st.metric("Resistencia", f"{resistencia:,.2f}")
+                st.metric("Resistencia", f"{resistencia:,.4f}")
 
             fig = go.Figure(data=[go.Candlestick(
                 x=df.index,
@@ -411,9 +458,9 @@ elif pagina == "LIVE":
                 increasing=dict(line=dict(color="#00e676"), fillcolor="#00e676"),
                 decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929")
             )])
-            fig.add_trace(go.Scatter(x=df.index, y=df["EMA9"], mode="lines", name="EMA 9", line=dict(color="#e82929", width=1.5)))
+            fig.add_trace(go.Scatter(x=df.index, y=df["EMA9"],  mode="lines", name="EMA 9",  line=dict(color="#e82929", width=1.5)))
             fig.add_trace(go.Scatter(x=df.index, y=df["EMA21"], mode="lines", name="EMA 21", line=dict(color="#ffa726", width=1.5)))
-            fig.add_hline(y=soporte, line_dash="dot", line_color="#00e676", annotation_text="Soporte")
+            fig.add_hline(y=soporte,     line_dash="dot", line_color="#00e676", annotation_text="Soporte")
             fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929", annotation_text="Resistencia")
             fig.update_layout(
                 height=520,
@@ -428,7 +475,7 @@ elif pagina == "LIVE":
             st.plotly_chart(fig, use_container_width=True)
 
         except Exception as e:
-            st.error(f"Error al conectar con CoinEx: {e}")
+            st.error("Error al conectar con CoinEx: " + str(e))
 
         st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
 
