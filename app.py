@@ -32,7 +32,7 @@ def calcular_rsi(series, periodo=7):
 
 def get_logo():
     try:
-        with open("Untitled_design.png", "rb") as f:
+        with open("favicon.png", "rb") as f:
             return base64.b64encode(f.read()).decode()
     except:
         return ""
