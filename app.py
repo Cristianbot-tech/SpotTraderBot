@@ -44,8 +44,7 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-    background: #080808 !important;
-    color: #ffffff !important;
+    background: #080808 !important; color: #ffffff !important;
     font-family: 'Inter', sans-serif !important;
 }
 [data-testid="stHeader"] { background: transparent !important; }
@@ -54,11 +53,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 footer { display: none !important; }
 #MainMenu { display: none !important; }
 
-.cs-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px; border-bottom: 1px solid #1e1e1e;
-    background: rgba(8,8,8,0.97); position: sticky; top: 0; z-index: 999;
-}
+.cs-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #1e1e1e; background: rgba(8,8,8,0.97); position: sticky; top: 0; z-index: 999; }
 .cs-nav-logo { display: flex; align-items: center; gap: 10px; }
 .cs-nav-name { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #fff; }
 .cs-nav-name span { color: #e82929; }
@@ -66,45 +61,18 @@ footer { display: none !important; }
 .cs-hamburger span { width: 26px; height: 2px; background: #fff; border-radius: 2px; display: block; }
 
 .cs-hero { padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
-.cs-hero::before {
-    content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
-    width: 420px; height: 420px;
-    background: radial-gradient(circle, rgba(232,41,41,0.10) 0%, transparent 70%);
-    pointer-events: none;
-}
-.cs-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(232,41,41,0.10); border: 1px solid rgba(232,41,41,0.30);
-    color: #e82929; padding: 7px 16px; border-radius: 100px;
-    font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 24px;
-}
-.cs-pulse {
-    width: 8px; height: 8px; background: #e82929; border-radius: 50%;
-    animation: cspulse 1.4s infinite; display: inline-block;
-}
+.cs-hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 420px; height: 420px; background: radial-gradient(circle, rgba(232,41,41,0.10) 0%, transparent 70%); pointer-events: none; }
+.cs-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,41,41,0.10); border: 1px solid rgba(232,41,41,0.30); color: #e82929; padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 24px; }
+.cs-pulse { width: 8px; height: 8px; background: #e82929; border-radius: 50%; animation: cspulse 1.4s infinite; display: inline-block; }
 @keyframes cspulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.3;transform:scale(.7);} }
 .cs-h1 { font-family: 'Rajdhani', sans-serif; font-size: 44px; font-weight: 700; line-height: 1; color: #fff; margin-bottom: 14px; }
 .cs-sub { color: #e82929; font-size: 17px; font-weight: 500; margin-bottom: 18px; }
 .cs-desc { color: #666; font-size: 14px; line-height: 1.7; max-width: 360px; margin: 0 auto 32px; }
-.cs-btn-red {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    background: #e82929; color: #fff; padding: 15px 32px; border-radius: 12px;
-    font-weight: 700; font-size: 15px; border: none; cursor: pointer;
-    width: 100%; max-width: 320px; box-shadow: 0 0 28px rgba(232,41,41,0.35);
-    margin-bottom: 10px; text-decoration: none;
-}
-.cs-btn-outline {
-    display: inline-flex; align-items: center; justify-content: center;
-    background: transparent; color: #fff; padding: 15px 32px; border-radius: 12px;
-    font-weight: 500; font-size: 15px; border: 1px solid #1e1e1e;
-    cursor: pointer; width: 100%; max-width: 320px; text-decoration: none;
-}
+.cs-btn-red { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #e82929; color: #fff; padding: 15px 32px; border-radius: 12px; font-weight: 700; font-size: 15px; border: none; cursor: pointer; width: 100%; max-width: 320px; box-shadow: 0 0 28px rgba(232,41,41,0.35); margin-bottom: 10px; text-decoration: none; }
+.cs-btn-outline { display: inline-flex; align-items: center; justify-content: center; background: transparent; color: #fff; padding: 15px 32px; border-radius: 12px; font-weight: 500; font-size: 15px; border: 1px solid #1e1e1e; cursor: pointer; width: 100%; max-width: 320px; text-decoration: none; }
 .cs-btns { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 
-.cs-strip {
-    display: flex; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e;
-    background: #0c0c0c;
-}
+.cs-strip { display: flex; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e; background: #0c0c0c; }
 .cs-icon-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 16px 4px; gap: 6px; border-right: 1px solid #1e1e1e; }
 .cs-icon-item:last-child { border-right: none; }
 .cs-icon-box { width: 38px; height: 38px; background: rgba(232,41,41,.15); border: 1px solid rgba(232,41,41,.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
@@ -148,10 +116,14 @@ footer { display: none !important; }
 .cs-signal-buy { background: rgba(0,230,118,.08); border: 1px solid rgba(0,230,118,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #00e676; margin: 16px 0; }
 .cs-signal-sell { background: rgba(232,41,41,.08); border: 1px solid rgba(232,41,41,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #e82929; margin: 16px 0; }
 .cs-signal-wait { background: rgba(255,167,38,.08); border: 1px solid rgba(255,167,38,.3); border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #ffa726; margin: 16px 0; }
+.cs-signal-tp { background: rgba(0,230,118,.15); border: 2px solid #00e676; border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #00e676; margin: 16px 0; }
+.cs-signal-sl { background: rgba(232,41,41,.15); border: 2px solid #e82929; border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #e82929; margin: 16px 0; }
 
-.cs-filter-ok { color: #00e676; font-size: 13px; }
-.cs-filter-no { color: #e82929; font-size: 13px; }
 .cs-filter-box { background: #101010; border: 1px solid #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.cs-filter-ok { color: #00e676; font-size: 13px; margin-bottom: 4px; }
+.cs-filter-no { color: #e82929; font-size: 13px; margin-bottom: 4px; }
+
+.cs-position-box { background: #101010; border: 1px solid #ffa726; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 
 .stButton > button { background: #e82929 !important; color: #fff !important; border: none !important; border-radius: 10px !important; font-weight: 700 !important; box-shadow: 0 0 20px rgba(232,41,41,0.3) !important; }
 .stButton > button:hover { background: #c0392b !important; }
@@ -170,6 +142,10 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "HOME"
 if "ultima_senal" not in st.session_state:
     st.session_state.ultima_senal = ""
+if "en_posicion" not in st.session_state:
+    st.session_state.en_posicion = False
+if "precio_entrada" not in st.session_state:
+    st.session_state.precio_entrada = 0.0
 
 if not st.session_state.auth:
     if LOGO:
@@ -307,9 +283,9 @@ if pagina == "HOME":
         '<div class="cs-feat-p">Herramientas de trading algoritmico accesibles para todos.</div>'
         '</div>'
         '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA9/21 + RSI(7) + Volumen. Los 3 deben confirmar antes de dar senal. Maxima precision.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>Gestion de Riesgo</h3><p>Take Profit y Stop Loss configurables. Salida automatica por RSI sobrecomprado.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea en tu telefono cuando el bot detecta una senal valida.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📈</div><h3>Solo Spot COMPRA</h3><p>Disenado para mercado spot. Solo entra en compras confirmadas, nunca en corto.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>TP y SL Automatico</h3><p>Take Profit 1.5% y Stop Loss 0.8% por defecto. El bot monitorea y avisa cuando alcanzas tu objetivo.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea cuando hay senal de compra, TP alcanzado o SL activado.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📈</div><h3>Solo Spot COMPRA</h3><p>Disenado para mercado spot. Rastrea tu posicion y avisa cuando es momento de vender.</p></div>'
         '<div class="cs-fcard"><div class="cs-ficon">🔒</div><h3>Acceso Seguro</h3><p>Login con contrasena y variables de entorno protegidas en Render.</p></div>'
         '</div>',
         unsafe_allow_html=True
@@ -335,21 +311,25 @@ elif pagina == "LIVE":
     with col1:
         crypto = st.selectbox("Par", ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "DOGE/USDT", "BNB/USDT"])
     with col2:
-        tp = st.number_input("Take Profit %", value=1.50)
+        tp = st.number_input("Take Profit %", value=1.5)
     with col3:
-        sl = st.number_input("Stop Loss %", value=1.00)
+        sl = st.number_input("Stop Loss %", value=0.8)
     with col4:
         timeframe = st.selectbox("Temporalidad", ["1min", "5min", "15min", "1hour"])
 
-    c1, c2 = st.columns(2)
-    with c1:
+    col_bot1, col_bot2, col_bot3 = st.columns(3)
+    with col_bot1:
         if st.button("Iniciar Bot", use_container_width=True):
             st.session_state.bot_activo = True
             enviar_telegram("CRYPTOSCALPER iniciado para " + crypto)
-    with c2:
+    with col_bot2:
         if st.button("Detener Bot", use_container_width=True):
             st.session_state.bot_activo = False
+            st.session_state.en_posicion = False
             enviar_telegram("CRYPTOSCALPER detenido.")
+    with col_bot3:
+        if st.button("Marcar Comprado", use_container_width=True):
+            st.session_state.en_posicion = True
 
     if st.session_state.bot_activo:
         market = crypto.replace("/", "")
@@ -368,26 +348,24 @@ elif pagina == "LIVE":
                 volumes.append(float(candle["volume"]))
 
             df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes, "volume": volumes})
-            df["EMA9"]  = df["close"].ewm(span=9).mean()
-            df["EMA21"] = df["close"].ewm(span=21).mean()
-            df["RSI"]   = calcular_rsi(df["close"], 7)
+            df["EMA9"]   = df["close"].ewm(span=9).mean()
+            df["EMA21"]  = df["close"].ewm(span=21).mean()
+            df["RSI"]    = calcular_rsi(df["close"], 7)
             df["VOL_MA"] = df["volume"].rolling(window=10).mean()
 
             precio_actual = closes[-1]
             ema9  = df["EMA9"].iloc[-1]
             ema21 = df["EMA21"].iloc[-1]
             rsi   = df["RSI"].iloc[-1]
-            vol_actual  = df["volume"].iloc[-1]
+            vol_actual   = df["volume"].iloc[-1]
             vol_promedio = df["VOL_MA"].iloc[-1]
             cambio = precio_actual - closes[-2]
             soporte     = df["low"].tail(20).min()
             resistencia = df["high"].tail(20).max()
 
-            # FILTROS
             filtro_ema    = ema9 > ema21
             filtro_rsi    = 35 < rsi < 65
             filtro_volumen = vol_actual > vol_promedio
-            filtro_rsi_venta = rsi > 75
 
             m1, m2, m3, m4 = st.columns(4)
             with m1:
@@ -399,52 +377,95 @@ elif pagina == "LIVE":
             with m4:
                 st.metric("RSI(7)", f"{rsi:.1f}")
 
-            # PANEL DE FILTROS
-            st.markdown(
-                '<div class="cs-filter-box">'
-                '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
-                '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' +
-                ("OK" if filtro_ema else "NO") + ' — EMA9 (' + str(round(ema9, 4)) + ') ' +
-                ("mayor" if filtro_ema else "menor") + ' que EMA21 (' + str(round(ema21, 4)) + ')</div>'
-                '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' +
-                ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita entre 35 y 65)</div>'
-                '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' +
-                ("OK" if filtro_volumen else "NO") + ' — Volumen: ' + str(round(vol_actual, 2)) + ' vs promedio ' + str(round(vol_promedio, 2)) + '</div>'
-                '</div>',
-                unsafe_allow_html=True
-            )
+            # MOSTRAR POSICION ACTIVA
+            if st.session_state.en_posicion and st.session_state.precio_entrada == 0.0:
+                st.session_state.precio_entrada = precio_actual
 
-            # SENAL FINAL
-            if filtro_ema and filtro_rsi and filtro_volumen:
-                senal = "COMPRA"
-                st.markdown('<div class="cs-signal-buy">SENAL CONFIRMADA: COMPRA SPOT</div>', unsafe_allow_html=True)
-            elif filtro_rsi_venta:
-                senal = "VENTA"
-                st.markdown('<div class="cs-signal-sell">SENAL: VENDER — RSI SOBRECOMPRADO</div>', unsafe_allow_html=True)
-            elif not filtro_ema and not filtro_rsi:
-                senal = "VENTA"
-                st.markdown('<div class="cs-signal-sell">SENAL: VENDER — TENDENCIA BAJISTA</div>', unsafe_allow_html=True)
+            if st.session_state.en_posicion and st.session_state.precio_entrada > 0:
+                entrada = st.session_state.precio_entrada
+                ganancia_pct = ((precio_actual - entrada) / entrada) * 100
+                precio_tp = entrada * (1 + tp / 100)
+                precio_sl = entrada * (1 - sl / 100)
+                color_pnl = "#00e676" if ganancia_pct >= 0 else "#e82929"
+                st.markdown(
+                    '<div class="cs-position-box">'
+                    '<div style="color:#ffa726;font-size:11px;letter-spacing:2px;margin-bottom:8px;">POSICION ACTIVA</div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                    '<span style="color:#888;">Entrada:</span><span style="color:#fff;">' + str(round(entrada, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                    '<span style="color:#888;">Actual:</span><span style="color:#fff;">' + str(round(precio_actual, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                    '<span style="color:#888;">P&L:</span><span style="color:' + color_pnl + ';">' + str(round(ganancia_pct, 2)) + '%</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                    '<span style="color:#00e676;">TP:</span><span style="color:#00e676;">' + str(round(precio_tp, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;">'
+                    '<span style="color:#e82929;">SL:</span><span style="color:#e82929;">' + str(round(precio_sl, 4)) + '</span></div>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+
+                # ALERTAS TP / SL
+                if precio_actual >= precio_tp:
+                    st.markdown('<div class="cs-signal-tp">TAKE PROFIT ALCANZADO — VENDE AHORA</div>', unsafe_allow_html=True)
+                    if st.session_state.ultima_senal != "TP":
+                        st.session_state.ultima_senal = "TP"
+                        st.session_state.en_posicion = False
+                        st.session_state.precio_entrada = 0.0
+                        enviar_telegram(
+                            "TAKE PROFIT ALCANZADO\n"
+                            "Par: " + crypto + "\n"
+                            "Entrada: " + str(round(entrada, 4)) + "\n"
+                            "Salida: " + str(round(precio_actual, 4)) + "\n"
+                            "Ganancia: +" + str(round(ganancia_pct, 2)) + "%\n"
+                            "VENDE AHORA en CoinEx"
+                        )
+
+                elif precio_actual <= precio_sl:
+                    st.markdown('<div class="cs-signal-sl">STOP LOSS ACTIVADO — VENDE AHORA</div>', unsafe_allow_html=True)
+                    if st.session_state.ultima_senal != "SL":
+                        st.session_state.ultima_senal = "SL"
+                        st.session_state.en_posicion = False
+                        st.session_state.precio_entrada = 0.0
+                        enviar_telegram(
+                            "STOP LOSS ACTIVADO\n"
+                            "Par: " + crypto + "\n"
+                            "Entrada: " + str(round(entrada, 4)) + "\n"
+                            "Salida: " + str(round(precio_actual, 4)) + "\n"
+                            "Perdida: " + str(round(ganancia_pct, 2)) + "%\n"
+                            "VENDE AHORA en CoinEx"
+                        )
+                else:
+                    st.markdown('<div class="cs-signal-wait">EN POSICION — MONITOREANDO...</div>', unsafe_allow_html=True)
+
             else:
-                senal = "ESPERAR"
-                st.markdown('<div class="cs-signal-wait">ESPERANDO CONFIRMACION...</div>', unsafe_allow_html=True)
+                # SIN POSICION — buscar entrada
+                st.markdown(
+                    '<div class="cs-filter-box">'
+                    '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' +
+                    ("OK" if filtro_ema else "NO") + ' — EMA9 ' + ("mayor" if filtro_ema else "menor") + ' que EMA21</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' +
+                    ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita 35-65)</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' +
+                    ("OK" if filtro_volumen else "NO") + ' — Volumen por encima del promedio</div>'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
 
-            if senal != "ESPERAR" and senal != st.session_state.ultima_senal:
-                st.session_state.ultima_senal = senal
-                emoji = "🟢" if senal == "COMPRA" else "🔴"
-                filtros_txt = (
-                    "EMA: " + ("OK" if filtro_ema else "NO") + "\n"
-                    "RSI: " + ("OK" if filtro_rsi else "NO") + " (" + str(round(rsi, 1)) + ")\n"
-                    "Volumen: " + ("OK" if filtro_volumen else "NO")
-                )
-                mensaje = (
-                    emoji + " <b>CRYPTOSCALPER SENAL</b>\n"
-                    "Par: " + crypto + "\n"
-                    "Senal: " + senal + " SPOT\n"
-                    "Precio: " + str(round(precio_actual, 4)) + "\n"
-                    "TP: " + str(tp) + "% | SL: " + str(sl) + "%\n\n"
-                    + filtros_txt
-                )
-                enviar_telegram(mensaje)
+                if filtro_ema and filtro_rsi and filtro_volumen:
+                    st.markdown('<div class="cs-signal-buy">SENAL: COMPRA AHORA — PULSA MARCAR COMPRADO</div>', unsafe_allow_html=True)
+                    if st.session_state.ultima_senal != "COMPRA":
+                        st.session_state.ultima_senal = "COMPRA"
+                        enviar_telegram(
+                            "SENAL DE COMPRA\n"
+                            "Par: " + crypto + "\n"
+                            "Precio: " + str(round(precio_actual, 4)) + "\n"
+                            "TP: " + str(round(precio_actual * (1 + tp/100), 4)) + "\n"
+                            "SL: " + str(round(precio_actual * (1 - sl/100), 4)) + "\n"
+                            "RSI: " + str(round(rsi, 1))
+                        )
+                else:
+                    st.markdown('<div class="cs-signal-wait">ESPERANDO SENAL...</div>', unsafe_allow_html=True)
 
             s1, s2 = st.columns(2)
             with s1:
@@ -463,9 +484,7 @@ elif pagina == "LIVE":
             fig.add_hline(y=soporte,     line_dash="dot", line_color="#00e676", annotation_text="Soporte")
             fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929", annotation_text="Resistencia")
             fig.update_layout(
-                height=520,
-                paper_bgcolor="#080808",
-                plot_bgcolor="#0c0c0c",
+                height=520, paper_bgcolor="#080808", plot_bgcolor="#0c0c0c",
                 xaxis=dict(showgrid=False, color="#444"),
                 yaxis=dict(showgrid=True, gridcolor="#1e1e1e", color="#444"),
                 xaxis_rangeslider_visible=False,
