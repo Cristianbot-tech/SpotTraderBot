@@ -12,7 +12,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-
+st.markdown(
+    '<link rel="apple-touch-icon" href="/app/static/Fabi con.png">',
+    unsafe_allow_html=True
+)
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 
