@@ -209,41 +209,51 @@ footer { display: none !important; }
 </div>
 
 <script>
-function abrirMenu() {
-    document.getElementById('cs-dropdown').classList.add('active');
-    document.getElementById('cs-overlay').classList.add('active');
-}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuBtn = document.getElementById("menu-btn");
+    const dropdown = document.getElementById("cs-dropdown");
+    const overlay = document.getElementById("cs-overlay");
+
+    if (menuBtn) {
+
+        menuBtn.onclick = function () {
+
+            dropdown.classList.toggle("active");
+            overlay.classList.toggle("active");
+
+        };
+
+    }
+
+});
+
 function cerrarMenu() {
-    document.getElementById('cs-dropdown').classList.remove('active');
-    document.getElementById('cs-overlay').classList.remove('active');
+
+    document.getElementById("cs-dropdown").classList.remove("active");
+    document.getElementById("cs-overlay").classList.remove("active");
+
 }
+
 function navegarA(pagina) {
+
     cerrarMenu();
 
-    if (pagina === "HOME") {
-        window.location.hash = "home";
-    }
-
-    if (pagina === "LIVE") {
-        window.location.hash = "live";
-    }
-
-    if (pagina === "HISTORIAL") {
-        window.location.hash = "historial";
-    }
-
-    const buttons = window.parent.document.querySelectorAll('button');
+    const buttons = window.parent.document.querySelectorAll("button");
 
     buttons.forEach((btn) => {
+
         if (btn.innerText.includes("NAV_" + pagina)) {
-            btn.dispatchEvent(new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true
-            }));
+
+            btn.click();
+
         }
+
     });
+
 }
+
 </script>
 """, unsafe_allow_html=True)
 
