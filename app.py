@@ -219,10 +219,28 @@ function cerrarMenu() {
 }
 function navegarA(pagina) {
     cerrarMenu();
-    const btns = window.parent.document.querySelectorAll('button');
-    btns.forEach(btn => {
-        if (btn.innerText.trim() === 'NAV_' + pagina) {
-            btn.click();
+
+    if (pagina === "HOME") {
+        window.location.hash = "home";
+    }
+
+    if (pagina === "LIVE") {
+        window.location.hash = "live";
+    }
+
+    if (pagina === "HISTORIAL") {
+        window.location.hash = "historial";
+    }
+
+    const buttons = window.parent.document.querySelectorAll('button');
+
+    buttons.forEach((btn) => {
+        if (btn.innerText.includes("NAV_" + pagina)) {
+            btn.dispatchEvent(new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            }));
         }
     });
 }
