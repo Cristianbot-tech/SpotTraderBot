@@ -8,7 +8,7 @@ import os
 
 st.set_page_config(
     page_title="CRYPTOSCALPER BOT PRO",
-    page_icon="💀",
+    page_icon="Fabi con.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
