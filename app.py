@@ -5,6 +5,7 @@ import time
 import plotly.graph_objects as go
 import base64
 import os
+from datetime import datetime
 
 st.set_page_config(
     page_title="CRYPTOSCALPER BOT PRO",
@@ -12,10 +13,12 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
 st.markdown(
     '<link rel="apple-touch-icon" href="/app/static/Fabi con.png">',
     unsafe_allow_html=True
 )
+
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 
@@ -35,7 +38,7 @@ def calcular_rsi(series, periodo=7):
 
 def get_logo():
     try:
-        with open("favicon.png", "rb") as f:
+        with open("Fabi con.png", "rb") as f:
             return base64.b64encode(f.read()).decode()
     except:
         return ""
@@ -56,12 +59,57 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 footer { display: none !important; }
 #MainMenu { display: none !important; }
 
-.cs-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #1e1e1e; background: rgba(8,8,8,0.97); position: sticky; top: 0; z-index: 999; }
+.cs-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; border-bottom: 1px solid #1e1e1e;
+    background: rgba(8,8,8,0.97); position: sticky; top: 0; z-index: 999;
+}
 .cs-nav-logo { display: flex; align-items: center; gap: 10px; }
 .cs-nav-name { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #fff; }
 .cs-nav-name span { color: #e82929; }
-.cs-hamburger { display: flex; flex-direction: column; gap: 5px; }
-.cs-hamburger span { width: 26px; height: 2px; background: #fff; border-radius: 2px; display: block; }
+
+.cs-menu-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 998;
+}
+.cs-menu-overlay.active { display: block; }
+
+.cs-dropdown {
+    display: none; position: fixed; top: 0; right: 0;
+    width: 260px; height: 100vh;
+    background: #0f0f0f; border-left: 1px solid #1e1e1e;
+    z-index: 999; padding: 20px 0;
+    flex-direction: column;
+}
+.cs-dropdown.active { display: flex; }
+
+.cs-dropdown-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px 20px; border-bottom: 1px solid #1e1e1e; margin-bottom: 10px;
+}
+.cs-dropdown-title {
+    font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
+    color: #fff; letter-spacing: 2px;
+}
+.cs-close-btn {
+    color: #666; font-size: 22px; cursor: pointer; background: none; border: none;
+    padding: 0; line-height: 1;
+}
+.cs-menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; color: #888; font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+    transition: all 0.2s; border-left: 3px solid transparent;
+}
+.cs-menu-item:hover { color: #fff; background: rgba(255,255,255,0.03); }
+.cs-menu-item.active { color: #e82929; border-left-color: #e82929; background: rgba(232,41,41,0.05); }
+.cs-menu-icon { font-size: 18px; width: 24px; text-align: center; }
+
+.cs-hamburger-btn {
+    display: flex; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+}
+.cs-hamburger-btn span { width: 26px; height: 2px; background: #fff; border-radius: 2px; display: block; }
 
 .cs-hero { padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
 .cs-hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 420px; height: 420px; background: radial-gradient(circle, rgba(232,41,41,0.10) 0%, transparent 70%); pointer-events: none; }
@@ -125,8 +173,21 @@ footer { display: none !important; }
 .cs-filter-box { background: #101010; border: 1px solid #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 .cs-filter-ok { color: #00e676; font-size: 13px; margin-bottom: 4px; }
 .cs-filter-no { color: #e82929; font-size: 13px; margin-bottom: 4px; }
-
 .cs-position-box { background: #101010; border: 1px solid #ffa726; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+
+.cs-hist-row { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.03); font-size: 12px; }
+.cs-hist-row:last-child { border-bottom: none; }
+.cs-hist-date { color: #444; font-family: monospace; font-size: 11px; width: 110px; flex-shrink: 0; }
+.cs-hist-pair { font-weight: 700; flex: 1; color: #fff; }
+.cs-hist-result { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+.cs-hist-tp { background: rgba(0,230,118,.1); color: #00e676; border: 1px solid rgba(0,230,118,.2); }
+.cs-hist-sl { background: rgba(232,41,41,.1); color: #e82929; border: 1px solid rgba(232,41,41,.2); }
+.cs-hist-pnl { font-weight: 700; margin-left: auto; }
+
+.cs-hist-resumen { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #1e1e1e; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+.cs-hist-stat { background: #101010; padding: 16px; text-align: center; }
+.cs-hist-stat-num { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
+.cs-hist-stat-lbl { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
 
 .stButton > button { background: #e82929 !important; color: #fff !important; border: none !important; border-radius: 10px !important; font-weight: 700 !important; box-shadow: 0 0 20px rgba(232,41,41,0.3) !important; }
 .stButton > button:hover { background: #c0392b !important; }
@@ -135,6 +196,37 @@ footer { display: none !important; }
 [data-testid="stMetric"] { background: #101010 !important; border: 1px solid #1e1e1e !important; border-radius: 12px !important; padding: 16px !important; }
 [data-testid="stMetricValue"] { color: #fff !important; font-family: 'Rajdhani', sans-serif !important; }
 </style>
+
+<div id="cs-overlay" class="cs-menu-overlay" onclick="cerrarMenu()"></div>
+<div id="cs-dropdown" class="cs-dropdown">
+  <div class="cs-dropdown-header">
+    <div class="cs-dropdown-title">MENU</div>
+    <button class="cs-close-btn" onclick="cerrarMenu()">✕</button>
+  </div>
+  <button class="cs-menu-item" onclick="navegarA('HOME')"><span class="cs-menu-icon">🏠</span> HOME</button>
+  <button class="cs-menu-item" onclick="navegarA('LIVE')"><span class="cs-menu-icon">⚡</span> LIVE TRADING</button>
+  <button class="cs-menu-item" onclick="navegarA('HISTORIAL')"><span class="cs-menu-icon">📋</span> HISTORIAL</button>
+</div>
+
+<script>
+function abrirMenu() {
+    document.getElementById('cs-dropdown').classList.add('active');
+    document.getElementById('cs-overlay').classList.add('active');
+}
+function cerrarMenu() {
+    document.getElementById('cs-dropdown').classList.remove('active');
+    document.getElementById('cs-overlay').classList.remove('active');
+}
+function navegarA(pagina) {
+    cerrarMenu();
+    const btns = window.parent.document.querySelectorAll('button');
+    btns.forEach(btn => {
+        if (btn.innerText.trim() === 'NAV_' + pagina) {
+            btn.click();
+        }
+    });
+}
+</script>
 """, unsafe_allow_html=True)
 
 if "auth" not in st.session_state:
@@ -149,6 +241,8 @@ if "en_posicion" not in st.session_state:
     st.session_state.en_posicion = False
 if "precio_entrada" not in st.session_state:
     st.session_state.precio_entrada = 0.0
+if "historial" not in st.session_state:
+    st.session_state.historial = []
 
 if not st.session_state.auth:
     if LOGO:
@@ -187,18 +281,30 @@ st.markdown(
     + logo_img +
     '<div class="cs-nav-name">CRYPTO<span>SCALPER</span></div>'
     '</div>'
-    '<div class="cs-hamburger"><span></span><span></span><span></span></div>'
+    '<button class="cs-hamburger-btn" onclick="abrirMenu()"><span></span><span></span><span></span></button>'
     '</div>',
     unsafe_allow_html=True
 )
 
-col_a, col_b = st.columns(2)
-with col_a:
-    if st.button("HOME", use_container_width=True):
+col_nav1, col_nav2, col_nav3 = st.columns(3)
+with col_nav1:
+    if st.button("NAV_HOME", key="nav_home"):
         st.session_state.pagina = "HOME"
-with col_b:
-    if st.button("LIVE TRADING", use_container_width=True):
+        st.rerun()
+with col_nav2:
+    if st.button("NAV_LIVE", key="nav_live"):
         st.session_state.pagina = "LIVE"
+        st.rerun()
+with col_nav3:
+    if st.button("NAV_HISTORIAL", key="nav_hist"):
+        st.session_state.pagina = "HISTORIAL"
+        st.rerun()
+
+st.markdown("""
+<style>
+[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]) { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
 
 pagina = st.session_state.pagina
 
@@ -238,7 +344,7 @@ if pagina == "HOME":
         unsafe_allow_html=True
     )
 
-    trades_data = [
+    trades_demo = [
         ("12:55:07", "BTC/USDT",  "COMPRA", "+0.92%", True),
         ("13:10:22", "ETH/USDT",  "COMPRA", "+0.61%", True),
         ("13:18:53", "SOL/USDT",  "VENTA",  "+0.51%", True),
@@ -248,7 +354,7 @@ if pagina == "HOME":
         ("13:32:47", "DOGE/USDT", "VENTA",  "-1.00%", False),
     ]
     rows = ""
-    for t in trades_data:
+    for t in trades_demo:
         tag_cls = "cs-tl" if t[2] == "COMPRA" else "cs-ts"
         pnl_cls = "cs-pos" if t[4] else "cs-neg"
         rows += (
@@ -268,9 +374,7 @@ if pagina == "HOME":
         '<div class="cs-sec-desc">Trades cerrados en vivo de CRYPTOSCALPER.</div>'
         '<div class="cs-terminal">'
         '<div class="cs-term-head">'
-        '<span class="cs-dot cs-dr"></span>'
-        '<span class="cs-dot cs-dy"></span>'
-        '<span class="cs-dot cs-dg"></span>'
+        '<span class="cs-dot cs-dr"></span><span class="cs-dot cs-dy"></span><span class="cs-dot cs-dg"></span>'
         '<span class="cs-stream-lbl">STREAMING</span>'
         '</div>'
         + rows +
@@ -285,10 +389,10 @@ if pagina == "HOME":
         '<div class="cs-feat-h2">Todo lo que necesitas para operar</div>'
         '<div class="cs-feat-p">Herramientas de trading algoritmico accesibles para todos.</div>'
         '</div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA9/21 + RSI(7) + Volumen. Los 3 deben confirmar antes de dar senal. Maxima precision.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>TP y SL Automatico</h3><p>Take Profit 1.5% y Stop Loss 0.8% por defecto. El bot monitorea y avisa cuando alcanzas tu objetivo.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea cuando hay senal de compra, TP alcanzado o SL activado.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📈</div><h3>Solo Spot COMPRA</h3><p>Disenado para mercado spot. Rastrea tu posicion y avisa cuando es momento de vender.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA9/21 + RSI(7) + Volumen. Los 3 deben confirmar antes de dar senal.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>TP y SL Automatico</h3><p>Take Profit 1.5% y Stop Loss 0.8%. El bot monitorea y avisa cuando alcanzas tu objetivo.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea cuando hay senal de compra, TP o SL activado.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📋</div><h3>Historial de Trades</h3><p>Registro completo de todas tus operaciones con estadisticas de rendimiento.</p></div>'
         '<div class="cs-fcard"><div class="cs-ficon">🔒</div><h3>Acceso Seguro</h3><p>Login con contrasena y variables de entorno protegidas en Render.</p></div>'
         '</div>',
         unsafe_allow_html=True
@@ -320,17 +424,17 @@ elif pagina == "LIVE":
     with col4:
         timeframe = st.selectbox("Temporalidad", ["1min", "5min", "15min", "1hour"])
 
-    col_bot1, col_bot2, col_bot3 = st.columns(3)
-    with col_bot1:
+    cb1, cb2, cb3 = st.columns(3)
+    with cb1:
         if st.button("Iniciar Bot", use_container_width=True):
             st.session_state.bot_activo = True
             enviar_telegram("CRYPTOSCALPER iniciado para " + crypto)
-    with col_bot2:
+    with cb2:
         if st.button("Detener Bot", use_container_width=True):
             st.session_state.bot_activo = False
             st.session_state.en_posicion = False
             enviar_telegram("CRYPTOSCALPER detenido.")
-    with col_bot3:
+    with cb3:
         if st.button("Marcar Comprado", use_container_width=True):
             st.session_state.en_posicion = True
 
@@ -366,21 +470,16 @@ elif pagina == "LIVE":
             soporte     = df["low"].tail(20).min()
             resistencia = df["high"].tail(20).max()
 
-            filtro_ema    = ema9 > ema21
-            filtro_rsi    = 35 < rsi < 65
+            filtro_ema     = ema9 > ema21
+            filtro_rsi     = 35 < rsi < 65
             filtro_volumen = vol_actual > vol_promedio
 
             m1, m2, m3, m4 = st.columns(4)
-            with m1:
-                st.metric("Precio", f"{precio_actual:,.4f}", f"{cambio:+.4f}")
-            with m2:
-                st.metric("EMA 9", f"{ema9:,.4f}")
-            with m3:
-                st.metric("EMA 21", f"{ema21:,.4f}")
-            with m4:
-                st.metric("RSI(7)", f"{rsi:.1f}")
+            with m1: st.metric("Precio", f"{precio_actual:,.4f}", f"{cambio:+.4f}")
+            with m2: st.metric("EMA 9",  f"{ema9:,.4f}")
+            with m3: st.metric("EMA 21", f"{ema21:,.4f}")
+            with m4: st.metric("RSI(7)", f"{rsi:.1f}")
 
-            # MOSTRAR POSICION ACTIVA
             if st.session_state.en_posicion and st.session_state.precio_entrada == 0.0:
                 st.session_state.precio_entrada = precio_actual
 
@@ -390,95 +489,78 @@ elif pagina == "LIVE":
                 precio_tp = entrada * (1 + tp / 100)
                 precio_sl = entrada * (1 - sl / 100)
                 color_pnl = "#00e676" if ganancia_pct >= 0 else "#e82929"
+
                 st.markdown(
                     '<div class="cs-position-box">'
                     '<div style="color:#ffa726;font-size:11px;letter-spacing:2px;margin-bottom:8px;">POSICION ACTIVA</div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
-                    '<span style="color:#888;">Entrada:</span><span style="color:#fff;">' + str(round(entrada, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
-                    '<span style="color:#888;">Actual:</span><span style="color:#fff;">' + str(round(precio_actual, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
-                    '<span style="color:#888;">P&L:</span><span style="color:' + color_pnl + ';">' + str(round(ganancia_pct, 2)) + '%</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
-                    '<span style="color:#00e676;">TP:</span><span style="color:#00e676;">' + str(round(precio_tp, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;">'
-                    '<span style="color:#e82929;">SL:</span><span style="color:#e82929;">' + str(round(precio_sl, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Entrada:</span><span style="color:#fff;">' + str(round(entrada, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Actual:</span><span style="color:#fff;">' + str(round(precio_actual, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">P&L:</span><span style="color:' + color_pnl + ';">' + str(round(ganancia_pct, 2)) + '%</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#00e676;">TP:</span><span style="color:#00e676;">' + str(round(precio_tp, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;"><span style="color:#e82929;">SL:</span><span style="color:#e82929;">' + str(round(precio_sl, 4)) + '</span></div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
 
-                # ALERTAS TP / SL
                 if precio_actual >= precio_tp:
-                    st.markdown('<div class="cs-signal-tp">TAKE PROFIT ALCANZADO — VENDE AHORA</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cs-signal-tp">TAKE PROFIT — VENDE AHORA</div>', unsafe_allow_html=True)
                     if st.session_state.ultima_senal != "TP":
                         st.session_state.ultima_senal = "TP"
+                        st.session_state.historial.insert(0, {
+                            "fecha": datetime.now().strftime("%d/%m %H:%M"),
+                            "par": crypto,
+                            "entrada": round(entrada, 4),
+                            "salida": round(precio_actual, 4),
+                            "pnl": round(ganancia_pct, 2),
+                            "resultado": "TP"
+                        })
                         st.session_state.en_posicion = False
                         st.session_state.precio_entrada = 0.0
-                        enviar_telegram(
-                            "TAKE PROFIT ALCANZADO\n"
-                            "Par: " + crypto + "\n"
-                            "Entrada: " + str(round(entrada, 4)) + "\n"
-                            "Salida: " + str(round(precio_actual, 4)) + "\n"
-                            "Ganancia: +" + str(round(ganancia_pct, 2)) + "%\n"
-                            "VENDE AHORA en CoinEx"
-                        )
+                        enviar_telegram("TAKE PROFIT\nPar: " + crypto + "\nGanancia: +" + str(round(ganancia_pct, 2)) + "%\nVENDE AHORA")
 
                 elif precio_actual <= precio_sl:
-                    st.markdown('<div class="cs-signal-sl">STOP LOSS ACTIVADO — VENDE AHORA</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cs-signal-sl">STOP LOSS — VENDE AHORA</div>', unsafe_allow_html=True)
                     if st.session_state.ultima_senal != "SL":
                         st.session_state.ultima_senal = "SL"
+                        st.session_state.historial.insert(0, {
+                            "fecha": datetime.now().strftime("%d/%m %H:%M"),
+                            "par": crypto,
+                            "entrada": round(entrada, 4),
+                            "salida": round(precio_actual, 4),
+                            "pnl": round(ganancia_pct, 2),
+                            "resultado": "SL"
+                        })
                         st.session_state.en_posicion = False
                         st.session_state.precio_entrada = 0.0
-                        enviar_telegram(
-                            "STOP LOSS ACTIVADO\n"
-                            "Par: " + crypto + "\n"
-                            "Entrada: " + str(round(entrada, 4)) + "\n"
-                            "Salida: " + str(round(precio_actual, 4)) + "\n"
-                            "Perdida: " + str(round(ganancia_pct, 2)) + "%\n"
-                            "VENDE AHORA en CoinEx"
-                        )
+                        enviar_telegram("STOP LOSS\nPar: " + crypto + "\nPerdida: " + str(round(ganancia_pct, 2)) + "%\nVENDE AHORA")
                 else:
                     st.markdown('<div class="cs-signal-wait">EN POSICION — MONITOREANDO...</div>', unsafe_allow_html=True)
 
             else:
-                # SIN POSICION — buscar entrada
                 st.markdown(
                     '<div class="cs-filter-box">'
                     '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' +
-                    ("OK" if filtro_ema else "NO") + ' — EMA9 ' + ("mayor" if filtro_ema else "menor") + ' que EMA21</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' +
-                    ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita 35-65)</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' +
-                    ("OK" if filtro_volumen else "NO") + ' — Volumen por encima del promedio</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' + ("OK" if filtro_ema else "NO") + ' — EMA9 ' + ("mayor" if filtro_ema else "menor") + ' que EMA21</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' + ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita 35-65)</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' + ("OK" if filtro_volumen else "NO") + ' — Volumen por encima del promedio</div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
 
                 if filtro_ema and filtro_rsi and filtro_volumen:
-                    st.markdown('<div class="cs-signal-buy">SENAL: COMPRA AHORA — PULSA MARCAR COMPRADO</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="cs-signal-buy">SENAL: COMPRA AHORA</div>', unsafe_allow_html=True)
                     if st.session_state.ultima_senal != "COMPRA":
                         st.session_state.ultima_senal = "COMPRA"
-                        enviar_telegram(
-                            "SENAL DE COMPRA\n"
-                            "Par: " + crypto + "\n"
-                            "Precio: " + str(round(precio_actual, 4)) + "\n"
-                            "TP: " + str(round(precio_actual * (1 + tp/100), 4)) + "\n"
-                            "SL: " + str(round(precio_actual * (1 - sl/100), 4)) + "\n"
-                            "RSI: " + str(round(rsi, 1))
-                        )
+                        enviar_telegram("SENAL DE COMPRA\nPar: " + crypto + "\nPrecio: " + str(round(precio_actual, 4)) + "\nTP: " + str(round(precio_actual*(1+tp/100),4)) + "\nSL: " + str(round(precio_actual*(1-sl/100),4)))
                 else:
                     st.markdown('<div class="cs-signal-wait">ESPERANDO SENAL...</div>', unsafe_allow_html=True)
 
             s1, s2 = st.columns(2)
-            with s1:
-                st.metric("Soporte", f"{soporte:,.4f}")
-            with s2:
-                st.metric("Resistencia", f"{resistencia:,.4f}")
+            with s1: st.metric("Soporte", f"{soporte:,.4f}")
+            with s2: st.metric("Resistencia", f"{resistencia:,.4f}")
 
             fig = go.Figure(data=[go.Candlestick(
-                x=df.index,
-                open=df["open"], high=df["high"], low=df["low"], close=df["close"],
+                x=df.index, open=df["open"], high=df["high"], low=df["low"], close=df["close"],
                 increasing=dict(line=dict(color="#00e676"), fillcolor="#00e676"),
                 decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929")
             )])
@@ -497,22 +579,77 @@ elif pagina == "LIVE":
             st.plotly_chart(fig, use_container_width=True)
 
         except Exception as e:
-            st.error("Error al conectar con CoinEx: " + str(e))
+            st.error("Error: " + str(e))
 
         st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
-
         contador = st.empty()
         for i in range(60, 0, -1):
-            contador.markdown(
-                '<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en ' + str(i) + 's...</div>',
-                unsafe_allow_html=True
-            )
+            contador.markdown('<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en ' + str(i) + 's...</div>', unsafe_allow_html=True)
             time.sleep(1)
         st.rerun()
 
     else:
+        st.markdown('<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">Bot detenido. Pulsa Iniciar Bot para comenzar.</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+elif pagina == "HISTORIAL":
+
+    st.markdown('<div style="padding:20px;">', unsafe_allow_html=True)
+    st.markdown('<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">HISTORIAL DE TRADES</div>', unsafe_allow_html=True)
+
+    historial = st.session_state.historial
+
+    if historial:
+        total = len(historial)
+        ganadores = len([t for t in historial if t["resultado"] == "TP"])
+        perdedores = total - ganadores
+        win_rate = round((ganadores / total) * 100) if total > 0 else 0
+        pnl_total = round(sum([t["pnl"] for t in historial]), 2)
+        color_wr = "#00e676" if win_rate >= 50 else "#e82929"
+        color_pnl = "#00e676" if pnl_total >= 0 else "#e82929"
+
         st.markdown(
-            '<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">Bot detenido. Pulsa Iniciar Bot para comenzar.</div>',
+            '<div class="cs-hist-resumen">'
+            '<div class="cs-hist-stat"><div class="cs-hist-stat-num">' + str(total) + '</div><div class="cs-hist-stat-lbl">Trades</div></div>'
+            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:' + color_wr + ';">' + str(win_rate) + '%</div><div class="cs-hist-stat-lbl">Win Rate</div></div>'
+            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:' + color_pnl + ';">' + ("+" if pnl_total >= 0 else "") + str(pnl_total) + '%</div><div class="cs-hist-stat-lbl">P&L Total</div></div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        rows_hist = ""
+        for t in historial:
+            res_cls = "cs-hist-tp" if t["resultado"] == "TP" else "cs-hist-sl"
+            pnl_cls = "cs-pos" if t["pnl"] >= 0 else "cs-neg"
+            pnl_str = ("+" if t["pnl"] >= 0 else "") + str(t["pnl"]) + "%"
+            rows_hist += (
+                '<div class="cs-hist-row">'
+                '<span class="cs-hist-date">' + t["fecha"] + '</span>'
+                '<span class="cs-hist-pair">' + t["par"] + '</span>'
+                '<span class="cs-hist-result ' + res_cls + '">' + t["resultado"] + '</span>'
+                '<span class="cs-hist-pnl ' + pnl_cls + '">' + pnl_str + '</span>'
+                '</div>'
+            )
+
+        st.markdown(
+            '<div class="cs-terminal">'
+            '<div class="cs-term-head">'
+            '<span class="cs-dot cs-dr"></span><span class="cs-dot cs-dy"></span><span class="cs-dot cs-dg"></span>'
+            '<span class="cs-stream-lbl">TRADES CERRADOS</span>'
+            '</div>'
+            + rows_hist +
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        if st.button("Limpiar historial"):
+            st.session_state.historial = []
+            st.rerun()
+
+    else:
+        st.markdown(
+            '<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">No hay trades registrados aun.<br>Los trades aparecen aqui cuando el bot detecta TP o SL.</div>',
             unsafe_allow_html=True
         )
 
