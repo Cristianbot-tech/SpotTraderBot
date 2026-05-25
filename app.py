@@ -272,12 +272,6 @@ with col3:
         st.session_state.pagina = "HISTORIAL"
         st.rerun()
 
-st.markdown("""
-<style>
-[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]) { display: none !important; }
-</style>
-""", unsafe_allow_html=True)
-
 pagina = st.session_state.pagina
 
 if pagina == "HOME":
