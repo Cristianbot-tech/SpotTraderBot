@@ -418,7 +418,7 @@ elif pagina == "LIVE":
                 highs.append(float(candle["high"]))
                 lows.append(float(candle["low"]))
                 closes.append(float(candle["close"]))
-                volumes.append(float(candle["volume"]))
+                volumes.append(float(candle["value"]))
 
             df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes, "volume": volumes})
             df["EMA7"]   = df["close"].ewm(span=7).mean()
@@ -542,17 +542,20 @@ elif pagina == "LIVE":
                 legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#888")),
                 margin=dict(l=10, r=10, t=10, b=10)
             )
-            st.plotly_chart(fig, use_container_width=True)
+            chart_placeholder = st.empty()
+            
+           with chart_placeholder.container():
+           st.plotly_chart(fig,
+           use_container_width=True)
+
 
         except Exception as e:
             st.error("Error: " + str(e))
 
         st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
-        contador = st.empty()
-        for i in range(60, 0, -1):
-            contador.markdown('<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en ' + str(i) + 's...</div>', unsafe_allow_html=True)
-            time.sleep(1)
+        time.sleep(2)
         st.rerun()
+
 
     else:
         st.markdown('<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">Bot detenido. Pulsa Iniciar Bot para comenzar.</div>', unsafe_allow_html=True)
