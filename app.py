@@ -197,64 +197,7 @@ footer { display: none !important; }
 [data-testid="stMetricValue"] { color: #fff !important; font-family: 'Rajdhani', sans-serif !important; }
 </style>
 
-<div id="cs-overlay" class="cs-menu-overlay" onclick="cerrarMenu()"></div>
-<div id="cs-dropdown" class="cs-dropdown">
-  <div class="cs-dropdown-header">
-    <div class="cs-dropdown-title">MENU</div>
-    <button class="cs-close-btn" onclick="cerrarMenu()">✕</button>
-  </div>
-  <button class="cs-menu-item" onclick="navegarA('HOME')"><span class="cs-menu-icon">🏠</span> HOME</button>
-  <button class="cs-menu-item" onclick="navegarA('LIVE')"><span class="cs-menu-icon">⚡</span> LIVE TRADING</button>
-  <button class="cs-menu-item" onclick="navegarA('HISTORIAL')"><span class="cs-menu-icon">📋</span> HISTORIAL</button>
-</div>
 
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const menuBtn = document.getElementById("menu-btn");
-    const dropdown = document.getElementById("cs-dropdown");
-    const overlay = document.getElementById("cs-overlay");
-
-    if (menuBtn) {
-
-        menuBtn.onclick = function () {
-
-            dropdown.classList.toggle("active");
-            overlay.classList.toggle("active");
-
-        };
-
-    }
-
-});
-
-function cerrarMenu() {
-
-    document.getElementById("cs-dropdown").classList.remove("active");
-    document.getElementById("cs-overlay").classList.remove("active");
-
-}
-
-function navegarA(pagina) {
-
-    cerrarMenu();
-
-    const buttons = window.parent.document.querySelectorAll("button");
-
-    buttons.forEach((btn) => {
-
-        if (btn.innerText.includes("NAV_" + pagina)) {
-
-            btn.click();
-
-        }
-
-    });
-
-}
-
-</script>
 """, unsafe_allow_html=True)
 
 if "auth" not in st.session_state:
@@ -309,11 +252,25 @@ st.markdown(
     + logo_img +
     '<div class="cs-nav-name">CRYPTO<span>SCALPER</span></div>'
     '</div>'
-    '<button class="cs-hamburger-btn" onclick="abrirMenu()"><span></span><span></span><span></span></button>'
     '</div>',
     unsafe_allow_html=True
 )
+col1, col2, col3 = st.columns(3)
 
+with col1:
+    if st.button("🏠 HOME", use_container_width=True):
+        st.session_state.pagina = "HOME"
+        st.rerun()
+
+with col2:
+    if st.button("⚡ LIVE TRADING", use_container_width=True):
+        st.session_state.pagina = "LIVE"
+        st.rerun()
+
+with col3:
+    if st.button("📋 HISTORIAL", use_container_width=True):
+        st.session_state.pagina = "HISTORIAL"
+        st.rerun()
 col_nav1, col_nav2, col_nav3 = st.columns(3)
 with col_nav1:
     if st.button("NAV_HOME", key="nav_home"):
