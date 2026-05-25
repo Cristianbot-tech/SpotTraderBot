@@ -384,9 +384,9 @@ elif pagina == "LIVE":
     with col1:
         crypto = st.selectbox("Par", ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "DOGE/USDT", "BNB/USDT"])
     with col2:
-        tp = st.number_input("Take Profit %", value=1.5)
+        tp = st.number_input("Take Profit %", value=1.25)
     with col3:
-        sl = st.number_input("Stop Loss %", value=0.8)
+        sl = st.number_input("Stop Loss %", value=0.55)
     with col4:
         timeframe = st.selectbox("Temporalidad", ["1min", "5min", "15min", "1hour"])
 
@@ -421,14 +421,14 @@ elif pagina == "LIVE":
                 volumes.append(float(candle["volume"]))
 
             df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes, "volume": volumes})
-            df["EMA9"]   = df["close"].ewm(span=9).mean()
-            df["EMA21"]  = df["close"].ewm(span=21).mean()
-            df["RSI"]    = calcular_rsi(df["close"], 7)
+            df["EMA7"]   = df["close"].ewm(span=7).mean()
+            df["EMA18"]  = df["close"].ewm(span=18).mean()
+            df["RSI"]    = calcular_rsi(df["close"], 6)
             df["VOL_MA"] = df["volume"].rolling(window=10).mean()
 
             precio_actual = closes[-1]
-            ema9  = df["EMA9"].iloc[-1]
-            ema21 = df["EMA21"].iloc[-1]
+            ema7  = df["EMA7"].iloc[-1]
+            ema18 = df["EMA18"].iloc[-1]
             rsi   = df["RSI"].iloc[-1]
             vol_actual   = df["volume"].iloc[-1]
             vol_promedio = df["VOL_MA"].iloc[-1]
@@ -436,14 +436,14 @@ elif pagina == "LIVE":
             soporte     = df["low"].tail(20).min()
             resistencia = df["high"].tail(20).max()
 
-            filtro_ema     = ema9 > ema21
-            filtro_rsi     = 35 < rsi < 65
+            filtro_ema     = ema7 > ema18
+            filtro_rsi     = 52 < rsi < 68
             filtro_volumen = vol_actual > vol_promedio
 
             m1, m2, m3, m4 = st.columns(4)
             with m1: st.metric("Precio", f"{precio_actual:,.4f}", f"{cambio:+.4f}")
-            with m2: st.metric("EMA 9",  f"{ema9:,.4f}")
-            with m3: st.metric("EMA 21", f"{ema21:,.4f}")
+            with m2: st.metric("EMA 7",  f"{ema7:,.4f}")
+            with m3: st.metric("EMA 18", f"{ema18:,.4f}")
             with m4: st.metric("RSI(7)", f"{rsi:.1f}")
 
             if st.session_state.en_posicion and st.session_state.precio_entrada == 0.0:
@@ -506,8 +506,8 @@ elif pagina == "LIVE":
                 st.markdown(
                     '<div class="cs-filter-box">'
                     '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' + ("OK" if filtro_ema else "NO") + ' — EMA9 ' + ("mayor" if filtro_ema else "menor") + ' que EMA21</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' + ("OK" if filtro_rsi else "NO") + ' — RSI(7): ' + str(round(rsi, 1)) + ' (necesita 35-65)</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' + ("OK" if filtro_ema else "NO") + ' — EMA7 ' + ("mayor" if filtro_ema else "menor") + ' que EMA18</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' + ("OK" if filtro_rsi else "NO") + ' — RSI(6): ' + str(round(rsi, 1)) + ' (necesita 52-68)</div>'
                     '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' + ("OK" if filtro_volumen else "NO") + ' — Volumen por encima del promedio</div>'
                     '</div>',
                     unsafe_allow_html=True
@@ -530,8 +530,8 @@ elif pagina == "LIVE":
                 increasing=dict(line=dict(color="#00e676"), fillcolor="#00e676"),
                 decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929")
             )])
-            fig.add_trace(go.Scatter(x=df.index, y=df["EMA9"],  mode="lines", name="EMA 9",  line=dict(color="#e82929", width=1.5)))
-            fig.add_trace(go.Scatter(x=df.index, y=df["EMA21"], mode="lines", name="EMA 21", line=dict(color="#ffa726", width=1.5)))
+            fig.add_trace(go.Scatter(x=df.index, y=df["EMA7"],  mode="lines", name="EMA 7",  line=dict(color="#e82929", width=1.5)))
+            fig.add_trace(go.Scatter(x=df.index, y=df["EMA18"], mode="lines", name="EMA 18", line=dict(color="#ffa726", width=1.5)))
             fig.add_hline(y=soporte,     line_dash="dot", line_color="#00e676", annotation_text="Soporte")
             fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929", annotation_text="Resistencia")
             fig.update_layout(
