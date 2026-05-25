@@ -384,9 +384,9 @@ elif pagina == "LIVE":
     with col1:
         crypto = st.selectbox("Par", ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "DOGE/USDT", "BNB/USDT"])
     with col2:
-        tp = st.number_input("Take Profit %", value=1.25)
+        tp = st.number_input("Take Profit %", value=1.4)
     with col3:
-        sl = st.number_input("Stop Loss %", value=0.55)
+        sl = st.number_input("Stop Loss %", value=0.7)
     with col4:
         timeframe = st.selectbox("Temporalidad", ["1min", "5min", "15min", "1hour"])
 
