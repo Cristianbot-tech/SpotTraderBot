@@ -271,19 +271,6 @@ with col3:
     if st.button("📋 HISTORIAL", use_container_width=True):
         st.session_state.pagina = "HISTORIAL"
         st.rerun()
-col_nav1, col_nav2, col_nav3 = st.columns(3)
-with col_nav1:
-    if st.button("NAV_HOME", key="nav_home"):
-        st.session_state.pagina = "HOME"
-        st.rerun()
-with col_nav2:
-    if st.button("NAV_LIVE", key="nav_live"):
-        st.session_state.pagina = "LIVE"
-        st.rerun()
-with col_nav3:
-    if st.button("NAV_HISTORIAL", key="nav_hist"):
-        st.session_state.pagina = "HISTORIAL"
-        st.rerun()
 
 st.markdown("""
 <style>
