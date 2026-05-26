@@ -218,6 +218,8 @@ if not st.session_state.auth:
     if entrar:
         if clave == "CRYPTOSCALPER123":
             st.session_state.auth = True
+            st.success("Acceso concedido")
+            time.sleep(1)
             st.rerun()
         else:
             st.error("Contrasena incorrecta")
