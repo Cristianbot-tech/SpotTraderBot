@@ -549,7 +549,7 @@ elif pagina == "LIVE":
                 use_container_width=True)
 
 
-            except Exception as e:
+        except Exception as e:
             st.error("Error: " + str(e))
 
             st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
