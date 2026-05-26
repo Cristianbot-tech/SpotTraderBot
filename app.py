@@ -212,15 +212,13 @@ if not st.session_state.auth:
         '</div></div>',
         unsafe_allow_html=True
     )
-    with st.form("login", clear_on_submit=True):
+    with st.form("login"):
         clave = st.text_input("", placeholder="Introduce contrasena", type="password")
         entrar = st.form_submit_button("ENTRAR")
     if entrar:
         if clave == "CRYPTOSCALPER123":
             st.session_state.auth = True
             st.success("Acceso concedido")
-            time.sleep(1)
-            st.rerun()
         else:
             st.error("Contrasena incorrecta")
     st.stop()
