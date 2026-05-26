@@ -545,16 +545,16 @@ elif pagina == "LIVE":
             chart_placeholder = st.empty()
             
             with chart_placeholder.container():
-        st.plotly_chart(fig,
-        use_container_width=True)
+                st.plotly_chart(fig,
+                use_container_width=True)
 
 
-        except Exception as e:
+            except Exception as e:
             st.error("Error: " + str(e))
 
-        st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
-        time.sleep(2)
-        st.rerun()
+            st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
+            time.sleep(2)
+            st.rerun()
 
 
     else:
