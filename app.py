@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import time
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import base64
 import os
 from datetime import datetime
@@ -29,7 +30,7 @@ def enviar_telegram(mensaje):
     except:
         pass
 
-def calcular_rsi(series, periodo=7):
+def calcular_rsi(series, periodo=6):
     delta = series.diff()
     ganancia = delta.where(delta > 0, 0).rolling(window=periodo).mean()
     perdida = -delta.where(delta < 0, 0).rolling(window=periodo).mean()
@@ -67,49 +68,6 @@ footer { display: none !important; }
 .cs-nav-logo { display: flex; align-items: center; gap: 10px; }
 .cs-nav-name { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #fff; }
 .cs-nav-name span { color: #e82929; }
-
-.cs-menu-overlay {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); z-index: 998;
-}
-.cs-menu-overlay.active { display: block; }
-
-.cs-dropdown {
-    display: none; position: fixed; top: 0; right: 0;
-    width: 260px; height: 100vh;
-    background: #0f0f0f; border-left: 1px solid #1e1e1e;
-    z-index: 999; padding: 20px 0;
-    flex-direction: column;
-}
-.cs-dropdown.active { display: flex; }
-
-.cs-dropdown-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px 20px; border-bottom: 1px solid #1e1e1e; margin-bottom: 10px;
-}
-.cs-dropdown-title {
-    font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700;
-    color: #fff; letter-spacing: 2px;
-}
-.cs-close-btn {
-    color: #666; font-size: 22px; cursor: pointer; background: none; border: none;
-    padding: 0; line-height: 1;
-}
-.cs-menu-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px 20px; color: #888; font-size: 14px; font-weight: 500;
-    cursor: pointer; border: none; background: none; width: 100%; text-align: left;
-    transition: all 0.2s; border-left: 3px solid transparent;
-}
-.cs-menu-item:hover { color: #fff; background: rgba(255,255,255,0.03); }
-.cs-menu-item.active { color: #e82929; border-left-color: #e82929; background: rgba(232,41,41,0.05); }
-.cs-menu-icon { font-size: 18px; width: 24px; text-align: center; }
-
-.cs-hamburger-btn {
-    display: flex; flex-direction: column; gap: 5px; cursor: pointer;
-    background: none; border: none; padding: 4px;
-}
-.cs-hamburger-btn span { width: 26px; height: 2px; background: #fff; border-radius: 2px; display: block; }
 
 .cs-hero { padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
 .cs-hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 420px; height: 420px; background: radial-gradient(circle, rgba(232,41,41,0.10) 0%, transparent 70%); pointer-events: none; }
@@ -156,7 +114,7 @@ footer { display: none !important; }
 .cs-pos { color: #00e676; } .cs-neg { color: #e82929; }
 
 .cs-features { padding: 10px 20px 44px; }
-.cs-feat-tag { display: inline-flex; align-items: center; gap: 7px; color: #e82929; font-size: 11px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+.cs-feat-tag { color: #e82929; font-size: 11px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; display:block; }
 .cs-feat-h2 { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 10px; }
 .cs-feat-p { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
 .cs-fcard { background: #101010; border: 1px solid #1e1e1e; border-radius: 18px; padding: 24px; margin-bottom: 14px; }
@@ -175,19 +133,45 @@ footer { display: none !important; }
 .cs-filter-no { color: #e82929; font-size: 13px; margin-bottom: 4px; }
 .cs-position-box { background: #101010; border: 1px solid #ffa726; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 
-.cs-hist-row { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.03); font-size: 12px; }
-.cs-hist-row:last-child { border-bottom: none; }
-.cs-hist-date { color: #444; font-family: monospace; font-size: 11px; width: 110px; flex-shrink: 0; }
-.cs-hist-pair { font-weight: 700; flex: 1; color: #fff; }
-.cs-hist-result { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
-.cs-hist-tp { background: rgba(0,230,118,.1); color: #00e676; border: 1px solid rgba(0,230,118,.2); }
-.cs-hist-sl { background: rgba(232,41,41,.1); color: #e82929; border: 1px solid rgba(232,41,41,.2); }
-.cs-hist-pnl { font-weight: 700; margin-left: auto; }
+/* HISTORIAL ESTILO METATRADER */
+.cs-hist-header {
+    background: #0f0f0f; padding: 16px 20px;
+    border-bottom: 1px solid #1e1e1e;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.cs-hist-balance {
+    font-family: 'Rajdhani', sans-serif; font-size: 22px;
+    font-weight: 700; color: #4da6ff;
+}
+.cs-hist-balance-lbl { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
 
-.cs-hist-resumen { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #1e1e1e; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
-.cs-hist-stat { background: #101010; padding: 16px; text-align: center; }
-.cs-hist-stat-num { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; }
-.cs-hist-stat-lbl { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+.cs-hist-resumen {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: #101010; border-bottom: 1px solid #1e1e1e;
+}
+.cs-hist-stat { padding: 14px 12px; text-align: center; border-right: 1px solid #1e1e1e; }
+.cs-hist-stat:last-child { border-right: none; }
+.cs-hist-stat-num { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; }
+.cs-hist-stat-lbl { font-size: 9px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+
+.cs-hist-seccion { padding: 12px 16px 6px; background: #0a0a0a; }
+.cs-hist-seccion-titulo { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+
+.cs-hist-trade {
+    background: #0f0f0f; border-bottom: 1px solid #141414;
+    padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+}
+.cs-hist-trade:hover { background: #141414; }
+.cs-hist-left { flex: 1; }
+.cs-hist-par { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 3px; }
+.cs-hist-tipo { font-size: 12px; font-weight: 600; }
+.cs-hist-tipo-compra { color: #4da6ff; }
+.cs-hist-tipo-venta { color: #e82929; }
+.cs-hist-precios { font-size: 11px; color: #555; margin-top: 2px; font-family: monospace; }
+.cs-hist-fecha { font-size: 10px; color: #444; margin-top: 2px; }
+.cs-hist-right { text-align: right; }
+.cs-hist-ganancia { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; }
+.cs-hist-tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-top: 4px; display: inline-block; }
 
 .stButton > button { background: #e82929 !important; color: #fff !important; border: none !important; border-radius: 10px !important; font-weight: 700 !important; box-shadow: 0 0 20px rgba(232,41,41,0.3) !important; }
 .stButton > button:hover { background: #c0392b !important; }
@@ -195,16 +179,7 @@ footer { display: none !important; }
 [data-testid="stNumberInput"] > div > div { background: #101010 !important; border: 1px solid #1e1e1e !important; border-radius: 10px !important; }
 [data-testid="stMetric"] { background: #101010 !important; border: 1px solid #1e1e1e !important; border-radius: 12px !important; padding: 16px !important; }
 [data-testid="stMetricValue"] { color: #fff !important; font-family: 'Rajdhani', sans-serif !important; }
-.menu-mobile button {
-    height: 65px;
-    font-size: 20px;
-    border-radius: 18px;
-    margin-bottom: 12px;
-    font-weight: bold;
-}
 </style>
-
-
 """, unsafe_allow_html=True)
 
 if "auth" not in st.session_state:
@@ -262,21 +237,21 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True
 )
-st.markdown('<div class="menu-mobile">', unsafe_allow_html=True)
 
-if st.button("🏠 HOME", use_container_width=True):
-    st.session_state.pagina = "HOME"
-    st.rerun()
-
-if st.button("⚡ LIVE TRADING", use_container_width=True):
-    st.session_state.pagina = "LIVE"
-    st.rerun()
-
-if st.button("📋 HISTORIAL", use_container_width=True):
-    st.session_state.pagina = "HISTORIAL"
-    st.rerun()
-
-st.markdown('</div>', unsafe_allow_html=True)
+# MENU HORIZONTAL
+col_m1, col_m2, col_m3 = st.columns(3)
+with col_m1:
+    if st.button("🏠 HOME", use_container_width=True):
+        st.session_state.pagina = "HOME"
+        st.rerun()
+with col_m2:
+    if st.button("⚡ LIVE", use_container_width=True):
+        st.session_state.pagina = "LIVE"
+        st.rerun()
+with col_m3:
+    if st.button("📋 HISTORIAL", use_container_width=True):
+        st.session_state.pagina = "HISTORIAL"
+        st.rerun()
 
 pagina = st.session_state.pagina
 
@@ -330,13 +305,11 @@ if pagina == "HOME":
         tag_cls = "cs-tl" if t[2] == "COMPRA" else "cs-ts"
         pnl_cls = "cs-pos" if t[4] else "cs-neg"
         rows += (
-            '<div class="cs-trade">'
-            '<span class="cs-arr">></span>'
+            '<div class="cs-trade"><span class="cs-arr">></span>'
             '<span class="cs-time">' + t[0] + '</span>'
             '<span class="cs-pair">' + t[1] + '</span>'
             '<span class="cs-tag ' + tag_cls + '">' + t[2] + '</span>'
-            '<span class="cs-pnl ' + pnl_cls + '">' + t[3] + '</span>'
-            '</div>'
+            '<span class="cs-pnl ' + pnl_cls + '">' + t[3] + '</span></div>'
         )
 
     st.markdown(
@@ -344,27 +317,22 @@ if pagina == "HOME":
         '<div class="cs-sec-badge"><span class="cs-pulse"></span> LIVE FEED</div>'
         '<div class="cs-sec-h2">Mira el bot trabajando</div>'
         '<div class="cs-sec-desc">Trades cerrados en vivo de CRYPTOSCALPER.</div>'
-        '<div class="cs-terminal">'
-        '<div class="cs-term-head">'
+        '<div class="cs-terminal"><div class="cs-term-head">'
         '<span class="cs-dot cs-dr"></span><span class="cs-dot cs-dy"></span><span class="cs-dot cs-dg"></span>'
-        '<span class="cs-stream-lbl">STREAMING</span>'
-        '</div>'
-        + rows +
-        '</div></div>',
+        '<span class="cs-stream-lbl">STREAMING</span></div>' + rows + '</div></div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="cs-features">'
-        '<div style="text-align:center;margin-bottom:26px;">'
+        '<div class="cs-features"><div style="text-align:center;margin-bottom:26px;">'
         '<div class="cs-feat-tag">TECNOLOGIA</div>'
         '<div class="cs-feat-h2">Todo lo que necesitas para operar</div>'
         '<div class="cs-feat-p">Herramientas de trading algoritmico accesibles para todos.</div>'
         '</div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA9/21 + RSI(7) + Volumen. Los 3 deben confirmar antes de dar senal.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>TP y SL Automatico</h3><p>Take Profit 1.5% y Stop Loss 0.8%. El bot monitorea y avisa cuando alcanzas tu objetivo.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📊</div><h3>Estrategia Triple Filtro</h3><p>EMA7/18 + RSI(6) + Volumen. Los 3 deben confirmar antes de dar senal.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">🛡️</div><h3>TP y SL Automatico</h3><p>Take Profit 1.4% y Stop Loss 0.7%. El bot avisa cuando alcanzas tu objetivo.</p></div>'
         '<div class="cs-fcard"><div class="cs-ficon">📡</div><h3>Alertas Telegram</h3><p>Notificacion instantanea cuando hay senal de compra, TP o SL activado.</p></div>'
-        '<div class="cs-fcard"><div class="cs-ficon">📋</div><h3>Historial de Trades</h3><p>Registro completo de todas tus operaciones con estadisticas de rendimiento.</p></div>'
+        '<div class="cs-fcard"><div class="cs-ficon">📋</div><h3>Historial Profesional</h3><p>Registro estilo MetaTrader con entrada, salida, P&L y estadisticas en tiempo real.</p></div>'
         '<div class="cs-fcard"><div class="cs-ficon">🔒</div><h3>Acceso Seguro</h3><p>Login con contrasena y variables de entorno protegidas en Render.</p></div>'
         '</div>',
         unsafe_allow_html=True
@@ -381,20 +349,17 @@ if pagina == "HOME":
 elif pagina == "LIVE":
 
     st.markdown('<div style="padding:20px;">', unsafe_allow_html=True)
-    st.markdown(
-        '<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">LIVE TRADING</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown('<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">LIVE TRADING</div>', unsafe_allow_html=True)
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        crypto = st.selectbox("Par", ["BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "DOGE/USDT", "BNB/USDT"])
+        crypto = st.selectbox("Par", ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","DOGE/USDT","BNB/USDT"])
     with col2:
         tp = st.number_input("Take Profit %", value=1.4)
     with col3:
         sl = st.number_input("Stop Loss %", value=0.7)
     with col4:
-        timeframe = st.selectbox("Temporalidad", ["1min", "5min", "15min", "1hour"])
+        timeframe = st.selectbox("Temporalidad", ["1min","5min","15min","1hour"])
 
     cb1, cb2, cb3 = st.columns(3)
     with cb1:
@@ -413,7 +378,6 @@ elif pagina == "LIVE":
     if st.session_state.bot_activo:
         market = crypto.replace("/", "")
         url = f"https://api.coinex.com/v2/spot/kline?market={market}&period={timeframe}&limit=50"
-
         try:
             response = requests.get(url, timeout=10)
             data = response.json()
@@ -426,7 +390,7 @@ elif pagina == "LIVE":
                 closes.append(float(candle["close"]))
                 volumes.append(float(candle["value"]))
 
-            df = pd.DataFrame({"open": opens, "high": highs, "low": lows, "close": closes, "volume": volumes})
+            df = pd.DataFrame({"open":opens,"high":highs,"low":lows,"close":closes,"volume":volumes})
             df["EMA7"]   = df["close"].ewm(span=7).mean()
             df["EMA18"]  = df["close"].ewm(span=18).mean()
             df["RSI"]    = calcular_rsi(df["close"], 6)
@@ -450,7 +414,7 @@ elif pagina == "LIVE":
             with m1: st.metric("Precio", f"{precio_actual:,.4f}", f"{cambio:+.4f}")
             with m2: st.metric("EMA 7",  f"{ema7:,.4f}")
             with m3: st.metric("EMA 18", f"{ema18:,.4f}")
-            with m4: st.metric("RSI(7)", f"{rsi:.1f}")
+            with m4: st.metric("RSI(6)", f"{rsi:.1f}")
 
             if st.session_state.en_posicion and st.session_state.precio_entrada == 0.0:
                 st.session_state.precio_entrada = precio_actual
@@ -465,11 +429,11 @@ elif pagina == "LIVE":
                 st.markdown(
                     '<div class="cs-position-box">'
                     '<div style="color:#ffa726;font-size:11px;letter-spacing:2px;margin-bottom:8px;">POSICION ACTIVA</div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Entrada:</span><span style="color:#fff;">' + str(round(entrada, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Actual:</span><span style="color:#fff;">' + str(round(precio_actual, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">P&L:</span><span style="color:' + color_pnl + ';">' + str(round(ganancia_pct, 2)) + '%</span></div>'
-                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#00e676;">TP:</span><span style="color:#00e676;">' + str(round(precio_tp, 4)) + '</span></div>'
-                    '<div style="display:flex;justify-content:space-between;"><span style="color:#e82929;">SL:</span><span style="color:#e82929;">' + str(round(precio_sl, 4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Entrada:</span><span style="color:#fff;">' + str(round(entrada,4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">Actual:</span><span style="color:#fff;">' + str(round(precio_actual,4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#888;">P&L:</span><span style="color:' + color_pnl + ';">' + str(round(ganancia_pct,2)) + '%</span></div>'
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:#00e676;">TP:</span><span style="color:#00e676;">' + str(round(precio_tp,4)) + '</span></div>'
+                    '<div style="display:flex;justify-content:space-between;"><span style="color:#e82929;">SL:</span><span style="color:#e82929;">' + str(round(precio_sl,4)) + '</span></div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
@@ -479,32 +443,32 @@ elif pagina == "LIVE":
                     if st.session_state.ultima_senal != "TP":
                         st.session_state.ultima_senal = "TP"
                         st.session_state.historial.insert(0, {
-                            "fecha": datetime.now().strftime("%d/%m %H:%M"),
-                            "par": crypto,
-                            "entrada": round(entrada, 4),
-                            "salida": round(precio_actual, 4),
-                            "pnl": round(ganancia_pct, 2),
+                            "fecha": datetime.now().strftime("%d/%m/%y %H:%M"),
+                            "par": crypto, "tipo": "COMPRA",
+                            "entrada": round(entrada,4),
+                            "salida": round(precio_actual,4),
+                            "pnl": round(ganancia_pct,2),
                             "resultado": "TP"
                         })
                         st.session_state.en_posicion = False
                         st.session_state.precio_entrada = 0.0
-                        enviar_telegram("TAKE PROFIT\nPar: " + crypto + "\nGanancia: +" + str(round(ganancia_pct, 2)) + "%\nVENDE AHORA")
+                        enviar_telegram("TAKE PROFIT\nPar: " + crypto + "\nGanancia: +" + str(round(ganancia_pct,2)) + "%\nVENDE AHORA")
 
                 elif precio_actual <= precio_sl:
                     st.markdown('<div class="cs-signal-sl">STOP LOSS — VENDE AHORA</div>', unsafe_allow_html=True)
                     if st.session_state.ultima_senal != "SL":
                         st.session_state.ultima_senal = "SL"
                         st.session_state.historial.insert(0, {
-                            "fecha": datetime.now().strftime("%d/%m %H:%M"),
-                            "par": crypto,
-                            "entrada": round(entrada, 4),
-                            "salida": round(precio_actual, 4),
-                            "pnl": round(ganancia_pct, 2),
+                            "fecha": datetime.now().strftime("%d/%m/%y %H:%M"),
+                            "par": crypto, "tipo": "COMPRA",
+                            "entrada": round(entrada,4),
+                            "salida": round(precio_actual,4),
+                            "pnl": round(ganancia_pct,2),
                             "resultado": "SL"
                         })
                         st.session_state.en_posicion = False
                         st.session_state.precio_entrada = 0.0
-                        enviar_telegram("STOP LOSS\nPar: " + crypto + "\nPerdida: " + str(round(ganancia_pct, 2)) + "%\nVENDE AHORA")
+                        enviar_telegram("STOP LOSS\nPar: " + crypto + "\nPerdida: " + str(round(ganancia_pct,2)) + "%\nVENDE AHORA")
                 else:
                     st.markdown('<div class="cs-signal-wait">EN POSICION — MONITOREANDO...</div>', unsafe_allow_html=True)
 
@@ -513,17 +477,16 @@ elif pagina == "LIVE":
                     '<div class="cs-filter-box">'
                     '<div style="color:#888;font-size:11px;letter-spacing:2px;margin-bottom:10px;">FILTROS DE ENTRADA</div>'
                     '<div class="' + ("cs-filter-ok" if filtro_ema else "cs-filter-no") + '">' + ("OK" if filtro_ema else "NO") + ' — EMA7 ' + ("mayor" if filtro_ema else "menor") + ' que EMA18</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' + ("OK" if filtro_rsi else "NO") + ' — RSI(6): ' + str(round(rsi, 1)) + ' (necesita 52-68)</div>'
-                    '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' + ("OK" if filtro_volumen else "NO") + ' — Volumen por encima del promedio</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_rsi else "cs-filter-no") + '">' + ("OK" if filtro_rsi else "NO") + ' — RSI(6): ' + str(round(rsi,1)) + ' (necesita 52-68)</div>'
+                    '<div class="' + ("cs-filter-ok" if filtro_volumen else "cs-filter-no") + '">' + ("OK" if filtro_volumen else "NO") + ' — Volumen USDT por encima del promedio</div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
-
                 if filtro_ema and filtro_rsi and filtro_volumen:
                     st.markdown('<div class="cs-signal-buy">SENAL: COMPRA AHORA</div>', unsafe_allow_html=True)
                     if st.session_state.ultima_senal != "COMPRA":
                         st.session_state.ultima_senal = "COMPRA"
-                        enviar_telegram("SENAL DE COMPRA\nPar: " + crypto + "\nPrecio: " + str(round(precio_actual, 4)) + "\nTP: " + str(round(precio_actual*(1+tp/100),4)) + "\nSL: " + str(round(precio_actual*(1-sl/100),4)))
+                        enviar_telegram("SENAL DE COMPRA\nPar: " + crypto + "\nPrecio: " + str(round(precio_actual,4)) + "\nTP: " + str(round(precio_actual*(1+tp/100),4)) + "\nSL: " + str(round(precio_actual*(1-sl/100),4)))
                 else:
                     st.markdown('<div class="cs-signal-wait">ESPERANDO SENAL...</div>', unsafe_allow_html=True)
 
@@ -531,37 +494,57 @@ elif pagina == "LIVE":
             with s1: st.metric("Soporte", f"{soporte:,.4f}")
             with s2: st.metric("Resistencia", f"{resistencia:,.4f}")
 
-            fig = go.Figure(data=[go.Candlestick(
-                x=df.index, open=df["open"], high=df["high"], low=df["low"], close=df["close"],
+            # GRAFICO CON VOLUMEN EN USDT
+            fig = make_subplots(
+                rows=2, cols=1, shared_xaxes=True,
+                row_heights=[0.75, 0.25], vertical_spacing=0.02
+            )
+            fig.add_trace(go.Candlestick(
+                x=df.index, open=df["open"], high=df["high"],
+                low=df["low"], close=df["close"],
                 increasing=dict(line=dict(color="#00e676"), fillcolor="#00e676"),
-                decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929")
-            )])
-            fig.add_trace(go.Scatter(x=df.index, y=df["EMA7"],  mode="lines", name="EMA 7",  line=dict(color="#e82929", width=1.5)))
-            fig.add_trace(go.Scatter(x=df.index, y=df["EMA18"], mode="lines", name="EMA 18", line=dict(color="#ffa726", width=1.5)))
-            fig.add_hline(y=soporte,     line_dash="dot", line_color="#00e676", annotation_text="Soporte")
-            fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929", annotation_text="Resistencia")
+                decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929"),
+                name="Precio"
+            ), row=1, col=1)
+            fig.add_trace(go.Scatter(x=df.index, y=df["EMA7"], mode="lines",
+                name="EMA 7", line=dict(color="#e82929", width=1.5)), row=1, col=1)
+            fig.add_trace(go.Scatter(x=df.index, y=df["EMA18"], mode="lines",
+                name="EMA 18", line=dict(color="#ffa726", width=1.5)), row=1, col=1)
+
+            colors_vol = ["#00e676" if c >= o else "#e82929"
+                for c, o in zip(df["close"], df["open"])]
+            fig.add_trace(go.Bar(
+                x=df.index, y=df["volume"],
+                marker_color=colors_vol, name="Vol USDT",
+                opacity=0.8
+            ), row=2, col=1)
+
+            fig.add_hline(y=soporte, line_dash="dot", line_color="#00e676",
+                annotation_text="Soporte", row=1, col=1)
+            fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929",
+                annotation_text="Resistencia", row=1, col=1)
+
             fig.update_layout(
-                height=520, paper_bgcolor="#080808", plot_bgcolor="#0c0c0c",
+                height=600, paper_bgcolor="#080808", plot_bgcolor="#0c0c0c",
                 xaxis=dict(showgrid=False, color="#444"),
+                xaxis2=dict(showgrid=False, color="#444"),
                 yaxis=dict(showgrid=True, gridcolor="#1e1e1e", color="#444"),
+                yaxis2=dict(showgrid=True, gridcolor="#1e1e1e", color="#444", title="USDT"),
                 xaxis_rangeslider_visible=False,
                 legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#888")),
                 margin=dict(l=10, r=10, t=10, b=10)
             )
-            chart_placeholder = st.empty()
-            
-            with chart_placeholder.container():
-                st.plotly_chart(fig,
-                use_container_width=True)
-
+            st.plotly_chart(fig, use_container_width=True)
 
         except Exception as e:
             st.error("Error: " + str(e))
 
-            st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
-            time.sleep(2)
-            st.rerun()
-
+        st.success("Bot activo: " + crypto + " | TP: " + str(tp) + "% | SL: " + str(sl) + "%")
+        contador = st.empty()
+        for i in range(60, 0, -1):
+            contador.markdown('<div style="color:#666;font-size:12px;text-align:center;padding:8px;">Actualizando en ' + str(i) + 's...</div>', unsafe_allow_html=True)
+            time.sleep(1)
+        st.rerun()
 
     else:
         st.markdown('<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">Bot detenido. Pulsa Iniciar Bot para comenzar.</div>', unsafe_allow_html=True)
@@ -570,61 +553,81 @@ elif pagina == "LIVE":
 
 elif pagina == "HISTORIAL":
 
-    st.markdown('<div style="padding:20px;">', unsafe_allow_html=True)
-    st.markdown('<div style="font-family:Rajdhani,sans-serif;font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:20px;">HISTORIAL DE TRADES</div>', unsafe_allow_html=True)
+    st.markdown('<div style="padding:0;">', unsafe_allow_html=True)
 
     historial = st.session_state.historial
 
     if historial:
         total = len(historial)
         ganadores = len([t for t in historial if t["resultado"] == "TP"])
-        perdedores = total - ganadores
-        win_rate = round((ganadores / total) * 100) if total > 0 else 0
+        win_rate = round((ganadores / total) * 100)
         pnl_total = round(sum([t["pnl"] for t in historial]), 2)
-        color_wr = "#00e676" if win_rate >= 50 else "#e82929"
+        color_wr  = "#00e676" if win_rate >= 50 else "#e82929"
         color_pnl = "#00e676" if pnl_total >= 0 else "#e82929"
+        pnl_str   = ("+" if pnl_total >= 0 else "") + str(pnl_total) + "%"
+
+        st.markdown(
+            '<div class="cs-hist-header">'
+            '<div>'
+            '<div class="cs-hist-balance-lbl">P&L TOTAL</div>'
+            '<div class="cs-hist-balance" style="color:' + color_pnl + ';">' + pnl_str + '</div>'
+            '</div>'
+            '<div style="text-align:right;">'
+            '<div class="cs-hist-balance-lbl">WIN RATE</div>'
+            '<div style="font-family:Rajdhani,sans-serif;font-size:22px;font-weight:700;color:' + color_wr + ';">' + str(win_rate) + '%</div>'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
 
         st.markdown(
             '<div class="cs-hist-resumen">'
             '<div class="cs-hist-stat"><div class="cs-hist-stat-num">' + str(total) + '</div><div class="cs-hist-stat-lbl">Trades</div></div>'
-            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:' + color_wr + ';">' + str(win_rate) + '%</div><div class="cs-hist-stat-lbl">Win Rate</div></div>'
-            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:' + color_pnl + ';">' + ("+" if pnl_total >= 0 else "") + str(pnl_total) + '%</div><div class="cs-hist-stat-lbl">P&L Total</div></div>'
+            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:#00e676;">' + str(ganadores) + '</div><div class="cs-hist-stat-lbl">Ganados</div></div>'
+            '<div class="cs-hist-stat"><div class="cs-hist-stat-num" style="color:#e82929;">' + str(total - ganadores) + '</div><div class="cs-hist-stat-lbl">Perdidos</div></div>'
             '</div>',
             unsafe_allow_html=True
         )
 
-        rows_hist = ""
+        st.markdown('<div class="cs-hist-seccion"><div class="cs-hist-seccion-titulo">Posiciones cerradas</div></div>', unsafe_allow_html=True)
+
+        trades_html = ""
         for t in historial:
-            res_cls = "cs-hist-tp" if t["resultado"] == "TP" else "cs-hist-sl"
-            pnl_cls = "cs-pos" if t["pnl"] >= 0 else "cs-neg"
-            pnl_str = ("+" if t["pnl"] >= 0 else "") + str(t["pnl"]) + "%"
-            rows_hist += (
-                '<div class="cs-hist-row">'
-                '<span class="cs-hist-date">' + t["fecha"] + '</span>'
-                '<span class="cs-hist-pair">' + t["par"] + '</span>'
-                '<span class="cs-hist-result ' + res_cls + '">' + t["resultado"] + '</span>'
-                '<span class="cs-hist-pnl ' + pnl_cls + '">' + pnl_str + '</span>'
+            es_tp = t["resultado"] == "TP"
+            color_gan = "#00e676" if t["pnl"] >= 0 else "#e82929"
+            pnl_display = ("+" if t["pnl"] >= 0 else "") + str(t["pnl"]) + "%"
+            tag_color = "rgba(0,230,118,0.15)" if es_tp else "rgba(232,41,41,0.15)"
+            tag_text_color = "#00e676" if es_tp else "#e82929"
+
+            trades_html += (
+                '<div class="cs-hist-trade">'
+                '<div class="cs-hist-left">'
+                '<div class="cs-hist-par">' + t["par"] + ' <span class="cs-hist-tipo cs-hist-tipo-compra">buy</span></div>'
+                '<div class="cs-hist-precios">' + str(t["entrada"]) + ' &rarr; ' + str(t["salida"]) + '</div>'
+                '<div class="cs-hist-fecha">' + t["fecha"] + '</div>'
+                '</div>'
+                '<div class="cs-hist-right">'
+                '<div class="cs-hist-ganancia" style="color:' + color_gan + ';">' + pnl_display + '</div>'
+                '<div class="cs-hist-tag" style="background:' + tag_color + ';color:' + tag_text_color + ';">' + t["resultado"] + '</div>'
+                '</div>'
                 '</div>'
             )
 
-        st.markdown(
-            '<div class="cs-terminal">'
-            '<div class="cs-term-head">'
-            '<span class="cs-dot cs-dr"></span><span class="cs-dot cs-dy"></span><span class="cs-dot cs-dg"></span>'
-            '<span class="cs-stream-lbl">TRADES CERRADOS</span>'
-            '</div>'
-            + rows_hist +
-            '</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(trades_html, unsafe_allow_html=True)
 
-        if st.button("Limpiar historial"):
+        st.markdown('<div style="padding:16px;">', unsafe_allow_html=True)
+        if st.button("Limpiar historial", use_container_width=True):
             st.session_state.historial = []
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     else:
         st.markdown(
-            '<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">No hay trades registrados aun.<br>Los trades aparecen aqui cuando el bot detecta TP o SL.</div>',
+            '<div style="text-align:center;color:#444;padding:80px 20px;font-size:15px;">'
+            '<div style="font-size:40px;margin-bottom:16px;">📋</div>'
+            '<div>No hay trades aun.</div>'
+            '<div style="font-size:13px;margin-top:8px;">Los trades aparecen aqui cuando el bot detecta TP o SL.</div>'
+            '</div>',
             unsafe_allow_html=True
         )
 
