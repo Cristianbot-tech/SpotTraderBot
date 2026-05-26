@@ -195,6 +195,13 @@ footer { display: none !important; }
 [data-testid="stNumberInput"] > div > div { background: #101010 !important; border: 1px solid #1e1e1e !important; border-radius: 10px !important; }
 [data-testid="stMetric"] { background: #101010 !important; border: 1px solid #1e1e1e !important; border-radius: 12px !important; padding: 16px !important; }
 [data-testid="stMetricValue"] { color: #fff !important; font-family: 'Rajdhani', sans-serif !important; }
+.menu-mobile button {
+    height: 65px;
+    font-size: 20px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
 </style>
 
 
@@ -255,22 +262,21 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True
 )
-col1, col2, col3 = st.columns(3)
+st.markdown('<div class="menu-mobile">', unsafe_allow_html=True)
 
-with col1:
-    if st.button("🏠 HOME", use_container_width=True):
-        st.session_state.pagina = "HOME"
-        st.rerun()
+if st.button("🏠 HOME", use_container_width=True):
+    st.session_state.pagina = "HOME"
+    st.rerun()
 
-with col2:
-    if st.button("⚡ LIVE TRADING", use_container_width=True):
-        st.session_state.pagina = "LIVE"
-        st.rerun()
+if st.button("⚡ LIVE TRADING", use_container_width=True):
+    st.session_state.pagina = "LIVE"
+    st.rerun()
 
-with col3:
-    if st.button("📋 HISTORIAL", use_container_width=True):
-        st.session_state.pagina = "HISTORIAL"
-        st.rerun()
+if st.button("📋 HISTORIAL", use_container_width=True):
+    st.session_state.pagina = "HISTORIAL"
+    st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 pagina = st.session_state.pagina
 
