@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import requests
-import time
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import base64
@@ -850,17 +849,18 @@ elif pagina == "LIVE":
                 unsafe_allow_html=True
             )
 
-            # ── Status bar + countdown ────────────────────────────────────
+            # ── Status bar + auto-refresh sin bloquear la UI ─────────────
             st.success(f"🟢 Bot activo: {crypto} | TP: {tp}% | SL: {sl}% | Capital: {capital_op:.2f} USDT")
-            contador = st.empty()
-            for i in range(60, 0, -1):
-                contador.markdown(
-                    f'<div style="color:#333;font-size:11px;text-align:center;padding:4px;">'
-                    f'Actualizando en {i}s...</div>',
-                    unsafe_allow_html=True
-                )
-                time.sleep(1)
-            st.rerun()
+            st.markdown(
+                '<div style="color:#333;font-size:11px;text-align:center;padding:4px;">'
+                'Actualizando cada 60s...</div>',
+                unsafe_allow_html=True
+            )
+            # Meta-refresh: el navegador recarga la página solo, sin bloquear Python
+            st.markdown(
+                '<meta http-equiv="refresh" content="60">',
+                unsafe_allow_html=True
+            )
 
         except Exception as e:
             st.error(f"Error al obtener datos: {e}")
