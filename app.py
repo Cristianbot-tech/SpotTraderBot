@@ -10,7 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 
 st.set_page_config(
     page_title="CRYPTOSCALPER BOT PRO",
-    page_icon="Fabi con.png",
+    page_icon="🔴",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -20,7 +20,10 @@ TELEGRAM_TOKEN   = os.environ.get("TELEGRAM_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 APP_PASSWORD     = os.environ.get("APP_PASSWORD", "CRYPTOSCALPER123")
 
-# ─── INIT SESSION STATE (todo de una sola vez para evitar reruns innecesarios)
+# ─── LOGO EMBEBIDO ──────────────────────────────────────────────────────────
+LOGO_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAEAAQADASIAAhEBAxEB/8QAGgAAAwEBAQEAAAAAAAAAAAAAAAIDAQQFBv/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/9oADAMBAAIQAxAAAAL5QAAAAAAAANrLFqKYNog6iZXSOuiYBQAAAAAAAAAAABrQtHmryzsXmZ9Q6T1rPI5fd8g5lYlWiIMlsJG5YAAAAAAAABuhZSbVaSTqM51tTn6Ljq9/53vO3wPQ8050rE3B5pWm4JaYuOjIBQAAABoUS82qCBmjHVC8p0nRW1z6H5NOmclgV9pWXc9JVXom+a89uJraVyoFyAAAGjS5VBoVmlltJXNqQea6uefTctydGXMeppRuNxts2LLWq5j1QwOnkrGkxTS4wAADaTebZLRlXoheaty9fJOzsGuGer5qZ6ppbfn5uieTXs+LV89lVGuXg8AdW1y3AjFC5wCwANpOk28evmz0ewmerTTprlee781CIzWVNSdCa0JaOmYroOYYDm1z151ZdcsAuQA1k2XpmNnuqZmuR0xya6ebcXG1bz6aQqy3L0c6ybHWTGobgq6adWEMelUZd+UAsAA3KQdPNfPohjpeSsFhm4OTcbU1ncFVsEXdVgw0x8rNbz2m0mOl4gFAUhmzqz6eePfs6eed6XnyHbSa87PQdfMztrc8Fa1ThTsoedvdM5i9E5BPTTzTueb4Kv0Nca9nFecik9ecojrZK8+PSdcbzeNy2bS/F03D5x9JJ5tefRs5Z750oJzdca3Gmpntx93F178z5zvnsvRzVZJ9HKLOidPG2Mq9S0lz9lJRzXC1OYsfUy4zo60Th6brNclOlF59j6pxJbqXzaP1px5Kc2VnmuXVnMZ62aVZrnGN+dKSZDKKq62jtEm7xUT1l83Lz7jiKpPA30PODtt5mHoy5NjoXnJ0vktVVoXExmNlqgBcgAFkmkdBl8UVtxlXU1GxbLPawGEEfFczcUdcECjNRAuQAAA3Kjq5npzaGueUneWkLTm47m655fKTSx6pLDcGDpR2op0wZzNeiumenKVlrmAAAHTzB1HKFZAXbmDrXmCsgHtzB0zkAyh0nMHSkQADqOUNwAAP/9oADAMBAAIAAwAAACFQRTxzq7abOuwhxQAAjztcLuyBfNvTzQADz1mlRzizCJK3eiBTijxc8gQIB6bMnwDzYzKWrySdSuJijHzQSO80WOw5MDxh8qxQlZOxgLeafkrV5rhS8X0ryW/bnOLQh+hjuk/F31eYE4ofx9D9RwV5Iy3lgN//ANH/AMyj0HCeoLMcVfYj0yJXxASY+PXDvpdf+a4MWVz/ADxwTcqlBZYAz296Wp0U5ue/kACCjaG7OnUS+19RNgADwDAAhDgCBCDAQAj/2gAMAwEAAgADAAAAEOOOKKHn4T9g3fIOPPNFM0QAJRabdccHfPOGBApHRVfWGJj/AByykOHtQ22OA/P3sjwC6TJ/ouVbgxwDXBA31F5z7Bs4gMryutCjRdMg00962o1pcRWwzeTQX89HuGE5tRTSP8rJIte5ajjkX+zfY2etWidcI3bOmxdj9GWdez4rLpDXvjBObr2HPmfujSSDc1rAdLJmO3BCW84LsjzzDrc2+H5MV3wv/wA8cVvArt0yeuzbV8088A8cMU8UsMM884c0/8QAKREAAgIBAwMEAgIDAAAAAAAAAQIAEQMSITEEEEETFCBRImEwkTNAcf/aAAgBAgEBPwD4lhxLMBh/RlkQEH+EmbtCQuwgH33NjibNvLI5/gJHJ4EQltzBu1/Hgw7XfEBraA/Fj4lA/ie2M8/9+Ln8lnUZSiEiVqEU/Amoebl6VJMDBuIgqFwDR7ExX1cQ7kTKGyOyj6EGwswcn4PxtEN7zqCDjYfozpmJbSeKECbzLgLvqBgIGwjgOCJgwlLJP9TIhANHwZgx2ATzQj7qRL3g75OJicGzNQzOCOCDMgOElwNtoebHeh2C+TANIoCEbbxmp4t+e5EA0tX3FRVG0yIMq6TMeMpqs8mA2IIYxoVD2JgUvkJi8dzMyEkMvMXjebHmD9yq2ghErVvDfjtkJ0mphXSu8HYmpmzMjBEFsYnVtVsv9ReqVqBHJqHqRVgEw9UAurSYepqvxNnxPdjSCoJJnuwVBA34qe4UoXIO3ieuulWrk1zM+UYq2u4etAF6d+Jk6rINOlefuYMzOSrCmEBuHkTH+XUM58TqHJyKyb0I2KsIPkm/7mTGVdFTxMmIphKnkmH/AD3+oiAotGm3qBy5QkbgzqWRlKr97wm8bAeDYnV3pVl8GZMLhGyNzYMzLkOMM5sg3MDM+fUwraDkwbsYuttSAbnmL09XZ8VPSBVVJ4mhS+u94+MOKMyYEyG2h6dCAtcT22PToraDpsaihHwI5JPme1QAi+Y6hk03PbvVarEZWQLkrcbGAgkEeYw8iWfAhPgz0wTsYECGyZY+NiMoc7GemByYD4Es/UVa7hwTUIB5mkQlQQJpEOkQENNIhCgWZpB3gAHE9RQa+K4qP67MLBAiYQp1dnXVETT2yYxkXSYAAKHY4rYH6/0//8QANxEAAgEDAgMECQMEAgMAAAAAAQIDAAQRITEFEkETUWFxECKBkaGxwdHwBiDhFBUy8SNCMDNA/9oACAEDAQE/AP2rGSM7DvP58qxGOpPw/PdTLnYYpQAPWXPkf91yxtscef3H2pkZdxWP/AqFtBRCxb6t8B/NIjTEljoOv58BTMBonozik5GID6eNEPCxX/RrkEgym/d9qI/cFJ2qNWGEQZZquESI8inJG56Z8PCpV7OIL36+/b4UDg+k70AWjJ7vkf5qMBioXQ53/NsUy9oOYU68px+zerdQMudhrTSSIe1BwTmsZq8QDkJP/UfAekaDPot0HYy+Q+Yrg9ilzdRxudCTt4DNcwt3DDUbYq4jKsf2IhbagCF5e+jGZZ1iQZ1Ap4XhYhxg5I91XDBwDtoPhpS2zyAsmoFEYpQScCpbYwaPvUZCRsB1x96sWitLeCVwAQ7AnGuxHnT+uxC65/PlUhLRqe7T89lY9NpgPk7VdR8mnh9f5rg6Mt3E56Mv3rjcSLF2yj1mkkz76e5/4wCBnyHjVjxRILYxMmfLAB6a9/fUilssdMVasbaRJMAjQ1xTiS3AVY1wBr62Dvr7h3eyrS5V2j51GAygjA11+1cUuysjRofVDsQOnT+atxyyIxOh+ulAZQ56GnOTpt6bP/LFX9s0ZVe8V2bcOtZEYAMrqc+wferN14mscDsQ2XJPmM/WgRyhH66jwogDY1knSiTgA0oGcE600xGFQ6D599Oxlcsx8TSv6wA2qG3L25PjUwUEhfTG/LrTs08Abqun576nuZpmIYk5I+wqynexl7VSDoR7cVd3QuDAFXHKoHng06cshHnTDBqMa1CuZM0gwuabGCAMHzpF1qSdbWzWPGp1qYgtkelc9K4XdIoaGbRWHx6VNox5KUOmq0w/7DT6Uzdp63UUxycikbFFuy0G/wAs/X5UvKf86KgkkDSrONDKok0HfrXEpxNKTHt0pgRv6ETmOK4XwuC4ha5unKRKcabk/Grj9N2zSFLabAUAsW2GdhpjHtqf9Oy24d1lB5VDDHUa7e6k/T8nMVklVSFDNkDTPQ+NJ+nJGn7DtkyQCNBqDnbyxQ4FzFmM6BFIHNjQnu07qP6bkE0qSyKqpjJ6a7UP05IkzI0ihVUNza4wc4+Ro8CmW7jtVdSHHMGxkYxmv7RN289uWGYl5thqMZ0rhXD24isjdoqBNSSB789KT9MSNIVMy8vLzBuhHX3VZcBsZBL202eQA5UjGDnwO2K4rwuG0jSe3fnifr1B/PzrToUODSDEbHyHz/irvMXCILZd3Ocd/wCZFcHtY1s5YLolTIwHjpg46+NW3EOfikiqMIqFfYpqyvIbi2uri9JxIwzjfA2H0qx4ml3xRZoxhUQgZ7h/uo3P9mKAamTPwq+vHjupyY+eEhQw67aEUYEto7mOIlleMEZ3G+lcCiuYrhJpzkcjcuTtsPZvQyLyKSTd4yreY+9fptlE8tvLs6kH88s1Z8UtZLiK0gBKBWXJ6g4OPhXDJrJb1oIFKqylSD3j2npmuKxwW/CRBExYBtD3HXP1ptY1PmPr9aYYhXxJ+gqb+lhEVy75CD1QOv5/upeMCQR8qnKsWPjqaXiMizSzIn/sGPLNf1Mq2pteX1c5zVpeSWjM8e5GKs+LXNkhjiOh7xmo+M3ccjyhtW30ocbvBObjm9bGNtMeVSccu5GLMw2I26Grbi09siomMKSRkd+R9aHHrp2V+QHl8D1GKt5ZIJxOF2OcV/d7cyB+x5Wzkkb+PSopop3ntOb1X9ZfM/z8qaNkjdGGqkfUVFIB6j7H4eP5vTKowGfIG2NfsKWM7pqKF5JGo5k+f3qW6a4Qoq/P70UYbiiPTigjHYVBO1quGXfz+4r+tkkB5E+f3oxtnL6D895pY0J0fHnp96nmaU76fPxPpktJY07Rhp8vOkdl/wATRmc9aRJ2VnGyjJ9pA+ortpO+o+1myAdOtOkkAGDkeFdtJ30jSyMETJJ6UZHU8udqZ2fHMaFlMUMgGm/jjvxv+wEg5qW/LoQBqd6WoXEciuwyAQaueJvNEIQMLt7NPtQ2NW1x2JPjj4HIq6ue10Guue7oB9K6VZXb2cvbJuM07tIxdjqaPSo7/s4XQbsAD3aAgfD46+H/AMf/xAA8EAABAwIDBQUIAQMCBwEAAAABAAIDERIEITEQEyJBUTJSYXGRBRQgIzAzQoGhQGKxFSQ0UFNygpLw4f/aAAgBAQABPwL6tp6Ldlbt3Rbt3RFhRBH9QBXRCPmVcxuma3h5BVerX97+UQ8fl/Kq8ISdQuFydGR/Ssjrqi8NybmiSdVZTt+i/hNYPNNiJT2UrVqcKZ6LI9ofsJzKZ6jqmvI8QuGTzTm2/wBAEAmsDRc5SSF2QyGxsW5YHv7Z7IQALta9U4ZhYZgdRYbDh7Rbmsbh7VM1HJNdYU8DVumxklcn+qkZT+gADW1cjdJU8givZ7Gumuk7Df5WOl3kleSj0QFQa/pYOgeOmhWEcIWaLGysc2qxGTjRP1Tk008kcjRNbco3/i7RPbT6gVqibzKNZX0GikdTgZ2dg4IGeNSnJpULuJdl1QocTw0WKmHojnIn0BTlRSjJp2MzcozcLSnNoUfpBMzOamNOEftB5aCBz2zf8NDTkKJ2eY0QUTqOQflQ/pRvpzT315p0nRHidsOTR1Km+2wbIWlxNAtFk9tU7X6QTMhVakko7XH5UY8EwfLd5hObmreYVS05q7PNFy1RFB4lBtGZ81J9w1UnYamdpYL807U+aiOZaeakaPpvybRaBNzcNrvstULatDTldmoobw5h7QC7DqEWuCkwh3QkGbdjWF2TVuNy0F/apoo4t6+g05lSDO7KgyUuZB6qTstCwrQXmqjoJJANE/UrnVPNRX6ICHgnap+qgZdKAnx2yWnZXgU7qkeATHmuXqpSXxgvz/uCgxLoqt1aVNIxz820rrRQYiOKOobmnSb+UyTadFO9waG9lvdCc5V+T+07VYfKV6vtmei6qaKg+Cbm2iP0GJidswf3U5l+JenANcQmWEHIqe3WhosNZeKhYo4b3ZpiqJeeaLxTLIqCPevzrpVVtcaKGUGWvPqsScL7qzdg3/lmnFl2iFgZmDWiZu3zAUNPNOO7nyGqvq8uOyPmKqPmnDiR+NuWwqihymUf35FL9xyifbBoNdVDRxLJT2ufRPwk0f4k+IRZLpa7LwXu79Sopm4Ug23EhPpJxDWui3EjaECvkt3M7Rrj/wCKbhCBfNwNHXVOd8y7kVd89uVFMfm12DQqPJ6bzT/oBN0RUQ+a0FSm2ZuShddI8ogkvTXU/a7BzzC3xHYJH7XvEoHaKMhdTM+ScbnEph1CEzmUtJqjPLzeVve9U/tV/NyLuKqe6p2aNQOaZqpO0iPjYreCqI4k9gbJHRTn5jVE8tdksMaxuqvwKa7KhzCrsjHXRMio8XUA6qOM6n9I5bGnPSqLq7Rwtr1RQUQzWIaGyuGuacfjCjPCU/VSSE08E51x2QPDYzVMH+1TO2E5M7PisOOyNbnUToA1ldcwt0ISbhmKO/SkGaOqbs0VtdE/WnTbgm1lbXSuanpcU76DNVIEUBU0WR4f5WlwQ+2VF9xqIrVMTKVYa04uSbfuS66rruzyUwO8fdITw6lOAy8kM3Ic0F+1l1X72xHdsJ8KJ5zR+gzIp3HHVOCr02XdUfNZgr8qhc6haaq/xTnVzJzRQy812a9dgaqbMlGM1NkKfR3b+6fRbt/dd6KO5v4Op5JzXd13oi0jUEKipt0K1zWYTQTyWetFqjkPHaCaaorl4qx3dKiq3VjvRPvd+B9Fu39x3ot2/un0+JgsFzteSayWQVaP5W4m6fyqmuZVVdTRVZ3T6qrO67/2VWd0+qq3un1VW90+uy4EUOiEzWjIVd4ovBRcvNVb3T6qre6fVVZ3T6qrO6f/AGVwHZFCqqqZc80atxN0/lUkjzcKJ4Dhc39j4GCguP6UQ3kualmEVBRSy0i8SFwRsF4Hopgx8JIA86LEtBgBAzUgbDhqUFy+XHGC8D0U7Y3Q3gKN0UgNoHopDFK5rGjn0T3xRmjmj0WLibwkZJxihYAWj0WLa0w3gUXBDGLminkpWslguaPJYJoLXVCxrKFpATgHYTQVohqiWNZcQKeSkayWK5qBZuw4geilljt4NQpJLGXKOQTNOSd8uUgJ4/Iem1+lFgxm4rFOrL5KPikbVYlrpKNasRw4a1QurA1Yl+8mDeQWKYZA0NWI4cNasF9orC/fqsZ94LFuoxp6FOsxDFKJGC1x4Vi88OhK8NtByWDygJU3zMNVYfPDU2H5mGoFA0sjtcoeKC39J+GtaTcm8eHWEa5hNRksWPmV6pubabBmVJqVhco6p1ZJDRRstkat5x2rFEmRQZQKH7oU8xZSie9z+0sOfkrC/cU9TKsRxBoT2GOhZVSknDmqnqYFFCCyrq1UGUCaA1loWHyaQnCjiFh3fKp0T8Q45aLCO4SFJK8OIqsK7gog8EkLEk7zNR67I+2E5N4Y1AwgkkJucjk0/wC5KxPaCLgIKVUBAkqViHBzstjJGtioo32OqveGqWa4inJe8CmmammubQKPEUbxJ2IFMtVvRureagfYc02Voe48ihMxMkbV3RP7RosMaOKMbXOzTWhj6BPNkwKxAq2qbqpO2VFzRTXBzahSS0ybqrj12UKtPQq09CqU1UHssSYWOd+JjjD9A5Yz2buMPvmTRysBobVh/Ze8wzJZcRHEH6VWL9m7jD76OZkrAaG1Yb2Y2eNhGKjucOxzWMwDcNEXe8xvcMrRqombyVjK0uNE/wBjtY61+Nha7oU/2e9mPbhnPHFo5f6Oy+332G7Sib7PlPtD3Srb+vJD2PHdb79DdpRYmB2HxD4X9pvRWnorT0Vp6LNBxBqpXXgdVE8ObTmiy19FLqEDQ5I8QqECW6bfJNc2nadVXDvPVf7pFNyzd+1FJ/sIWboS05FYqSvs97LBFnW0Ke+bA4djM7fFcUXsqSJ2VXV/wvZzrMW1yxRriZT/AHFYfLER/wDcFi8RAZ6yxXP6r3sz+0Y5dLckJoHYupj+YDWqgxDv9XdK7I//AIooZW45stuQku18V7Qff7Qe7y/wq/3SKo7z0XN7z0fHaFdw8WvJE1OexpoUSzoVf0yQNfNW+Xqrf/qqizVHIPlAoHup5pxkd2nE+ZTTI0Ua4geadvH9p1fMoNe01GX7Vjian/KDHA1H+U5r3Grs/wBoNcDUKjrq1z61RvLric+tVfL33eqo6teaFUB1Vv8A9VW+Xqiaeav65oOZ0KcbjU/RuV3gFcrld5K/yV/krvJFyBor/JX+AV/kr/JXeCuV3gFf0+o2Mfkntt+G00UjLWMPX4GsFOLmixpyGqOXwRsL3UCdQONPgazK5xoFJFTMfQGS7SlPDT4Ic5AmkNtHipH3ADps5bLuyeiuq5qdr8ED7GlSOudX4NYx4KZ9W/QhhdLW2mSGGkFKUzyXuj+rT+/ghhe5t7aZJ+EkB1BU0DohV3ls5KOEyMLgRQL3eRlKEZmidhpqZkJ+Ge1pOVBtjgc9oc3maI4WQZZZL3R+eYyT2ljy06jZDEZSbeS92ew9oVUmGk5uaVNC6Kl3P4w7DV7L1vMPblGblfhv+m71UpjIG7bQ89kToQz5jCXV5dEx8FpujNacijJhsqRO9UH4eyjmOuzzqpjET8oEeB2RFoeN4CW9At5h8vlnTqr4D+Dgpiwn5dQOh2NpcLtOaD4ARwOI5q/D3t4HW8xVCTD5Vjcf2pjER8tpBrtvw9Ptur5q/Ddx3/Jf/8QAKhABAAICAgEDAwUBAQEBAAAAAQARITFBUWEQcZGBobEgMMHR8OFA8VD/2gAIAQEAAT8h/ews8uZMsg5tD/0KsIYWlecTiH7I3YiK8p9agxdYy0q2bSdJ9J8/nE0mf/KuWkxzY54jtpYb8H5SkqsXqXoE0VK3RxL1Li4Qhp7KY/6DMGMdGOs6/wDBS8xHEuzifAiSpXzteJyo2pgDXccpjlY5CzEGm/eAY5gyxzNBp2PMxt3jqZGAT6UbZr9+rjnh/M1j+CCp5/tduCYf7JxXhmYKoH5TMMOoXSybKjzi4lEdpS1eJvOVthhuUuNJiUfAeox16V+0Biie0Tgk68Qhd6M3/rg/DNDuVlza2VSRy8Eeoa49osxWOOmG5WhhwMRZgn6T3OQlchw/idq8XMBxAUn7bsIAgqY8px6ZeYPm/wCYKHAqOmBU5InJTapa4PmJthCopndsWpwZlW41zD9QfT/XPdC7+0DOI9XAZ+JSfIwyf+YYf2cMwln3h1DbBmY9D+U/30ntZ/NKgle0yDk2TD/Fjfd4vqI8y29Es/g8TLeyRuPkxMn5zc0zT6P5iK090v1H5Qhii4lY5/YCHRFQOY4TvMNZ5YmfR25wU/LMULdvGvvKFcDu5WVIzc3Psb5lYb2YidCspgND9UKla5llCmJmW6NT7mJUF1mV8uiEdoJPuotAOYFo8kt36V+o3c27EyI8FRFgYgCYzLJBfHt6bDgjWygAOoUNhODBTF0Z+sBbjFxupQI7SqFtdv4iMU2ByzgFeWvMyax7weKca+84IKRojVhd/wBSo4N3FQRuvb/faD0f0kG2GlfacveEdfTMMaoPxGoae4wG5xuZUZFbi847gRaVcTCILfxkZenIw5grhMwKiuV8zBNXJjmdHmccgUuCgSg24k8gXLniLIq9mYIjqYUR/SRaQKp4mQTU18wW1HTPRM38w0LkvhkaxMNAPrRm/GG7jd/lniIAFX9oTbaJepl41BuCEvCAA74FH3YhZfSNcFJg8dQpSEFY9pheEW4S5nuZt7Zs3ubP1GZem+JalxQ6wbhVhk4nEuCU+KTJNkLQgbNM6XthaG0jnMC0tWdTzIxqDnM80SJVsu8xs/c4S2jxUV74y5lysDtlmXpD8JRHH6SY7auUx9/3NLi6iZe2EOxh2lo2WAXc2RcCg1HwxBpsgttq7+sUzVdLTBY8Nnkupm9p77mFZUbF0aPSzqcQMK8s3liCaDBGPEs1j9RFm2W9m5g6jeUXKvoUqBbBz+YcfeIKWtEAojAFZEmEEVFeTMzqpD6i5SW8IM6Icq8HpoFSm36TDoFTiGp70HsM/wARYDbLfruKi8SivifdF7EcQ+kDVOYmu8WT7mWOwTkVCSLcq0Sq5+EdxAhZWZXqAwy0v3gxTJB5htii5UwcKNdo12wbAlJbfuemV/rIzJKU+JkvURVWzOoPyhrVh1BGsGNqx0ddS6L0xCt0zqWmwkPpPDV4jz7QaW3hqWGL+Igcr8THbPd9pbSKoR8/sEcRlZG55Ry1VB1+6Thkm2yFhhlVyQWyYQMRER0xeg3XUcsAEBssWr057gsFErbllBltP/nwtdiC2IlWBAz+rH9CnjzMio8tLj/8aII0eZ7mCWTO67x/zP8Ac/qf6f8AU/3f6nTBdOIfSI9QXqqvhAwWpf8ATUE4L9fRH+3/AFP9P+p/rf1B1v2LdT6/me9nKz7zw/jERVd3qVjrq/J+gdj07lGZm2bEXDdWsQnGqquArAyCkLuYaIDt0q65i0p1ukBgAyIVLg1SLK9tIIMeNomtk1iHIdbSnpGqKh9cjKNAFFoKjuSa1CIASmopTsK8xUEhYeFMSzSEBUdZigaXXgqaFZPkoTImnEFNJz09cPAE9qy6OMIa2VsEJfc5zomaZr+4o2ypoqN3F7eiYp2zIw79mcxZJyOT7S6F49TE+kxu9an1wzTZaGPM6T0CORT0YDKe4ShNcVHV5JhmRKh0TI7HoaDuPV3B7hljG2Z821bAL6ZuKLccR/fizvceAMx21cqf1mF/EN8FmacsVXaVo6nB9RHQjENXcuBZF3YzwAxjsgNEewog8NTL6MNmzcTTXiaDzH0izA0HU34pm+qJ+AhzHUo4XUJLQQXfFSoZe6Y0T0sbUkFO1A1+9wABkluFgPA4Q1dWZaQ7P2hb3JslepcG1yRojL5nYcnRruVw2R1GEBv0Q0z7YJW+RA7pZmVuX8PrnK0JLGKUPKfxEzdhwiaEbzIi3cPCFH3MLH3hya2/7JxAN+rYt9gB/MtOa0mKeaiXLfLfW4jqFzfSrv4iKHtQbXrcphWp7Tz55ce1LEPhyQ16EseGQVQXBTdkYnaE+VOoMiq9zcSoWbUyss/Cf/Hlf+UVuRNqq3CVWWYAgLF3n/fEIxh1SWW2Ct+f6RQsUP4nZy33js9fmixlRd4M5gp9LiWhue0iNTp9MCIoVL11lLHXLkb0lf8AlO/45W3MtyzKlS3EcVcMruMyrX0W4m8J46ljQHzOXj8p7ZX4qLDj4ijv5i1X+YCAGggWgPcnghBNKkMbw27IVKFcqwMoE0kWgt2xZinsZ8q8kVwp9z06NsdruJ9yzLa6OZvoj2Q49P2ksuB9k5geL3FX9kHWQff0inqW6PiX6+Et18Jbr4S/Xwipojrv3luvhLf8Jbr4S3Xwl+nxBHVekVwD2/c5vjRHpmx9OPUQNYdQLjJz6cehw3vQItWi5gtTv9ALfCA7Dn9B1Cv1ZRVwcOz9h2GW5FUnUpFc+hp9ADdQ63S36xHT0xrzTjuGCEpVitsI79DWlBt7ltQPB6cPo6m95cecH7CFnuRqzJ9HvL1rOqyEpqGn0VuCU1U3hhJBFcPHo6Q5HZb4uVrQTB6a/iIpp3l/3cQbycwjuU+V9HiMLdn2hwe1ZslYtlNQ0wYRYvMdY6fev5lgchW/4mdhzqvH6xBxcn0PPv8AMSWmaVxr3nim3lVZrn2+JfZk/wAy+hQu21dP7hwzQFN/M92tq/7jNTe4vHPUIJfMOIlch5I4ApQVVry7jxhfDbXzByWb9Bhxd8OyaIAA4zeXfMLhfLudcwAdBbh78wfupvVfP+v0GPGadt48+8eLn5f7i3/+J//EACkQAQACAgEDAwQDAQEBAAAAAAEAESExQVFhcYGRsRChwfAg0fHhMED/2gAIAQEAAT8Q/nx9CM4lZgmbB3xALC3oZYKY9uGN3JIjVC9Lm5zukrn6OCV/7n8asjy9pSWReVPfb6Fd5rsHAU/v7z0I6LfeJ23eUQGoX1g3A+IuHqLs94hjK5w/31gPhDpVvcw+3rEM68YpfHX0uU3Tv+NfXP8APx9UQOkC9TEdDdtB5YXR5Aw8H5Zd0OZSsarDt56SpSYgberuFrSutWQB6SoaEvg1AsE7RwrDjAnk0wK4+vgejAdE7pA1vXs+jz6+8SU8unn+R/4ZgQcmu0q6YcExEcEcvY/v2vjGAevzSzmLa9RsJ09sZ7eclpHnCYvt2gl7hduiXLF0p7CE5NmzB6PncoXTUDftERUWSuYOTYYrzHXFLouxgjubq9JgI10SdACuQ7Jyfu4qe/ozjrfJKY5ZzHf/AJZzBYLqHy1ofD+/aNLbsDQlArTxBNbkv9XF+CIil1BeqW67L8VDeWZHu9JQkWIbaY9rlDa/Aqi9znExVmZqDdy6ZlKr2B2X1lWIqYdMTPoTNwlWWFj5QDFKSl55laxeitUp6Au2vtDDLgua6/8AlgFbZi3faBdlAu+h188HfxKEtEGh1ilVN93nPSc9Yqq7zjFJ+x3mu6qr1HMqg8QLvLZaSJWqIKOlWa3iNpTCa8OvSATNoHqJq5ZYmurXjrUsYLK1L0QgOPkn/JqGXHyNfFTlULgKMXhTMg6Nb7fvMyK+hqEI15iV/I+jc6ueJYRIdvQgnHeezofv5hrhrg5JdUDLuBBdAK0PVQ2sRfkOfmNX9pjAuHHEyG6NtxXjmCxQKU6+3WXO50rrqc3NrNj+/wB8shyBeAgXpYbswb25r7D7/CIpmVLukK0Gekv4QKw2qlBeJCTnwhhw/fa+ZsFA95S8TzK/kahw4E10C14Nff4gDd5fggFDHbpNDHEAOGJJssnvj8JYrp7eBL/iXXV4p2ia+owbExdQqrXBZKx0YsuuEqHR3GsPLxlglzopwK36/EbHXYolHoqpVaA/EoJlPwRlZrPwxhOQELXJYaAPsj9+xENFF+vSXhXDuv4H16lRqg23DVlPjoY+bfWVUOp4/ag3uqllDOkKb4YTVVvdvyQ36MabAhz1tK+rjSqjJV7H4lloiNh9uGMVLK26gG3PFIRWMjtnnoQChmg0VnxBP3kwy6Fc48VEYItGhrNW4DiXAlNls9DrjmHJVNPUfA+sTnpL7r/U5s4XKVkgPWN34vO5Y3qBiIh2Lw/f5iF2yxbYrmP0PoGITnXMG9TIJGoCiuax/wAqIENUdZfyKy6oin5LXTkTrBbNt1538ENTozqlXXfmXrTdqyG+jfI6rlxzKJS0G8mkrTDeKu1cxEFm6VtDhd0ozxcL/mopTgOkMl0QxZFLcN2+uoyTEaFNRlC1YrWOX7rxGpXGIROgoiFtqq8UmMBBbOsCATJjco0tDuf2RS0u5WdS3tGcTMIqZeYVDQXFpjFvbP4j9CvtEUjzAHy+Jixl15skYetSmEwRQE5qVxNTjG9hTqEd6Mn/ADDYRLlk4KydosV2beg6PvM09gtmnd8MDB8L5QeSPvSrKJrgqjjXSFyJ5C2+LPN6mwX9PEDSqL3Fu9dKghuW7Ol6EC+abe1xGHpwOqJHKPOBocXcUo2D25/EoG5VC6g1mbcx/gsk5LfJOAWaT7X95fTvLvxBbMnojPoFaHtLwbr9iFCL38SyA2Aopl0w+Iz8UDcHpY/pOmB1KzXprNy1aFRzWyXjGJTpKtj326vtuGawywLV65y10gI5zXQrZb2rMxD4WKHVN13jt8NjMtceZSi6xPEWu/aLtYWt1oeFfaAyyY5ZTM8hl7RkdpQFaQvpFUJhZQXxHWK7YHlD8wNi618xfJzHOv4EKsSzJwxArzhfkmgqwPxCiBW2dSLZMTSoJhlg+34jDeDR3jFwFSVruSnEhdw/JL9vJYq6do8uxwcM5yc3AsPkKcrI+dBE7HED0N7ICqy7LpXj0h2gUrXXnZAuvGhn2MQEDaA4MGD2lF0XcViJ/DBFO9zYMl12gDQ/SBVrX5JmUcD7EpIN+kFskf4HMogqbykINAq85ItfFk9ZleCNt6Co5esrLDgFu+1xH1oVrtFLLBD7xiFUCaQ6D947WB0n9xAWxxTGuCUC0WLx0M+ky26F1NUnWLjguw1A65RewwpoWaX1igWrtqW3ywW1GBMzQUEu22KibvNxmUFpNB/d/aIlLVnN08xjGar7MPbQ7hhJ+JcwpoO0Ve/8CPJepn2QDu9Ueab/ABC9ObO/7mWCCliFOQjWkcXBRKalBlG6p8S9qNZV3TGEbfdiddTHiXaBJQ8waFLryJX5nnETqmhrV9pkYFKvYHaxZeY+CgwgoxB/ZUqLa25bgtWUrPfp1joJoPPP3uPylDKl1TxDoLI96fZRa3DavWFOSqjH+F4lKEMx3M9HWVr8HqP35gRrelSoCl14iEIB5F5v9/MYGiA8IzOjhe8HaAvpcUYLYTx/yOrrGL7ZILkRSGwydKmZUrZyyuhzbvpiE05yIK9t8doTc5h7vhqKPJoh6m+H+QhG62x25PaVglo0RZ37Mw7G+SBcXWdUxabgHpy+1nrEWmGdV2jPH8VeKhm/pCZbRT26fvaYIe6+IJ0uSuZiskU6SxWKqcZqXy7OVVcBZsyXKQtim+PMLAXm2Xj3JQS6j4uzJ6QLySqc3WZYwgBzCQUI1l8EpspwY4P7495bKI0HTrG3M55qJdabs6d8yqhaMMIb+D/sDqxR8nrAKYq984iy45iN5jn6cfwUWOeUzt3lFSaUn/CHxuNqUcnKEjj0n5jVfJG4EIruJQCXC4EO6NMBo4MY7JGNSsfc/abjOKDjVRCsBqjmCRsbXp0hbm4NIoQTIU1vcdvZysbLLQHEsrF6orcpiluK2i7pS/Kr3f1HiEC21r+HP0DAKL1u4fB6zLImhJdcsG0kxfH8x8lqmrHuSv8A3lxtd832YLm+7J7WmHm8J716Yw5iKaT++kDaUORbueQoDMOCjXq4a553GYG7SsvaboACgE3bTpSA5U/faY4XCt4MZbAfCOFkF/3GDMcm2nulgaN8whpXQkv3YD+j945y3BFr3xHREZ0DsdO3D9Br6FBBy/c9vmZO85ziGXELAaAIEKg2uZaAaEgt1zAipUFfjkjo4orNy2QAoqpy3vmO5IGU3URDgR5ZuJw2CoPxAMeLoMpcWLywHDzGQ2bqFjXHWBrKrAn13B1UlBYUMhAVX4CEve8wG8l1WOfTEe0kys6dRjwKFFwM6hoBsHPpHMCjzmPSAWhd+kZDCtTk2JzLmyVV/qMp5S9V4lqKVND1gjgGEbu/8lqwNzo9e0eCI+b26nxLo+irGQR2XL8sbAwAPvHytIPa4qtoXfSHaFq1oNVEKBbp8j+ISgJc9oRO6Q6rVv49IGZYqVBqoKWLP3y6mctWkY93ftN60Zg7Ap4lY2owXlQ+rVt7KiEDgYv6pTBzviPuCe0YT0eoHP5lrsfdXLqYHlA6on9S9oKrQ3QzeSrH1gco7oi5kmWn2/yKTlVabO0EzB8EtyXs038H0pflUBLR+EG40tDZJRl+qEFaxUrS2Nm4AMkKdMEsbdiqXWjVtXMCVW1yQAmmjQRCORsnvG0M0oaogZCCxOm4jxZzUdsiJvFZJQAlSgekHGwhWCIQaZHyxeB7ou6uM7t4j9oIBBbJTisrKpA4azEz6sJ6/wCRoqXBDTM8bzV5jzuOiRFontmdrdH1IKaeIL6Iq+hEe+HRyYB1ZU6oAKTPXUPaZa+fsIVgK9UBscfluVGA0vhIx2CkaEtQXo62wkCzSdpRC2UFtWX1mcTlnEtjDY+Yz5xCdIzESi4tGgPeLo0ViMJFKY5DMybQre0EBA2nUzLHXSYSOjqVCyPIQoFDr8kZi68PSoYq/ujKh6Uw0zV2S5/ZcRjXXE4mc9ENkHRHEPAhW94NVauYcmPEH23pGrHqE3qOrIdmcGbEFrTyj0YOduDlHON3klg2NtDm7OmswpHsBdQOUcpzeT08ip0NiZXR0gTih1a6cW1GBCupeAXXrBzwFOi9YYB5VMKurk2JXaLHgMGaaKZX2j6yUYPW6sNb4YLcalejQyW8V1hYWOVgQRPIjHWezAimIM0+SWaVI4jguDrZEgFipTfMYSwCuyYwpNjxUIlLHv8A+o4gGu6U9zNrZ8TfTsO4wuaAvMG176Wn5EOoHOle0cTEoxdLLe/3lP0zMOhmmu/WAUtHAob6vWILVoDejTCKKzfWRGM+7myl9p+2XlWAy6Mcx5IDq0Fn1YlQgtaSJnfMyQuA7BT1AfWALOOCFqu9dogDWbRgxOyeqPEfVLswmBOZdvX1dEsmvDLGx9oL2ETPiWvlrRjqHtNsQM8w3x7Hk6Mo2h5NHqzf2irxSj5QnrwtADozTAfrvG129AX8xQu1ynJDsIINRW8liCySkQD3gImbqlfqzno2Ee1ytPGwsL9WFK7oQ/MfBdAKrtbYkCYgCPW7iTsVr92HqXoYnsxW1Z9w63cAUKpYK1m5n5fL+4vVi1ke7Gdo6XHVFpZbCiyK8IK+8CYt8/8AcN3wuAR6HDDCV0r8JRFoymwvOK+83gPBoOh2nH8im5zqUxU8jMf80MMAuwqEsVfSE/zk3SJiu+QlgoXqnUk/zE/zkeD2kU3E+0WbK3Me12lFE3kZi5yTM5/8OYYt7Vg01i24qjLU1Xo/QLT0izXaANqouqQw2Q4az/36JQYYwy0wV+R5lqHULOem+5EXQwwLYlMYENrbwHVlpDUdXecbgYX6JvaVRZXQmUnNXQfn+fMwoNZp1LAbQW2P+MvAKznYAftQnwoTLvZU9GVdVuvP9zBJVyzm36fdP4l1KMiUr1O2NxXH2riw/qEc3bibE2eZxuFDqcquCI4DgKqEPi+gb20Qdl3CQOh385r2/nzAUiBb1tqIRA22mTVhMHdmAcLJXix1pOYiLZifClRXoN25sLx7wXZYu9cWodO8G1Mtzt9PuGXZjpW4So5wMXFthKtUuMFrPiYQ7QU2CHTe1dLifthSi1WhBdzYmyB0n5uwG3oZMxGPK5QDZuq/cxVFX3AzZg8xHrK5ZZ9AH7ZXrmpZi2RlygXHUS0YRxIqGKav33zMDbIbyp3/AC+JgBLOqUDZvYul8wqFrVYOVgsvzm8dg1CsdpBQtoyukOexywtLtjYJit8l9PXcHFSzvBQyABkLLOozZUY2wvhjUAgA2WJlQAFlNbHF7jDEYKaRVWGLHmIxN7FeG3xL0gaGqynDBd9a9JgTRQBoCpbxxxGBWnYoUopa7zkz14hV8blg2pTbZSGekHJFrmUWmzIek3acCkYFY044hDnqqMuCWx6aO8xgsuli7AZW1vU20cbkVRaSks25W4JeEiDhTxF4VAtQ5H2e6MNq8lMZr4/LepcctcW3/Ln/AML/APm///4AAwD/2Q=="
+
+# ─── INIT SESSION STATE ──────────────────────────────────────────────────────
 def init_state():
     defaults = {
         "auth": False,
@@ -30,8 +33,8 @@ def init_state():
         "en_posicion": False,
         "precio_entrada": 0.0,
         "historial": [],
-        "capital": 30.0,          # capital inicial
-        "capital_inicial": 30.0,  # referencia fija
+        "capital": 30.0,
+        "capital_inicial": 30.0,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -50,20 +53,11 @@ def enviar_telegram(mensaje):
         pass
 
 def calcular_rsi(series, periodo=6):
-    delta   = series.diff()
+    delta    = series.diff()
     ganancia = delta.where(delta > 0, 0).rolling(window=periodo).mean()
     perdida  = -delta.where(delta < 0, 0).rolling(window=periodo).mean()
     rs = ganancia / perdida
     return 100 - (100 / (1 + rs))
-
-def get_logo():
-    try:
-        with open("Fabi con.png", "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    except Exception:
-        return ""
-
-LOGO = get_logo()
 
 # ─── CSS GLOBAL ─────────────────────────────────────────────────────────────
 st.markdown("""
@@ -83,29 +77,28 @@ footer { display: none !important; }
 /* NAV */
 .cs-nav {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px; border-bottom: 1px solid #1e1e1e;
+    padding: 10px 16px; border-bottom: 1px solid #1e1e1e;
     background: rgba(8,8,8,0.97); position: sticky; top: 0; z-index: 999;
 }
 .cs-nav-logo { display: flex; align-items: center; gap: 10px; }
 .cs-nav-name { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #fff; }
 .cs-nav-name span { color: #e82929; }
+.cs-nav-logo img { width: 44px; height: 44px; object-fit: contain; border-radius: 8px; }
 
-/* CAPITAL BADGE */
-.cs-capital-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(77,166,255,0.12); border: 1px solid rgba(77,166,255,0.35);
-    color: #4da6ff; padding: 6px 14px; border-radius: 100px; font-size: 12px;
-    font-weight: 700; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace;
+/* STATUS BADGE NAV */
+.cs-nav-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(232,41,41,0.10); border: 1px solid rgba(232,41,41,0.30);
+    color: #e82929; padding: 5px 12px; border-radius: 100px; font-size: 11px;
+    font-weight: 700; letter-spacing: 1px;
 }
-.cs-capital-gain { color: #00e676; }
-.cs-capital-loss { color: #e82929; }
+.cs-pulse { width: 7px; height: 7px; background: #e82929; border-radius: 50%; animation: cspulse 1.4s infinite; display: inline-block; }
+@keyframes cspulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.3;transform:scale(.7);} }
 
 /* HERO */
-.cs-hero { padding: 50px 20px 40px; text-align: center; position: relative; overflow: hidden; }
+.cs-hero { padding: 40px 20px 36px; text-align: center; position: relative; overflow: hidden; }
 .cs-hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 420px; height: 420px; background: radial-gradient(circle, rgba(232,41,41,0.10) 0%, transparent 70%); pointer-events: none; }
 .cs-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,41,41,0.10); border: 1px solid rgba(232,41,41,0.30); color: #e82929; padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 24px; }
-.cs-pulse { width: 8px; height: 8px; background: #e82929; border-radius: 50%; animation: cspulse 1.4s infinite; display: inline-block; }
-@keyframes cspulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.3;transform:scale(.7);} }
 .cs-h1 { font-family: 'Rajdhani', sans-serif; font-size: 44px; font-weight: 700; line-height: 1; color: #fff; margin-bottom: 14px; }
 .cs-sub { color: #e82929; font-size: 17px; font-weight: 500; margin-bottom: 18px; }
 .cs-desc { color: #666; font-size: 14px; line-height: 1.7; max-width: 360px; margin: 0 auto 32px; }
@@ -157,39 +150,8 @@ footer { display: none !important; }
 .cs-signal-tp   { background: rgba(0,230,118,.15); border: 2px solid #00e676; border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #00e676; margin: 16px 0; }
 .cs-signal-sl   { background: rgba(232,41,41,.15); border: 2px solid #e82929; border-radius: 12px; padding: 16px; text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #e82929; margin: 16px 0; }
 
-/* FILTROS */
-.cs-filter-box { background: #101010; border: 1px solid #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-.cs-filter-ok  { color: #00e676; font-size: 13px; margin-bottom: 4px; }
-.cs-filter-no  { color: #e82929; font-size: 13px; margin-bottom: 4px; }
-.cs-position-box { background: #101010; border: 1px solid #ffa726; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-
-/* ═══════════════════════════════════════════════════════
-   MT5-STYLE LIVE TRADING
-═══════════════════════════════════════════════════════ */
-.mt5-wrapper { background: #0d0d0d; min-height: 100vh; }
-
-/* Toolbar MT5 */
-.mt5-toolbar {
-    display: flex; align-items: center; gap: 6px;
-    background: #141414; border-bottom: 1px solid #222;
-    padding: 6px 12px; flex-wrap: wrap;
-}
-.mt5-tb-group { display: flex; align-items: center; gap: 4px; padding-right: 10px; border-right: 1px solid #222; margin-right: 4px; }
-.mt5-tb-group:last-child { border-right: none; }
-.mt5-tb-btn {
-    background: #1a1a1a; border: 1px solid #2a2a2a; color: #aaa;
-    padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 600;
-    letter-spacing: 0.5px; cursor: pointer; font-family: 'JetBrains Mono', monospace;
-}
-.mt5-tb-btn.active { background: #e82929; border-color: #e82929; color: #fff; }
-.mt5-tb-sep { width: 1px; background: #222; height: 20px; }
-
-/* Panel superior de cotización */
-.mt5-quote-bar {
-    background: #111; border-bottom: 1px solid #1e1e1e;
-    padding: 8px 14px; display: flex; align-items: center;
-    justify-content: space-between; flex-wrap: wrap; gap: 8px;
-}
+/* MT5 LIVE */
+.mt5-quote-bar { background: #111; border-bottom: 1px solid #1e1e1e; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .mt5-symbol { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; }
 .mt5-price-main { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 600; color: #fff; }
 .mt5-price-up   { color: #00e676; }
@@ -197,85 +159,40 @@ footer { display: none !important; }
 .mt5-quote-item { text-align: center; }
 .mt5-quote-lbl  { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
 .mt5-quote-val  { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #ccc; font-weight: 600; }
-
-/* Layout principal: gráfico izq + panel der */
-.mt5-main { display: flex; gap: 0; }
-.mt5-chart-area { flex: 1; min-width: 0; }
-
-/* Panel derecho MT5 */
-.mt5-right-panel {
-    width: 220px; flex-shrink: 0; background: #111;
-    border-left: 1px solid #1e1e1e; display: flex; flex-direction: column;
-}
 .mt5-rp-section { border-bottom: 1px solid #1e1e1e; padding: 12px; }
-.mt5-rp-title {
-    font-size: 9px; color: #555; letter-spacing: 2px; text-transform: uppercase;
-    margin-bottom: 10px; font-weight: 700;
-}
+.mt5-rp-title { font-size: 9px; color: #555; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; font-weight: 700; }
 .mt5-rp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .mt5-rp-key { font-size: 10px; color: #666; }
 .mt5-rp-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ccc; font-weight: 600; }
-.mt5-rp-val-green { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #00e676; font-weight: 700; }
-.mt5-rp-val-red   { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #e82929; font-weight: 700; }
-.mt5-rp-val-blue  { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4da6ff; font-weight: 700; }
-
-/* Botones BUY / SELL estilo MT5 */
-.mt5-trade-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 12px; }
-.mt5-btn-buy {
-    background: linear-gradient(135deg, #00b894, #00e676);
-    color: #000; padding: 12px 6px; border-radius: 6px;
-    text-align: center; font-family: 'Rajdhani', sans-serif;
-    font-size: 16px; font-weight: 700; cursor: pointer; border: none;
-}
-.mt5-btn-sell {
-    background: linear-gradient(135deg, #c0392b, #e82929);
-    color: #fff; padding: 12px 6px; border-radius: 6px;
-    text-align: center; font-family: 'Rajdhani', sans-serif;
-    font-size: 16px; font-weight: 700; cursor: pointer; border: none;
-}
-.mt5-btn-sub { font-size: 9px; font-weight: 400; display: block; opacity: 0.8; }
-
-/* Indicadores RSI / EMA en panel */
 .mt5-indicator-bar { height: 6px; background: #1e1e1e; border-radius: 3px; overflow: hidden; margin-top: 4px; margin-bottom: 8px; }
 .mt5-indicator-fill { height: 100%; border-radius: 3px; transition: width .3s; }
 
-/* Terminal inferior MT5 */
-.mt5-terminal {
-    background: #0a0a0a; border-top: 2px solid #1e1e1e;
-    font-family: 'JetBrains Mono', monospace;
+/* Solo botón BUY (spot — solo compramos) */
+.mt5-trade-btn-wrap { padding: 12px; }
+.mt5-btn-buy {
+    background: linear-gradient(135deg, #00b894, #00e676);
+    color: #000; padding: 14px; border-radius: 6px; width: 100%;
+    text-align: center; font-family: 'Rajdhani', sans-serif;
+    font-size: 18px; font-weight: 700; cursor: pointer; border: none;
 }
-.mt5-term-tabs {
-    display: flex; background: #111; border-bottom: 1px solid #1e1e1e;
-}
-.mt5-term-tab {
-    padding: 8px 16px; font-size: 10px; font-weight: 600; color: #555;
-    letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
-    border-right: 1px solid #1e1e1e; border-bottom: 2px solid transparent;
-}
-.mt5-term-tab.active { color: #e82929; border-bottom: 2px solid #e82929; }
-.mt5-term-body { padding: 0; max-height: 180px; overflow-y: auto; }
-.mt5-term-row {
-    display: grid; grid-template-columns: 90px 80px 1fr 60px 60px 60px;
-    padding: 7px 12px; border-bottom: 1px solid #141414;
-    font-size: 10px; color: #888; align-items: center;
-}
-.mt5-term-row:hover { background: #141414; }
-.mt5-term-header {
-    display: grid; grid-template-columns: 90px 80px 1fr 60px 60px 60px;
-    padding: 5px 12px; background: #0f0f0f;
-    font-size: 9px; color: #444; letter-spacing: 1px; text-transform: uppercase;
-    border-bottom: 1px solid #1e1e1e; position: sticky; top: 0;
-}
+.mt5-btn-sub { font-size: 9px; font-weight: 400; display: block; opacity: 0.8; }
 
-/* Capital progress bar */
 .mt5-capital-progress { padding: 12px; border-bottom: 1px solid #1e1e1e; }
 .mt5-cap-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
 .mt5-cap-label { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
-.mt5-cap-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
 .mt5-progress-outer { height: 6px; background: #1e1e1e; border-radius: 3px; overflow: hidden; }
 .mt5-progress-inner { height: 100%; border-radius: 3px; transition: width .5s; }
 
-/* HISTORIAL ─────────────────────────────────────────── */
+.mt5-terminal { background: #0a0a0a; border-top: 2px solid #1e1e1e; font-family: 'JetBrains Mono', monospace; }
+.mt5-term-tabs { display: flex; background: #111; border-bottom: 1px solid #1e1e1e; }
+.mt5-term-tab { padding: 8px 16px; font-size: 10px; font-weight: 600; color: #555; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-right: 1px solid #1e1e1e; border-bottom: 2px solid transparent; }
+.mt5-term-tab.active { color: #e82929; border-bottom: 2px solid #e82929; }
+.mt5-term-body { padding: 0; max-height: 180px; overflow-y: auto; }
+.mt5-term-row { display: grid; grid-template-columns: 90px 80px 1fr 60px 60px 60px; padding: 7px 12px; border-bottom: 1px solid #141414; font-size: 10px; color: #888; align-items: center; }
+.mt5-term-row:hover { background: #141414; }
+.mt5-term-header { display: grid; grid-template-columns: 90px 80px 1fr 60px 60px 60px; padding: 5px 12px; background: #0f0f0f; font-size: 9px; color: #444; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid #1e1e1e; position: sticky; top: 0; }
+
+/* HISTORIAL */
 .cs-hist-header { background: #0f0f0f; padding: 16px 20px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; justify-content: space-between; }
 .cs-hist-balance { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #4da6ff; }
 .cs-hist-balance-lbl { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
@@ -289,10 +206,8 @@ footer { display: none !important; }
 .cs-hist-trade { background: #0f0f0f; border-bottom: 1px solid #141414; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
 .cs-hist-trade:hover { background: #141414; }
 .cs-hist-par { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 3px; }
-.cs-hist-tipo { font-size: 12px; font-weight: 600; }
-.cs-hist-tipo-compra { color: #4da6ff; }
+.cs-hist-tipo { font-size: 12px; font-weight: 600; color: #4da6ff; }
 .cs-hist-precios { font-size: 11px; color: #555; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
-.cs-hist-fecha { font-size: 10px; color: #444; margin-top: 2px; }
 .cs-hist-ganancia { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; }
 .cs-hist-tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-top: 4px; display: inline-block; }
 
@@ -308,11 +223,7 @@ footer { display: none !important; }
 
 # ─── LOGIN ───────────────────────────────────────────────────────────────────
 if not st.session_state.auth:
-    if LOGO:
-        logo_html = '<img src="data:image/png;base64,' + LOGO + '" style="width:90px;margin-bottom:16px;">'
-    else:
-        logo_html = '<div style="font-size:60px;margin-bottom:16px;">💀</div>'
-
+    logo_html = f'<img src="data:image/jpeg;base64,{LOGO_B64}" style="width:110px;margin-bottom:16px;border-radius:12px;">'
     st.markdown(
         '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">'
         '<div style="background:#101010;border:1px solid #1e1e1e;border-radius:20px;padding:40px 32px;width:100%;max-width:360px;text-align:center;">'
@@ -334,33 +245,24 @@ if not st.session_state.auth:
             st.error("Contraseña incorrecta")
     st.stop()
 
-# ─── NAV + CAPITAL BADGE ────────────────────────────────────────────────────
-capital_actual  = st.session_state.capital
-capital_inicial = st.session_state.capital_inicial
-ganancia_cap    = capital_actual - capital_inicial
-ganancia_pct_cap = (ganancia_cap / capital_inicial) * 100
-color_cap = "cs-capital-gain" if ganancia_cap >= 0 else "cs-capital-loss"
-signo_cap = "+" if ganancia_cap >= 0 else ""
-
-if LOGO:
-    logo_img = '<img src="data:image/png;base64,' + LOGO + '" style="width:50px;height:50px;object-fit:contain;">'
-else:
-    logo_img = '<div style="font-size:32px;">💀</div>'
+# ─── NAV ────────────────────────────────────────────────────────────────────
+bot_status = "🟢 ACTIVO" if st.session_state.bot_activo else "⚪ INACTIVO"
+bot_badge_color = "#00e676" if st.session_state.bot_activo else "#555"
 
 st.markdown(
-    '<div class="cs-nav">'
-    '<div class="cs-nav-logo">'
-    + logo_img +
-    '<div class="cs-nav-name">CRYPTO<span>SCALPER</span></div>'
-    '</div>'
-    '<div class="cs-capital-badge">'
-    '💰 <span class="' + color_cap + '">' + f'{capital_actual:.2f} USDT ({signo_cap}{ganancia_pct_cap:.1f}%)</span>'
-    '</div>'
-    '</div>',
+    f'<div class="cs-nav">'
+    f'<div class="cs-nav-logo">'
+    f'<img src="data:image/jpeg;base64,{LOGO_B64}">'
+    f'<div class="cs-nav-name">CRYPTO<span>SCALPER</span></div>'
+    f'</div>'
+    f'<div style="display:flex;align-items:center;gap:8px;">'
+    f'<div style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{bot_badge_color};">{bot_status}</div>'
+    f'</div>'
+    f'</div>',
     unsafe_allow_html=True
 )
 
-# ─── MENU (sin rerun en cada botón — usamos query params para la página) ────
+# ─── MENU ────────────────────────────────────────────────────────────────────
 col_m1, col_m2, col_m3 = st.columns(3)
 with col_m1:
     if st.button("🏠 HOME", use_container_width=True, key="btn_home"):
@@ -373,12 +275,13 @@ with col_m3:
         st.session_state.pagina = "HISTORIAL"
 
 pagina = st.session_state.pagina
+capital_actual  = st.session_state.capital
+capital_inicial = st.session_state.capital_inicial
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # HOME
 # ═══════════════════════════════════════════════════════════════════════════════
 if pagina == "HOME":
-
     st.markdown(
         '<div class="cs-hero">'
         '<div class="cs-badge"><span class="cs-pulse"></span> Sistema operando en vivo</div>'
@@ -403,12 +306,11 @@ if pagina == "HOME":
         unsafe_allow_html=True
     )
 
-    # Estadísticas dinámicas desde historial real
-    hist = st.session_state.historial
+    hist       = st.session_state.historial
     total_trades = len(hist)
-    ganados = len([t for t in hist if t["resultado"] == "TP"])
-    wr_real = round((ganados / total_trades) * 100) if total_trades > 0 else 0
-    cap_disp = f"{capital_actual:.2f}"
+    ganados    = len([t for t in hist if t["resultado"] == "TP"])
+    wr_real    = round((ganados / total_trades) * 100) if total_trades > 0 else 0
+    cap_disp   = f"{capital_actual:.2f}"
 
     st.markdown(
         '<div class="cs-stats">'
@@ -471,17 +373,15 @@ if pagina == "HOME":
     st.markdown(
         '<div style="text-align:center;padding:26px 20px;border-top:1px solid #1e1e1e;color:#666;font-size:12px;">'
         '<div>2026 CRYPTOSCALPER BOT PRO. Todos los derechos reservados.</div>'
-        '<div style="display:inline-block;background:#141414;border:1px solid #1e1e1e;padding:9px 26px;border-radius:100px;margin-top:10px;">cryptoscalper.app</div>'
         '</div>',
         unsafe_allow_html=True
     )
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# LIVE TRADING — ESTILO MetaTrader 5
+# LIVE TRADING — MetaTrader 5 Style
 # ═══════════════════════════════════════════════════════════════════════════════
 elif pagina == "LIVE":
 
-    # ── Controles en sidebar/columnas compactas ────────────────────────────
     ctrl1, ctrl2, ctrl3, ctrl4 = st.columns([2, 1, 1, 1])
     with ctrl1:
         crypto = st.selectbox("Par", ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","DOGE/USDT","BNB/USDT"], key="sel_crypto")
@@ -492,7 +392,6 @@ elif pagina == "LIVE":
     with ctrl4:
         timeframe = st.selectbox("TF", ["1min","5min","15min","1hour"], key="sel_tf")
 
-    # ── Botones de control ─────────────────────────────────────────────────
     bc1, bc2, bc3, bc4 = st.columns(4)
     with bc1:
         if st.button("▶ INICIAR", use_container_width=True, key="btn_iniciar"):
@@ -511,7 +410,6 @@ elif pagina == "LIVE":
             st.session_state.en_posicion = False
             st.session_state.precio_entrada = 0.0
 
-    # ── Estado del bot ─────────────────────────────────────────────────────
     if not st.session_state.bot_activo:
         st.markdown(
             '<div style="text-align:center;color:#444;padding:60px 20px;font-size:15px;">'
@@ -520,7 +418,6 @@ elif pagina == "LIVE":
             unsafe_allow_html=True
         )
     else:
-        # Auto-refresh cada 60s sin bloquear el websocket
         st_autorefresh(interval=60000, limit=None, key="autorefresh")
         market = crypto.replace("/", "")
         url = f"https://api.coinex.com/v2/spot/kline?market={market}&period={timeframe}&limit=50"
@@ -560,61 +457,50 @@ elif pagina == "LIVE":
             filtro_rsi     = 52 < rsi < 68
             filtro_volumen = vol_actual > vol_promedio
 
-            # Capital usado en esta operación
-            capital_op = st.session_state.capital
+            capital_op     = st.session_state.capital
+            precio_color   = "mt5-price-up" if cambio >= 0 else "mt5-price-dn"
+            signo_cambio   = "▲" if cambio >= 0 else "▼"
+            precio_tp_disp = precio_actual * (1 + tp / 100)
+            precio_sl_disp = precio_actual * (1 - sl / 100)
 
-            # ── QUOTE BAR (barra de cotización MT5) ───────────────────────
-            precio_color = "mt5-price-up" if cambio >= 0 else "mt5-price-dn"
-            signo_cambio = "▲" if cambio >= 0 else "▼"
-
+            # ── QUOTE BAR ──────────────────────────────────────────────────
             st.markdown(
                 f'<div class="mt5-quote-bar">'
-                f'<div>'
-                f'  <div class="mt5-symbol">{crypto}</div>'
-                f'  <div style="font-size:10px;color:#555;">CoinEx Spot • {timeframe}</div>'
-                f'</div>'
-                f'<div class="mt5-quote-item">'
-                f'  <div class="mt5-quote-lbl">PRECIO</div>'
-                f'  <div class="mt5-price-main {precio_color}">{precio_actual:,.4f} <span style="font-size:14px;">{signo_cambio} {abs(cambio_pct):.2f}%</span></div>'
-                f'</div>'
+                f'<div><div class="mt5-symbol">{crypto}</div>'
+                f'<div style="font-size:10px;color:#555;">CoinEx Spot • {timeframe}</div></div>'
+                f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">PRECIO</div>'
+                f'<div class="mt5-price-main {precio_color}">{precio_actual:,.4f} <span style="font-size:14px;">{signo_cambio} {abs(cambio_pct):.2f}%</span></div></div>'
                 f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">MAX</div><div class="mt5-quote-val">{maximo_24h:,.4f}</div></div>'
                 f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">MIN</div><div class="mt5-quote-val">{minimo_24h:,.4f}</div></div>'
                 f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">SOPORTE</div><div class="mt5-quote-val" style="color:#00e676;">{soporte:,.4f}</div></div>'
                 f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">RESIST.</div><div class="mt5-quote-val" style="color:#e82929;">{resistencia:,.4f}</div></div>'
-                f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">CAPITAL OP.</div><div class="mt5-quote-val" style="color:#4da6ff;">{capital_op:.2f} USDT</div></div>'
+                f'<div class="mt5-quote-item"><div class="mt5-quote-lbl">CAPITAL</div><div class="mt5-quote-val" style="color:#4da6ff;">{capital_op:.2f} USDT</div></div>'
                 f'</div>',
                 unsafe_allow_html=True
             )
 
-            # ── LAYOUT PRINCIPAL: Gráfico + Panel Derecho ─────────────────
             col_chart, col_right = st.columns([4, 1])
 
             with col_right:
-                # ── Capital / P&L ────────────────────────────────────────
-                progreso = min((capital_op / 200.0) * 100, 100)
-                color_prog = "#00e676" if capital_op >= capital_inicial else "#e82929"
-                ganancia_usdt = capital_op - capital_inicial
-                signo_g = "+" if ganancia_usdt >= 0 else ""
+                # Capital progress
+                progreso    = min((capital_op / 200.0) * 100, 100)
+                color_prog  = "#00e676" if capital_op >= capital_inicial else "#e82929"
+                ganancia_u  = capital_op - capital_inicial
+                signo_g     = "+" if ganancia_u >= 0 else ""
 
                 st.markdown(
                     f'<div class="mt5-capital-progress">'
-                    f'  <div class="mt5-cap-row">'
-                    f'    <span class="mt5-cap-label">CAPITAL</span>'
-                    f'    <span class="mt5-cap-val" style="color:{color_prog};">{capital_op:.2f} USDT</span>'
-                    f'  </div>'
-                    f'  <div class="mt5-progress-outer">'
-                    f'    <div class="mt5-progress-inner" style="width:{progreso:.1f}%;background:{color_prog};"></div>'
-                    f'  </div>'
-                    f'  <div style="display:flex;justify-content:space-between;margin-top:4px;">'
-                    f'    <span style="font-size:9px;color:#555;">30 USDT</span>'
-                    f'    <span style="font-size:9px;color:#555;">200 USDT</span>'
-                    f'  </div>'
-                    f'  <div style="margin-top:8px;font-size:10px;color:#666;">P&L Total: <span style="color:{color_prog};font-weight:700;">{signo_g}{ganancia_usdt:.2f} USDT</span></div>'
+                    f'<div class="mt5-cap-row"><span class="mt5-cap-label">CAPITAL</span>'
+                    f'<span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{color_prog};">{capital_op:.2f} USDT</span></div>'
+                    f'<div class="mt5-progress-outer"><div class="mt5-progress-inner" style="width:{progreso:.1f}%;background:{color_prog};"></div></div>'
+                    f'<div style="display:flex;justify-content:space-between;margin-top:4px;">'
+                    f'<span style="font-size:9px;color:#555;">30</span><span style="font-size:9px;color:#555;">200 USDT</span></div>'
+                    f'<div style="margin-top:8px;font-size:10px;color:#666;">P&L: <span style="color:{color_prog};font-weight:700;">{signo_g}{ganancia_u:.2f} USDT</span></div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
 
-                # ── Indicadores ───────────────────────────────────────────
+                # Indicadores
                 rsi_pct   = min(rsi, 100)
                 rsi_color = "#00e676" if filtro_rsi else ("#e82929" if rsi > 68 else "#ffa726")
                 ema_color = "#00e676" if filtro_ema else "#e82929"
@@ -622,31 +508,27 @@ elif pagina == "LIVE":
                 vol_pct   = min((vol_actual / vol_promedio * 50) if vol_promedio > 0 else 50, 100)
 
                 st.markdown(
-                    f'<div class="mt5-rp-section">'
-                    f'  <div class="mt5-rp-title">INDICADORES</div>'
-                    f'  <div class="mt5-rp-row"><span class="mt5-rp-key">EMA 7</span><span class="mt5-rp-val">{ema7:,.4f}</span></div>'
-                    f'  <div class="mt5-rp-row"><span class="mt5-rp-key">EMA 18</span><span class="mt5-rp-val">{ema18:,.4f}</span></div>'
-                    f'  <div class="mt5-rp-row"><span class="mt5-rp-key">RSI(6)</span>'
-                    f'    <span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{rsi_color};">{rsi:.1f}</span>'
-                    f'  </div>'
-                    f'  <div class="mt5-indicator-bar"><div class="mt5-indicator-fill" style="width:{rsi_pct:.0f}%;background:{rsi_color};"></div></div>'
-                    f'  <div class="mt5-rp-row"><span class="mt5-rp-key">Vol / MA</span>'
-                    f'    <span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{vol_color};">{(vol_actual/vol_promedio):.2f}x</span>'
-                    f'  </div>'
-                    f'  <div class="mt5-indicator-bar"><div class="mt5-indicator-fill" style="width:{vol_pct:.0f}%;background:{vol_color};"></div></div>'
+                    f'<div class="mt5-rp-section"><div class="mt5-rp-title">INDICADORES</div>'
+                    f'<div class="mt5-rp-row"><span class="mt5-rp-key">EMA 7</span><span class="mt5-rp-val">{ema7:,.4f}</span></div>'
+                    f'<div class="mt5-rp-row"><span class="mt5-rp-key">EMA 18</span><span class="mt5-rp-val">{ema18:,.4f}</span></div>'
+                    f'<div class="mt5-rp-row"><span class="mt5-rp-key">RSI(6)</span>'
+                    f'<span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{rsi_color};">{rsi:.1f}</span></div>'
+                    f'<div class="mt5-indicator-bar"><div class="mt5-indicator-fill" style="width:{rsi_pct:.0f}%;background:{rsi_color};"></div></div>'
+                    f'<div class="mt5-rp-row"><span class="mt5-rp-key">Vol/MA</span>'
+                    f'<span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:{vol_color};">{(vol_actual/vol_promedio):.2f}x</span></div>'
+                    f'<div class="mt5-indicator-bar"><div class="mt5-indicator-fill" style="width:{vol_pct:.0f}%;background:{vol_color};"></div></div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
 
-                # ── Filtros ───────────────────────────────────────────────
+                # Filtros
                 def frow(ok, label):
                     ico = "✓" if ok else "✗"
                     c   = "#00e676" if ok else "#e82929"
                     return f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><span style="color:{c};font-size:12px;font-weight:700;">{ico}</span><span style="font-size:10px;color:#888;">{label}</span></div>'
 
                 st.markdown(
-                    '<div class="mt5-rp-section">'
-                    '  <div class="mt5-rp-title">FILTROS</div>'
+                    '<div class="mt5-rp-section"><div class="mt5-rp-title">FILTROS</div>'
                     + frow(filtro_ema, "EMA 7 > EMA 18")
                     + frow(filtro_rsi, f"RSI 52–68 ({rsi:.0f})")
                     + frow(filtro_volumen, "Vol > Media")
@@ -654,31 +536,28 @@ elif pagina == "LIVE":
                     unsafe_allow_html=True
                 )
 
-                # ── Botones BUY / SELL estilo MT5 ─────────────────────────
-                precio_tp_disp = precio_actual * (1 + tp / 100)
-                precio_sl_disp = precio_actual * (1 - sl / 100)
+                # Solo botón BUY (spot)
                 st.markdown(
-                    f'<div class="mt5-trade-btns">'
-                    f'  <div class="mt5-btn-buy">BUY<span class="mt5-btn-sub">TP {precio_tp_disp:,.4f}</span></div>'
-                    f'  <div class="mt5-btn-sell">SELL<span class="mt5-btn-sub">SL {precio_sl_disp:,.4f}</span></div>'
+                    f'<div class="mt5-trade-btn-wrap">'
+                    f'<div style="font-size:9px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">ENTRADA SPOT</div>'
+                    f'<div class="mt5-btn-buy">BUY<span class="mt5-btn-sub">TP {precio_tp_disp:,.4f} | SL {precio_sl_disp:,.4f}</span></div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
 
             with col_chart:
-                # ── Señal principal ───────────────────────────────────────
+                # Señal principal
                 if st.session_state.en_posicion:
                     if st.session_state.precio_entrada == 0.0:
                         st.session_state.precio_entrada = precio_actual
 
-                    entrada      = st.session_state.precio_entrada
-                    ganancia_pct = ((precio_actual - entrada) / entrada) * 100
+                    entrada       = st.session_state.precio_entrada
+                    ganancia_pct  = ((precio_actual - entrada) / entrada) * 100
                     precio_tp_pos = entrada * (1 + tp / 100)
                     precio_sl_pos = entrada * (1 - sl / 100)
-                    color_pnl    = "#00e676" if ganancia_pct >= 0 else "#e82929"
+                    color_pnl     = "#00e676" if ganancia_pct >= 0 else "#e82929"
                     ganancia_usdt_pos = capital_op * ganancia_pct / 100
 
-                    # TP / SL
                     if precio_actual >= precio_tp_pos:
                         st.markdown('<div class="cs-signal-tp">✅ TAKE PROFIT — VENDE AHORA</div>', unsafe_allow_html=True)
                         if st.session_state.ultima_senal != "TP":
@@ -726,12 +605,10 @@ elif pagina == "LIVE":
                             )
                     else:
                         st.markdown(
-                            f'<div class="cs-signal-wait">'
-                            f'EN POSICION — P&L: <span style="color:{color_pnl};">{ganancia_pct:+.2f}% ({ganancia_usdt_pos:+.2f} USDT)</span>'
-                            f'</div>',
+                            f'<div class="cs-signal-wait">EN POSICION — P&L: '
+                            f'<span style="color:{color_pnl};">{ganancia_pct:+.2f}% ({ganancia_usdt_pos:+.2f} USDT)</span></div>',
                             unsafe_allow_html=True
                         )
-
                 else:
                     if filtro_ema and filtro_rsi and filtro_volumen:
                         st.markdown('<div class="cs-signal-buy">⚡ SEÑAL: COMPRA AHORA</div>', unsafe_allow_html=True)
@@ -744,12 +621,11 @@ elif pagina == "LIVE":
                     else:
                         st.markdown('<div class="cs-signal-wait">⏳ ESPERANDO SEÑAL...</div>', unsafe_allow_html=True)
 
-                # ── Gráfico MT5 (candlestick + volumen) ──────────────────
+                # Gráfico
                 fig = make_subplots(
                     rows=3, cols=1, shared_xaxes=True,
                     row_heights=[0.60, 0.20, 0.20], vertical_spacing=0.01
                 )
-                # Candlestick
                 fig.add_trace(go.Candlestick(
                     x=df.index, open=df["open"], high=df["high"],
                     low=df["low"], close=df["close"],
@@ -757,13 +633,11 @@ elif pagina == "LIVE":
                     decreasing=dict(line=dict(color="#e82929"), fillcolor="#e82929"),
                     name="Precio"
                 ), row=1, col=1)
-                # EMAs
                 fig.add_trace(go.Scatter(x=df.index, y=df["EMA7"],  mode="lines",
                     name="EMA 7",  line=dict(color="#e82929", width=1.5)), row=1, col=1)
                 fig.add_trace(go.Scatter(x=df.index, y=df["EMA18"], mode="lines",
                     name="EMA 18", line=dict(color="#ffa726", width=1.5)), row=1, col=1)
 
-                # Líneas TP/SL si hay posición
                 if st.session_state.en_posicion and st.session_state.precio_entrada > 0:
                     fig.add_hline(y=st.session_state.precio_entrada * (1 + tp / 100),
                         line_color="#00e676", line_dash="dash", line_width=1,
@@ -776,11 +650,10 @@ elif pagina == "LIVE":
                         annotation_text="Entrada", row=1, col=1)
 
                 fig.add_hline(y=soporte,     line_dash="dot", line_color="#00e676",
-                    annotation_text="Soporte",     row=1, col=1)
+                    annotation_text="Soporte",  row=1, col=1)
                 fig.add_hline(y=resistencia, line_dash="dot", line_color="#e82929",
-                    annotation_text="Resist.",     row=1, col=1)
+                    annotation_text="Resist.",  row=1, col=1)
 
-                # RSI
                 fig.add_trace(go.Scatter(x=df.index, y=df["RSI"],
                     fill="tozeroy", fillcolor="rgba(232,41,41,0.05)",
                     line=dict(color="#e82929", width=1), name="RSI(6)"
@@ -788,16 +661,12 @@ elif pagina == "LIVE":
                 fig.add_hline(y=52, line_color="#333", line_width=0.5, row=2, col=1)
                 fig.add_hline(y=68, line_color="#333", line_width=0.5, row=2, col=1)
 
-                # Volumen
                 colors_vol = ["#00e676" if c >= o else "#e82929"
                     for c, o in zip(df["close"], df["open"])]
-                fig.add_trace(go.Bar(
-                    x=df.index, y=df["volume"],
-                    marker_color=colors_vol, name="Vol", opacity=0.7
-                ), row=3, col=1)
+                fig.add_trace(go.Bar(x=df.index, y=df["volume"],
+                    marker_color=colors_vol, name="Vol", opacity=0.7), row=3, col=1)
                 fig.add_trace(go.Scatter(x=df.index, y=df["VOL_MA"],
-                    mode="lines", line=dict(color="#ffa726", width=1),
-                    name="Vol MA"
+                    mode="lines", line=dict(color="#ffa726", width=1), name="Vol MA"
                 ), row=3, col=1)
 
                 fig.update_layout(
@@ -814,7 +683,7 @@ elif pagina == "LIVE":
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
-            # ── Terminal inferior MT5 ─────────────────────────────────────
+            # Terminal
             hist_reciente = st.session_state.historial[:8]
             rows_term = ""
             if hist_reciente:
@@ -838,21 +707,20 @@ elif pagina == "LIVE":
                         f'</div>'
                     )
             else:
-                rows_term = '<div style="padding:20px;color:#444;text-align:center;font-size:12px;">Sin operaciones cerradas aún.</div>'
+                rows_term = '<div style="padding:20px;color:#444;text-align:center;font-size:12px;">Sin operaciones cerradas aun.</div>'
 
             st.markdown(
                 '<div class="mt5-terminal">'
-                '  <div class="mt5-term-tabs">'
-                '    <div class="mt5-term-tab active">📋 Historial</div>'
-                '    <div class="mt5-term-tab">📡 Señales</div>'
-                '    <div class="mt5-term-tab">💰 Capital</div>'
-                '  </div>'
-                '  <div class="mt5-term-body">' + rows_term + '</div>'
+                '<div class="mt5-term-tabs">'
+                '<div class="mt5-term-tab active">📋 Historial</div>'
+                '<div class="mt5-term-tab">📡 Senales</div>'
+                '<div class="mt5-term-tab">💰 Capital</div>'
+                '</div>'
+                '<div class="mt5-term-body">' + rows_term + '</div>'
                 '</div>',
                 unsafe_allow_html=True
             )
 
-            # ── Status bar ───────────────────────────────────────────────
             st.success(f"🟢 Bot activo: {crypto} | TP: {tp}% | SL: {sl}% | Capital: {capital_op:.2f} USDT")
 
         except Exception as e:
@@ -862,11 +730,10 @@ elif pagina == "LIVE":
 # HISTORIAL
 # ═══════════════════════════════════════════════════════════════════════════════
 elif pagina == "HISTORIAL":
-
     historial = st.session_state.historial
 
     if historial:
-        total    = len(historial)
+        total     = len(historial)
         ganadores = len([t for t in historial if t["resultado"] == "TP"])
         win_rate  = round((ganadores / total) * 100)
         pnl_total = round(sum([t["pnl"] for t in historial]), 2)
@@ -879,17 +746,13 @@ elif pagina == "HISTORIAL":
 
         st.markdown(
             f'<div class="cs-hist-header">'
-            f'<div>'
-            f'  <div class="cs-hist-balance-lbl">CAPITAL ACTUAL</div>'
-            f'  <div class="cs-hist-balance">{cap_actual:.2f} USDT</div>'
-            f'  <div style="font-size:11px;color:{"#00e676" if ganancia_usdt_total>=0 else "#e82929"};">'
-            f'  {signo_usdt}{ganancia_usdt_total:.2f} USDT desde inicio</div>'
-            f'</div>'
-            f'<div style="text-align:right;">'
-            f'  <div class="cs-hist-balance-lbl">WIN RATE</div>'
-            f'  <div style="font-family:Rajdhani,sans-serif;font-size:22px;font-weight:700;color:{color_wr};">{win_rate}%</div>'
-            f'  <div style="font-size:11px;color:{color_pnl};">P&L: {pnl_str}</div>'
-            f'</div>'
+            f'<div><div class="cs-hist-balance-lbl">CAPITAL ACTUAL</div>'
+            f'<div class="cs-hist-balance">{cap_actual:.2f} USDT</div>'
+            f'<div style="font-size:11px;color:{"#00e676" if ganancia_usdt_total>=0 else "#e82929"};">'
+            f'{signo_usdt}{ganancia_usdt_total:.2f} USDT desde inicio</div></div>'
+            f'<div style="text-align:right;"><div class="cs-hist-balance-lbl">WIN RATE</div>'
+            f'<div style="font-family:Rajdhani,sans-serif;font-size:22px;font-weight:700;color:{color_wr};">{win_rate}%</div>'
+            f'<div style="font-size:11px;color:{color_pnl};">P&L: {pnl_str}</div></div>'
             f'</div>',
             unsafe_allow_html=True
         )
@@ -907,31 +770,25 @@ elif pagina == "HISTORIAL":
 
         trades_html = ""
         for t in historial:
-            es_tp      = t["resultado"] == "TP"
-            color_gan  = "#00e676" if t["pnl"] >= 0 else "#e82929"
+            es_tp       = t["resultado"] == "TP"
+            color_gan   = "#00e676" if t["pnl"] >= 0 else "#e82929"
             pnl_display = ("+" if t["pnl"] >= 0 else "") + str(t["pnl"]) + "%"
             tag_color   = "rgba(0,230,118,0.15)" if es_tp else "rgba(232,41,41,0.15)"
             tag_text    = "#00e676" if es_tp else "#e82929"
             cap_usado   = t.get("capital_usado", "—")
             cap_nuevo   = t.get("capital_nuevo", "—")
-
             trades_html += (
-                f'<div class="cs-hist-trade">'
-                f'<div style="flex:1;">'
-                f'  <div class="cs-hist-par">{t["par"]} <span class="cs-hist-tipo cs-hist-tipo-compra">buy</span></div>'
-                f'  <div class="cs-hist-precios">{t["entrada"]} → {t["salida"]}</div>'
-                f'  <div style="font-size:10px;color:#444;margin-top:2px;">Cap: {cap_usado} → {cap_nuevo} USDT &nbsp;•&nbsp; {t["fecha"]}</div>'
-                f'</div>'
-                f'<div style="text-align:right;">'
-                f'  <div class="cs-hist-ganancia" style="color:{color_gan};">{pnl_display}</div>'
-                f'  <div class="cs-hist-tag" style="background:{tag_color};color:{tag_text};">{t["resultado"]}</div>'
-                f'</div>'
-                f'</div>'
+                f'<div class="cs-hist-trade"><div style="flex:1;">'
+                f'<div class="cs-hist-par">{t["par"]} <span class="cs-hist-tipo">buy</span></div>'
+                f'<div class="cs-hist-precios">{t["entrada"]} → {t["salida"]}</div>'
+                f'<div style="font-size:10px;color:#444;margin-top:2px;">Cap: {cap_usado} → {cap_nuevo} USDT • {t["fecha"]}</div>'
+                f'</div><div style="text-align:right;">'
+                f'<div class="cs-hist-ganancia" style="color:{color_gan};">{pnl_display}</div>'
+                f'<div class="cs-hist-tag" style="background:{tag_color};color:{tag_text};">{t["resultado"]}</div>'
+                f'</div></div>'
             )
-
         st.markdown(trades_html, unsafe_allow_html=True)
 
-        st.markdown('<div style="padding:16px;">', unsafe_allow_html=True)
         col_r1, col_r2 = st.columns(2)
         with col_r1:
             if st.button("🗑 Limpiar historial", use_container_width=True):
@@ -941,14 +798,12 @@ elif pagina == "HISTORIAL":
             if st.button("🔄 Resetear capital a 30 USDT", use_container_width=True):
                 st.session_state.capital = 30.0
                 st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
-
     else:
         st.markdown(
             '<div style="text-align:center;color:#444;padding:80px 20px;font-size:15px;">'
             '<div style="font-size:40px;margin-bottom:16px;">📋</div>'
-            '<div>No hay trades aún.</div>'
-            '<div style="font-size:13px;margin-top:8px;">Los trades aparecen aquí cuando el bot detecta TP o SL.</div>'
+            '<div>No hay trades aun.</div>'
+            '<div style="font-size:13px;margin-top:8px;">Los trades aparecen aqui cuando el bot detecta TP o SL.</div>'
             '</div>',
             unsafe_allow_html=True
         )
