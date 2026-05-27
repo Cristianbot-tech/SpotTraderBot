@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import base64
 import os
 from datetime import datetime
+from streamlit_autorefresh import st_autorefresh
 
 st.set_page_config(
     page_title="CRYPTOSCALPER BOT PRO",
@@ -519,6 +520,8 @@ elif pagina == "LIVE":
             unsafe_allow_html=True
         )
     else:
+        # Auto-refresh cada 60s sin bloquear el websocket
+        st_autorefresh(interval=60000, limit=None, key="autorefresh")
         market = crypto.replace("/", "")
         url = f"https://api.coinex.com/v2/spot/kline?market={market}&period={timeframe}&limit=50"
         try:
@@ -849,18 +852,8 @@ elif pagina == "LIVE":
                 unsafe_allow_html=True
             )
 
-            # ── Status bar + auto-refresh sin bloquear la UI ─────────────
+            # ── Status bar ───────────────────────────────────────────────
             st.success(f"🟢 Bot activo: {crypto} | TP: {tp}% | SL: {sl}% | Capital: {capital_op:.2f} USDT")
-            st.markdown(
-                '<div style="color:#333;font-size:11px;text-align:center;padding:4px;">'
-                'Actualizando cada 60s...</div>',
-                unsafe_allow_html=True
-            )
-            # Meta-refresh: el navegador recarga la página solo, sin bloquear Python
-            st.markdown(
-                '<meta http-equiv="refresh" content="60">',
-                unsafe_allow_html=True
-            )
 
         except Exception as e:
             st.error(f"Error al obtener datos: {e}")
