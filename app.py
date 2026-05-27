@@ -238,6 +238,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+st.markdown("""
+<style>
+.menu-row > div { display: flex !important; flex-direction: row !important; gap: 8px !important; }
+.menu-row > div > div { flex: 1 !important; }
+.menu-row .stButton > button { font-size: 13px !important; padding: 10px 4px !important; }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="menu-row">', unsafe_allow_html=True)
 # MENU HORIZONTAL
 col_m1, col_m2, col_m3 = st.columns(3)
 with col_m1:
@@ -252,9 +262,7 @@ with col_m3:
     if st.button("📋 HISTORIAL", use_container_width=True):
         st.session_state.pagina = "HISTORIAL"
         st.rerun()
-
-pagina = st.session_state.pagina
-
+st.markdown('</div>', unsafe_allow_html=True)
 if pagina == "HOME":
 
     st.markdown(
