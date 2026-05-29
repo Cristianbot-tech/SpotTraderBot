@@ -358,7 +358,7 @@ elif pagina == "LIVE":
 
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
-        crypto = st.selectbox("Par", ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","DOGE/USDT","BNB/USDT"], key="sel_c")
+        crypto = st.selectbox("Par", ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","DOGE/USDT","BNB/USDT","OXO/USDT"], key="sel_c")
     with col2:
         timeframe = st.selectbox("TF entrada", ["1min","3min","5min"], key="sel_tf")
     with col3:
