@@ -42,6 +42,9 @@ def guardar_estado():
         "ultima_senal":      st.session_state.get("ultima_senal", ""),
         "orden_id":          st.session_state.get("orden_id", 0),
         "par_activo":        st.session_state.get("par_activo", ""),
+        "orden_pendiente":   st.session_state.get("orden_pendiente", False),
+        "tp_pct_fijo":       st.session_state.get("tp_pct_fijo", 0.0),
+        "sl_pct_fijo":       st.session_state.get("sl_pct_fijo", 0.0),
         "auth_ok":           st.session_state.get("auth", False),
     }
     try:
@@ -67,6 +70,9 @@ def cargar_estado():
             st.session_state.orden_id          = datos.get("orden_id", 0)
             st.session_state.orden_ciclos      = datos.get("orden_ciclos", 0)
             st.session_state.par_activo        = datos.get("par_activo", "")
+            st.session_state.orden_pendiente   = datos.get("orden_pendiente", False)
+            st.session_state.tp_pct_fijo       = datos.get("tp_pct_fijo", 0.0)
+            st.session_state.sl_pct_fijo       = datos.get("sl_pct_fijo", 0.0)
             # ── Auto-login tras reconexión WebSocket ─────────────────────────
             if datos.get("auth_ok", False):
                 st.session_state.auth = True
@@ -189,6 +195,9 @@ def init_state():
         "sl_consecutivos":   0,      # ← MEJORA #3
         "orden_id":          0,      # ID orden limit pendiente
         "orden_ciclos":      0,      # ciclos esperando fill (máx 3 = 45s)
+        "orden_pendiente":   False,  # limit order colocada pero no confirmada
+        "tp_pct_fijo":       0.0,   # TP% fijado al entrar — no cambia
+        "sl_pct_fijo":       0.0,   # SL% fijado al entrar — no cambia
         "par_activo":        "",     # par seleccionado por el scanner
     }
     for k, v in defs.items():
@@ -236,6 +245,50 @@ def add_log(msg):
     st.session_state.log.insert(0, f"[{ts}] {msg}")
     if len(st.session_state.log) > 50:
         st.session_state.log = st.session_state.log[:50]
+
+@st.cache_data(ttl=60)
+def filtro_macro_btc():
+    """Evalúa la salud global del mercado usando BTC en 1h.
+    Devuelve apto=True solo si el mercado macro es alcista.
+    TTL=60s para no sobrecargar la API en cada ciclo de 15s."""
+    try:
+        url = "https://api.coinex.com/v2/spot/kline?market=BTCUSDT&period=1hour&limit=220"
+        r   = requests.get(url, timeout=5)
+        d   = r.json().get("data", [])
+        if not d:
+            return {"apto": True, "score": 2, "tendencia": "DESCONOCIDA",
+                    "btc_precio": 0, "ema50": 0, "ema200": 0,
+                    "sobre_ema200": True, "ema50_ok": True, "ema50_sub": True}
+        closes        = pd.Series([float(c["close"]) for c in d])
+        ema50         = closes.ewm(span=50).mean()
+        ema200        = closes.ewm(span=200).mean()
+        precio_actual = closes.iloc[-1]
+        sobre_ema200  = precio_actual > ema200.iloc[-1]
+        ema50_ok      = ema50.iloc[-1]  > ema200.iloc[-1]   # golden/death cross
+        ema50_sub     = ema50.iloc[-1]  > ema50.iloc[-4]    # EMA50 subiendo
+        score = sum([sobre_ema200, ema50_ok, ema50_sub])     # 0–3
+        if score >= 2:
+            tend = "ALCISTA"
+        elif score == 1:
+            tend = "LATERAL"
+        else:
+            tend = "BAJISTA"
+        return {
+            "apto":      score >= 2,
+            "score":     score,
+            "tendencia": tend,
+            "btc_precio": round(precio_actual, 2),
+            "ema50":     round(ema50.iloc[-1], 2),
+            "ema200":    round(ema200.iloc[-1], 2),
+            "sobre_ema200": sobre_ema200,
+            "ema50_ok":  ema50_ok,
+            "ema50_sub": ema50_sub,
+        }
+    except:
+        # Si falla la API no bloqueamos el bot — devolvemos apto por defecto
+        return {"apto": True, "score": 2, "tendencia": "DESCONOCIDA",
+                "btc_precio": 0, "ema50": 0, "ema200": 0,
+                "sobre_ema200": True, "ema50_ok": True, "ema50_sub": True}
 
 @st.cache_data(ttl=13)
 def scan_pares(timeframe="5min", tf_mayor="15min"):
@@ -437,6 +490,7 @@ html,body,[data-testid="stAppViewContainer"],[data-testid="stMain"]{background:#
 .cs-fcard p{color:#666;font-size:13px;line-height:1.7}
 .cs-signal-buy{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.3);border-radius:12px;padding:14px;margin-bottom:8px;color:#00e676;font-weight:700}
 .cs-signal-wait{background:rgba(255,167,38,.08);border:1px solid rgba(255,167,38,.3);border-radius:12px;padding:14px;margin-bottom:8px;color:#ffa726;font-weight:700}
+.cs-signal-block{background:rgba(232,41,41,.06);border:1px solid rgba(232,41,41,.35);border-radius:12px;padding:14px;margin-bottom:8px;color:#e82929;font-weight:700}
 .cs-signal-tp{background:rgba(0,230,118,.15);border:2px solid #00e676;border-radius:12px;padding:14px;margin-bottom:8px;color:#00e676;font-weight:700}
 .cs-signal-sl{background:rgba(232,41,41,.15);border:2px solid #e82929;border-radius:12px;padding:14px;margin-bottom:8px;color:#e82929;font-weight:700}
 .cs-signal-pos{background:rgba(255,167,38,.08);border:1px solid rgba(255,167,38,.3);border-radius:12px;padding:14px;margin-bottom:8px;color:#ffa726;font-weight:700}
@@ -668,7 +722,8 @@ elif pagina == "LIVE":
         if st.button("▶ INICIAR BOT", use_container_width=True, key="bi"):
             st.session_state.bot_activo = True
             add_log("✅ Bot iniciado en modo AUTO")
-            telegram(f"🤖 CRYPTOSCALPER iniciado\nModo: AUTOMATICO\nScanner: {len(PARES_SCAN)} pares | TF: {timeframe}")
+            _m = filtro_macro_btc()
+            telegram(f"🤖 CRYPTOSCALPER iniciado\nModo: AUTOMATICO\nScanner: {len(PARES_SCAN)} pares | TF: {timeframe}\nMacro BTC: {_m['tendencia']} ({_m['score']}/3) | BTC ${_m['btc_precio']:,.0f}")
     with b2:
         if st.button("⏹ DETENER BOT", use_container_width=True, key="bd"):
             mkt_stop = st.session_state.get("par_activo", crypto)
@@ -784,6 +839,15 @@ elif pagina == "LIVE":
                 tend_str = "⚠️ Error tendencia"
                 tend_col = "#ffa726"
 
+            # ── FILTRO MACRO — condición global BTC en 1h ────────────────────
+            # Consulta BTC/EMA200 cada 60s (cachéado). Si falla → apto=True
+            _macro        = filtro_macro_btc()
+            mercado_apto  = _macro["apto"]
+            macro_tend    = _macro["tendencia"]
+            macro_score   = _macro["score"]
+            macro_col     = "#00e676" if mercado_apto else ("#ffa726" if macro_score == 1 else "#e82929")
+            macro_icon    = "✅" if mercado_apto else ("⚠️" if macro_score == 1 else "🚫")
+
             # ── 4 FILTROS (confirmados en vela CERRADA) ──────────────────────
             f_ema  = sig_ema7 > sig_ema18
             # RSI rango ampliado + subiendo — evaluado en vela cerrada
@@ -792,7 +856,9 @@ elif pagina == "LIVE":
             f_vol  = sig_vol > sig_volma
             f_tend = tend_ok
             f_ok   = sum([f_ema, f_rsi, f_vol, f_tend])
-            todos  = f_ema and f_rsi and f_vol and f_tend
+            # mercado_apto es un gate: bloquea entrada si macro es bajista
+            # No cuenta en f_ok (el display de 4 filtros no cambia)
+            todos  = f_ema and f_rsi and f_vol and f_tend and mercado_apto
 
             # ATR dinámico TP/SL — live para display, cerrada para TP/SL
             atr_pct    = (atr_v / precio) * 100         # display (vela live)
@@ -830,8 +896,12 @@ elif pagina == "LIVE":
             )
 
             st.markdown(
-                f'<div class="cs-signal-trend">TENDENCIA {tf_mayor.upper()}: '
-                f'<span style="color:{tend_col};">{tend_str}</span></div>',
+                f'<div class="cs-signal-trend">'
+                f'TENDENCIA {tf_mayor.upper()}: <span style="color:{tend_col};">{tend_str}</span>'
+                f'&nbsp;&nbsp;|&nbsp;&nbsp;'
+                f'MACRO BTC 1H: <span style="color:{macro_col};">'
+                f'{macro_icon} {macro_tend} (BTC ${_macro["btc_precio"]:,.0f} / EMA200 ${_macro["ema200"]:,.0f})'
+                f'</span></div>',
                 unsafe_allow_html=True
             )
 
@@ -901,6 +971,11 @@ elif pagina == "LIVE":
                     + fr(f_rsi,  f"RSI 52-68 {rsi_dir} ({sig_rsi:.0f}🕯️)")
                     + fr(f_vol,  "Vol > Media")
                     + fr(f_tend, f"Tend. {tf_mayor}")
+                    + f'<div style="border-top:1px solid #1a1a1a;margin:6px 0 4px;"></div>'
+                    + f'<div style="font-size:9px;color:#444;letter-spacing:1px;margin-bottom:4px;">MACRO BTC 1H</div>'
+                    + fr(_macro["sobre_ema200"], f"BTC > EMA200 (${_macro['ema200']:,.0f})")
+                    + fr(_macro["ema50_ok"],     "EMA50 > EMA200 (golden)")
+                    + fr(_macro["ema50_sub"],    "EMA50 subiendo")
                     + '</div>',
                     unsafe_allow_html=True
                 )
@@ -917,6 +992,44 @@ elif pagina == "LIVE":
 
             with col_chart:
                 # ── LÓGICA DE TRADING AUTOMÁTICO ─────────────────────────────
+                # ── CHECK ORDEN PENDIENTE (fill verificado) ──────────────────
+                if st.session_state.get("orden_pendiente", False) and st.session_state.orden_id:
+                    ord_data = check_order(st.session_state.orden_id, market)
+                    if ord_data:
+                        status   = ord_data.get("status", "")
+                        fill_amt = float(ord_data.get("base_fill_amount", 0))
+                        avg_px   = float(ord_data.get("avg_price", 0)) or st.session_state.precio_entrada
+                        if status in ("done", "fully_filled") or fill_amt > 0:
+                            st.session_state.en_posicion       = True
+                            st.session_state.precio_entrada    = avg_px
+                            st.session_state.cantidad_comprada = fill_amt if fill_amt > 0 else (
+                                st.session_state.capital / avg_px)
+                            st.session_state.orden_pendiente   = False
+                            guardar_estado()
+                            add_log(f"✅ FILL CONFIRMADO — {crypto_op} @ {avg_px:.4f} — {st.session_state.cantidad_comprada:.6f} u.")
+                            telegram(f"✅ LIMIT BUY EJECUTADO\nPar: {crypto_op}\nPrecio real: {avg_px:.4f}\nCantidad: {st.session_state.cantidad_comprada:.6f}")
+                        else:
+                            st.session_state.orden_ciclos = st.session_state.get("orden_ciclos", 0) + 1
+                            if st.session_state.orden_ciclos >= 3:
+                                cancel_order(st.session_state.orden_id, market)
+                                st.session_state.orden_pendiente = False
+                                st.session_state.orden_id        = 0
+                                st.session_state.orden_ciclos    = 0
+                                st.session_state.ultima_senal    = ""
+                                guardar_estado()
+                                add_log(f"⏰ ORDEN CANCELADA — {crypto_op} — sin fill en 45s, reintentando")
+                    st.markdown(
+                        f'<div style="background:rgba(77,166,255,.08);border:1px solid #4da6ff;border-radius:8px;'
+                        f'padding:8px 14px;font-size:12px;color:#4da6ff;margin-bottom:6px;">'
+                        f'⏳ LIMIT ORDER PENDIENTE — {crypto_op} @ {st.session_state.precio_entrada:.4f} '
+                        f'— ciclo {st.session_state.get("orden_ciclos",0)+1}/3</div>',
+                        unsafe_allow_html=True
+                    )
+
+                # ── TP/SL: usar valores FIJADOS al entrar (no el ATR dinámico) ─
+                tp_use = st.session_state.tp_pct_fijo if st.session_state.tp_pct_fijo > 0 else tp_pct
+                sl_use = st.session_state.sl_pct_fijo if st.session_state.sl_pct_fijo > 0 else sl_pct
+
                 if st.session_state.en_posicion:
                     if st.session_state.precio_entrada == 0.0:
                         st.session_state.precio_entrada = precio
@@ -924,8 +1037,8 @@ elif pagina == "LIVE":
                     entrada  = st.session_state.precio_entrada
                     qty      = st.session_state.cantidad_comprada
                     ganp     = ((precio - entrada) / entrada) * 100
-                    p_tp     = entrada * (1 + tp_pct / 100)
-                    p_sl     = entrada * (1 - sl_pct / 100)
+                    p_tp     = entrada * (1 + tp_use / 100)
+                    p_sl     = entrada * (1 - sl_use / 100)
                     pnl_neto = ganp - (COMISION * 100)
                     color_pnl = "#00e676" if ganp >= 0 else "#e82929"
                     dist_tp  = ((p_tp - precio) / precio) * 100
@@ -941,7 +1054,7 @@ elif pagina == "LIVE":
                                     add_log(f"✅ VENTA AUTO TP — {crypto_op} — {qty:.6f} unidades")
                                 else:
                                     add_log(f"❌ Error venta TP: {res.get('message')}")
-                            gan_real  = tp_pct - (COMISION * 100)
+                            gan_real  = tp_use - (COMISION * 100)
                             nuevo_cap = round(capital_op * (1 + gan_real / 100), 4)
                             st.session_state.capital           = nuevo_cap
                             st.session_state.sl_consecutivos   = 0          # ← MEJORA #3: resetear contador
@@ -959,8 +1072,10 @@ elif pagina == "LIVE":
                             st.session_state.en_posicion       = False
                             st.session_state.precio_entrada    = 0.0
                             st.session_state.cantidad_comprada = 0.0
+                            st.session_state.tp_pct_fijo       = 0.0
+                            st.session_state.sl_pct_fijo       = 0.0
                             guardar_estado()   # ← MEJORA #2
-                            telegram(f"✅ TAKE PROFIT AUTO\nPar: {crypto_op}\nGanancia bruta: +{tp_pct:.2f}%\nNeto: +{gan_real:.2f}%\nCapital nuevo: ${nuevo_cap:.2f}")
+                            telegram(f"✅ TAKE PROFIT AUTO\nPar: {crypto_op}\nGanancia bruta: +{tp_use:.2f}%\nNeto: +{gan_real:.2f}%\nCapital nuevo: ${nuevo_cap:.2f}")
 
                     elif precio <= p_sl:
                         st.markdown('<div class="cs-signal-sl">🔴 STOP LOSS — VENDIENDO...</div>', unsafe_allow_html=True)
@@ -972,7 +1087,7 @@ elif pagina == "LIVE":
                                     add_log(f"🔴 VENTA AUTO SL — {crypto_op} — {qty:.6f} unidades")
                                 else:
                                     add_log(f"❌ Error venta SL: {res.get('message')}")
-                            perd_real = -(sl_pct + COMISION * 100)
+                            perd_real = -(sl_use + COMISION * 100)
                             nuevo_cap = round(capital_op * (1 + perd_real / 100), 4)
                             st.session_state.capital           = nuevo_cap
                             # ── MEJORA #3: incrementar contador SL ───────────
@@ -991,8 +1106,10 @@ elif pagina == "LIVE":
                             st.session_state.en_posicion       = False
                             st.session_state.precio_entrada    = 0.0
                             st.session_state.cantidad_comprada = 0.0
+                            st.session_state.tp_pct_fijo       = 0.0
+                            st.session_state.sl_pct_fijo       = 0.0
                             guardar_estado()   # ← MEJORA #2
-                            telegram(f"🔴 STOP LOSS AUTO\nPar: {crypto_op}\nPérdida bruta: -{sl_pct:.2f}%\nCapital nuevo: ${nuevo_cap:.2f}\n⚠️ SL consecutivos: {st.session_state.sl_consecutivos}/{MAX_SL_CONSECUTIVOS}")
+                            telegram(f"🔴 STOP LOSS AUTO\nPar: {crypto_op}\nPérdida bruta: -{sl_use:.2f}%\nCapital nuevo: ${nuevo_cap:.2f}\n⚠️ SL consecutivos: {st.session_state.sl_consecutivos}/{MAX_SL_CONSECUTIVOS}")
                             # Pausa automática si se alcanza el límite
                             if st.session_state.sl_consecutivos >= MAX_SL_CONSECUTIVOS:
                                 st.session_state.bot_activo = False
@@ -1027,24 +1144,38 @@ elif pagina == "LIVE":
                                 if res.get("code") == 0:
                                     data_ord = res.get("data", {})
                                     order_id = data_ord.get("order_id", 0)
-                                    qty_comp = float(data_ord.get("base_fill_amount",
-                                                     data_ord.get("amount", 0)))
-                                    if qty_comp == 0:
-                                        qty_comp = capital_op / precio_limite
-                                    st.session_state.en_posicion       = True
-                                    st.session_state.precio_entrada    = precio_limite
-                                    st.session_state.cantidad_comprada = qty_comp
-                                    st.session_state.orden_id          = order_id
-                                    st.session_state.orden_ciclos      = 0
-                                    guardar_estado()
-                                    add_log(f"🛒 LIMIT BUY — {crypto_op} @ {precio_limite:.4f} — {qty_comp:.6f} u.")
-                                    telegram(
-                                        f"🛒 LIMIT BUY (maker)\nPar: {crypto_op}\nPrecio límite: {precio_limite:.4f}\n"
-                                        f"Capital: {capital_op:.2f} USDT\nCantidad: {qty_comp:.6f}\n"
-                                        f"TP: {precio_tp:.4f} (+{tp_pct:.2f}%)\n"
-                                        f"SL: {precio_sl:.4f} (-{sl_pct:.2f}%)\n"
-                                        f"Fee: 0.1% maker | Neto esperado: +{neto_tp:.2f}%"
-                                    )
+                                    fill_amt = float(data_ord.get("base_fill_amount", 0))
+                                    tot_amt  = float(data_ord.get("amount", 0)) or (capital_op / precio_limite)
+                                    # ── Fijar TP/SL en el momento de la orden ──────
+                                    st.session_state.tp_pct_fijo   = tp_pct
+                                    st.session_state.sl_pct_fijo   = sl_pct
+                                    st.session_state.orden_id      = order_id
+                                    st.session_state.orden_ciclos  = 0
+                                    st.session_state.precio_entrada = precio_limite
+                                    if fill_amt > 0 and fill_amt >= tot_amt * 0.95:
+                                        # ── Fill inmediato ──────────────────────────
+                                        st.session_state.en_posicion       = True
+                                        st.session_state.cantidad_comprada = fill_amt
+                                        st.session_state.orden_pendiente   = False
+                                        guardar_estado()
+                                        add_log(f"🛒 LIMIT BUY EJECUTADO — {crypto_op} @ {precio_limite:.4f} — {fill_amt:.6f} u.")
+                                        telegram(
+                                            f"🛒 LIMIT BUY EJECUTADO\nPar: {crypto_op}\nPrecio: {precio_limite:.4f}\n"
+                                            f"Capital: {capital_op:.2f} USDT\nCantidad: {fill_amt:.6f}\n"
+                                            f"TP 🔒: {precio_limite*(1+tp_pct/100):.4f} (+{tp_pct:.2f}%)\n"
+                                            f"SL 🔒: {precio_limite*(1-sl_pct/100):.4f} (-{sl_pct:.2f}%)\n"
+                                            f"Neto esperado: +{neto_tp:.2f}%"
+                                        )
+                                    else:
+                                        # ── Fill pendiente — verificar en próximos ciclos ──
+                                        st.session_state.orden_pendiente   = True
+                                        st.session_state.cantidad_comprada = tot_amt
+                                        guardar_estado()
+                                        add_log(f"⏳ LIMIT BUY PENDIENTE — {crypto_op} @ {precio_limite:.4f} — esperando fill (max 45s)")
+                                        telegram(
+                                            f"⏳ LIMIT BUY COLOCADO\nPar: {crypto_op}\nPrecio límite: {precio_limite:.4f}\n"
+                                            f"TP 🔒: +{tp_pct:.2f}% | SL 🔒: -{sl_pct:.2f}%\nEsperando fill..."
+                                        )
                                 else:
                                     add_log(f"❌ Error limit buy: {res.get('message')}")
                             else:
@@ -1054,10 +1185,30 @@ elif pagina == "LIVE":
                                     f"Neto esperado: +{neto_tp:.2f}%"
                                 )
                     else:
-                        st.markdown(
-                            f'<div class="cs-signal-wait">⏳ ESPERANDO SEÑAL — {f_ok}/4 filtros activos</div>',
-                            unsafe_allow_html=True
-                        )
+                        if not mercado_apto and f_ok >= 3:
+                            # Tiene casi todos los filtros pero el macro bloquea
+                            st.markdown(
+                                f'<div class="cs-signal-block">🚫 SEÑAL BLOQUEADA — MACRO BAJISTA<br>'
+                                f'<span style="font-size:12px;font-weight:400;">'
+                                f'{f_ok}/4 filtros locales ✓ | BTC macro: {macro_tend} ({macro_score}/3)<br>'
+                                f'BTC ${_macro["btc_precio"]:,.0f} debe superar EMA200 ${_macro["ema200"]:,.0f}'
+                                f'</span></div>',
+                                unsafe_allow_html=True
+                            )
+                        elif not mercado_apto:
+                            st.markdown(
+                                f'<div class="cs-signal-block">🚫 MERCADO NO APTO — {macro_tend}<br>'
+                                f'<span style="font-size:12px;font-weight:400;">'
+                                f'BTC ${_macro["btc_precio"]:,.0f} / EMA200 ${_macro["ema200"]:,.0f} | '
+                                f'Macro score: {macro_score}/3 | {f_ok}/4 filtros locales'
+                                f'</span></div>',
+                                unsafe_allow_html=True
+                            )
+                        else:
+                            st.markdown(
+                                f'<div class="cs-signal-wait">⏳ ESPERANDO SEÑAL — {f_ok}/4 filtros activos</div>',
+                                unsafe_allow_html=True
+                            )
 
                 # ── Gráfico ───────────────────────────────────────────────────
                 fig = make_subplots(rows=3, cols=1, shared_xaxes=True,
@@ -1074,8 +1225,8 @@ elif pagina == "LIVE":
                     name="EMA18", line=dict(color="#ffa726", width=1.5)), row=1, col=1)
                 if st.session_state.en_posicion and st.session_state.precio_entrada > 0:
                     ep = st.session_state.precio_entrada
-                    fig.add_hline(y=ep*(1+tp_pct/100), line_color="#00e676", line_dash="dash", annotation_text="TP", row=1, col=1)
-                    fig.add_hline(y=ep*(1-sl_pct/100), line_color="#e82929", line_dash="dash", annotation_text="SL", row=1, col=1)
+                    fig.add_hline(y=ep*(1+tp_use/100), line_color="#00e676", line_dash="dash", annotation_text="TP 🔒", row=1, col=1)
+                    fig.add_hline(y=ep*(1-sl_use/100), line_color="#e82929", line_dash="dash", annotation_text="SL 🔒", row=1, col=1)
                     fig.add_hline(y=ep, line_color="#4da6ff", line_dash="dot", line_width=1, annotation_text="ENTRADA", row=1, col=1)
                 fig.add_hline(y=soporte, line_dash="dot", line_color="#00e676", annotation_text="Soporte", row=1, col=1)
                 fig.add_hline(y=resist,  line_dash="dot", line_color="#e82929", annotation_text="Resist",  row=1, col=1)
