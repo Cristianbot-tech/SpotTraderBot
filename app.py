@@ -20,7 +20,7 @@ COINEX_BASE       = "https://api.coinex.com/v2"
 COMISION          = 0.003   # 0.1% limit buy (maker) + 0.2% market sell = 0.3%
 PARES_SCAN        = [
     "BTC/USDT", "ETH/USDT", "SOL/USDT", "XRP/USDT", "DOGE/USDT",
-    "BILL/USDT", "ONDO/USDT", "POL/USDT", "BASED/USDT",
+    "BILL/USDT", "ONDO/USDT", "POL/USDT"
 ]
 ESTADO_FILE       = "estado_bot.json"   # ← MEJORA #2: archivo de persistencia
 MAX_SL_CONSECUTIVOS = 3                 # ← MEJORA #3: límite de SL seguidos
@@ -42,6 +42,7 @@ def guardar_estado():
         "ultima_senal":      st.session_state.get("ultima_senal", ""),
         "orden_id":          st.session_state.get("orden_id", 0),
         "par_activo":        st.session_state.get("par_activo", ""),
+        "auth_ok":           st.session_state.get("auth", False),
     }
     try:
         with open(ESTADO_FILE, "w") as f:
@@ -66,6 +67,9 @@ def cargar_estado():
             st.session_state.orden_id          = datos.get("orden_id", 0)
             st.session_state.orden_ciclos      = datos.get("orden_ciclos", 0)
             st.session_state.par_activo        = datos.get("par_activo", "")
+            # ── Auto-login tras reconexión WebSocket ─────────────────────────
+            if datos.get("auth_ok", False):
+                st.session_state.auth = True
         except Exception as e:
             st.warning(f"⚠️ No se pudo cargar estado guardado: {e}")
 
@@ -236,12 +240,26 @@ def add_log(msg):
 @st.cache_data(ttl=13)
 def scan_pares(timeframe="5min", tf_mayor="15min"):
     """Escanea PARES_SCAN cada 13s y devuelve lista ordenada por score.
-    Usa iloc[-2] (vela cerrada) para filtros consistentes."""
+    Usa iloc[-2] (vela cerrada) para filtros consistentes.
+    timeout=5 por petición para no bloquear la UI."""
     resultados = []
     for par in PARES_SCAN:
         try:
             mkt = par.replace("/", "")
-            df  = klines(mkt, timeframe, 80)
+            url_k = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period={timeframe}&limit=80"
+            r_k = requests.get(url_k, timeout=5)
+            if r_k.status_code != 200:
+                raise ValueError("HTTP error")
+            d = r_k.json().get("data", [])
+            if not d:
+                raise ValueError("Sin datos")
+            df = pd.DataFrame({
+                "open":   [float(c["open"])  for c in d],
+                "high":   [float(c["high"])  for c in d],
+                "low":    [float(c["low"])   for c in d],
+                "close":  [float(c["close"]) for c in d],
+                "volume": [float(c["value"]) for c in d],
+            })
             df["EMA7"]   = df["close"].ewm(span=7).mean()
             df["EMA18"]  = df["close"].ewm(span=18).mean()
             df["RSI"]    = rsi(df["close"], 9)
@@ -263,7 +281,16 @@ def scan_pares(timeframe="5min", tf_mayor="15min"):
             f_tend  = False
             if sum([f_ema, f_rsi, f_vol]) >= 1:
                 try:
-                    dfm = klines(mkt, tf_mayor, 30)
+                    url_m = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period={tf_mayor}&limit=30"
+                    r_m   = requests.get(url_m, timeout=5)
+                    dm    = r_m.json().get("data", [])
+                    dfm   = pd.DataFrame({
+                        "close": [float(c["close"]) for c in dm],
+                        "high":  [float(c["high"])  for c in dm],
+                        "low":   [float(c["low"])   for c in dm],
+                        "open":  [float(c["open"])  for c in dm],
+                        "volume":[float(c["value"]) for c in dm],
+                    })
                     dfm["EMA21"] = dfm["close"].ewm(span=21).mean()
                     dfm["EMA50"] = dfm["close"].ewm(span=50).mean()
                     f_tend = (dfm["EMA21"].iloc[-2] > dfm["EMA50"].iloc[-2] and
@@ -486,19 +513,24 @@ if not st.session_state.auth:
         unsafe_allow_html=True
     )
     with st.form("login", clear_on_submit=True):
-        clave  = st.text_input("", placeholder="Introduce contraseña", type="password")
-        entrar = st.form_submit_button("ENTRAR")
+        clave  = st.text_input("", placeholder="Introduce contraseña",
+                               type="password", key="login_pwd")
+        entrar = st.form_submit_button("ENTRAR", use_container_width=True)
     if entrar:
         if clave == APP_PASSWORD:
             st.session_state.auth = True
+            guardar_estado()   # ← persiste auth_ok:True al disco
             st.rerun()
         else:
             st.error("Contraseña incorrecta")
     st.stop()
 
-# ── CARGAR SALDO REAL DE COINEX ───────────────────────────────────────────────
-if COINEX_API_KEY and COINEX_API_SECRET and not st.session_state.en_posicion:
+# ── CARGAR SALDO REAL DE COINEX (máx. cada 30s para no frenar la navegación) ──
+_ahora = time_module.time()
+if (COINEX_API_KEY and COINEX_API_SECRET and not st.session_state.en_posicion and
+        _ahora - st.session_state.get("_last_bal_ts", 0) > 30):
     saldo = get_balance()
+    st.session_state["_last_bal_ts"] = _ahora
     if saldo > 0 and abs(saldo - st.session_state.capital) > 0.01:
         st.session_state.capital = round(saldo, 4)
 
@@ -674,9 +706,11 @@ elif pagina == "LIVE":
 
         scan_data = []
         # ── SCANNER: escanear los 9 pares y mostrar tabla ─────────────────────
+        _scan_slot = st.empty()
         try:
             scan_data = scan_pares(timeframe, tf_mayor)
-            _render_scanner(scan_data)
+            with _scan_slot:
+                _render_scanner(scan_data)
             # Auto-selección: si el scanner encuentra señal perfecta (4/4) y no
             # estamos en posición, el bot usa ese par automáticamente
             if not st.session_state.en_posicion:
@@ -685,7 +719,10 @@ elif pagina == "LIVE":
                     st.session_state.par_activo = mejor["par"]
                     add_log(f"🔍 SCANNER → mejor par: {mejor['par']} (score {mejor['score']})")
         except Exception as _se:
-            st.warning(f"Scanner: {_se}")
+            _scan_slot.markdown(
+                '<div style="color:#555;font-size:11px;padding:6px;">⚠️ Scanner no disponible en este ciclo — reintentará en 15s</div>',
+                unsafe_allow_html=True
+            )
 
         # Par efectivo: usar el seleccionado por scanner si hay señal 4/4,
         # si no, usar el que el usuario eligió manualmente en el selectbox
