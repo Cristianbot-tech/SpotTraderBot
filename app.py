@@ -7,7 +7,7 @@ import base64, os, json, hmac, hashlib, time as time_module
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="🔴",
+st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="logo.png",
                    layout="wide", initial_sidebar_state="collapsed")
 
 # ── ENTORNO ──────────────────────────────────────────────────────────────────
@@ -235,26 +235,27 @@ def add_log(msg):
         st.session_state.log = st.session_state.log[:50]
 
 @st.cache_data(ttl=60)
-def filtro_macro_btc():
-    """Evalúa la salud global del mercado usando BTC en 1h.
-    Devuelve apto=True solo si el mercado macro es alcista.
-    TTL=60s para no sobrecargar la API en cada ciclo de 15s."""
+def filtro_macro_par(market: str):
+    """Evalúa la macro de UN PAR ESPECÍFICO usando su propio 1h EMA200.
+    Cada par tiene su propio momentum — ONDO puede ser alcista aunque BTC baje.
+    TTL=60s para no sobrecargar la API. Si falla → apto=True por seguridad."""
+    _fallback = {"apto": True, "score": 2, "tendencia": "DESCONOCIDA",
+                 "precio": 0, "ema50": 0, "ema200": 0,
+                 "sobre_ema200": True, "ema50_ok": True, "ema50_sub": True}
     try:
-        url = "https://api.coinex.com/v2/spot/kline?market=BTCUSDT&period=1hour&limit=220"
-        r   = requests.get(url, timeout=5)
-        d   = r.json().get("data", [])
+        url  = f"https://api.coinex.com/v2/spot/kline?market={market}&period=1hour&limit=220"
+        r    = requests.get(url, timeout=5)
+        d    = r.json().get("data", [])
         if not d:
-            return {"apto": True, "score": 2, "tendencia": "DESCONOCIDA",
-                    "btc_precio": 0, "ema50": 0, "ema200": 0,
-                    "sobre_ema200": True, "ema50_ok": True, "ema50_sub": True}
+            return _fallback
         closes        = pd.Series([float(c["close"]) for c in d])
         ema50         = closes.ewm(span=50).mean()
         ema200        = closes.ewm(span=200).mean()
         precio_actual = closes.iloc[-1]
         sobre_ema200  = precio_actual > ema200.iloc[-1]
-        ema50_ok      = ema50.iloc[-1]  > ema200.iloc[-1]   # golden/death cross
-        ema50_sub     = ema50.iloc[-1]  > ema50.iloc[-4]    # EMA50 subiendo
-        score = sum([sobre_ema200, ema50_ok, ema50_sub])     # 0–3
+        ema50_ok      = ema50.iloc[-1] > ema200.iloc[-1]
+        ema50_sub     = ema50.iloc[-1] > ema50.iloc[-4]
+        score = sum([sobre_ema200, ema50_ok, ema50_sub])
         if score >= 2:
             tend = "ALCISTA"
         elif score == 1:
@@ -262,21 +263,22 @@ def filtro_macro_btc():
         else:
             tend = "BAJISTA"
         return {
-            "apto":      score >= 2,
-            "score":     score,
-            "tendencia": tend,
-            "btc_precio": round(precio_actual, 2),
-            "ema50":     round(ema50.iloc[-1], 2),
-            "ema200":    round(ema200.iloc[-1], 2),
+            "apto":       score >= 2,
+            "score":      score,
+            "tendencia":  tend,
+            "precio":     round(precio_actual, 6),
+            "ema50":      round(ema50.iloc[-1], 6),
+            "ema200":     round(ema200.iloc[-1], 6),
             "sobre_ema200": sobre_ema200,
-            "ema50_ok":  ema50_ok,
-            "ema50_sub": ema50_sub,
+            "ema50_ok":   ema50_ok,
+            "ema50_sub":  ema50_sub,
         }
     except:
-        # Si falla la API no bloqueamos el bot — devolvemos apto por defecto
-        return {"apto": True, "score": 2, "tendencia": "DESCONOCIDA",
-                "btc_precio": 0, "ema50": 0, "ema200": 0,
-                "sobre_ema200": True, "ema50_ok": True, "ema50_sub": True}
+        return _fallback
+
+def filtro_macro_btc():
+    """Alias para referencia global BTC (inicio del bot, Telegram)."""
+    return filtro_macro_par("BTCUSDT")
 
 @st.cache_data(ttl=13)
 def scan_pares(timeframe="5min", tf_mayor="15min"):
@@ -339,16 +341,27 @@ def scan_pares(timeframe="5min", tf_mayor="15min"):
                 except:
                     pass
             f_total   = sum([f_ema, f_rsi, f_vol, f_tend])
+            # Macro del par propio — evaluado solo si tiene filtros locales
+            macro_apto = True
+            if f_total >= 2:
+                try:
+                    _m = filtro_macro_par(mkt)
+                    macro_apto = _m["apto"]
+                except:
+                    macro_apto = True
             atr_pct   = round((s_atr / precio) * 100, 3) if precio > 0 else 0
             vol_ratio = round(s_vol / s_volma, 2)        if s_volma > 0 else 0
             score     = f_total * 20
-            if 52 < s_rsi < 58: score += 5   # RSI temprano = mejor entrada
-            if vol_ratio >= 2.0: score += 5   # volumen excepcional
-            score += min(atr_pct * 5, 10)      # más movimiento = más oportunidad
+            if 52 < s_rsi < 58: score += 5
+            if vol_ratio >= 2.0: score += 5
+            score += min(atr_pct * 5, 10)
+            if not macro_apto: score = max(score - 15, 0)  # penaliza macro bajista
             resultados.append({
                 "par": par, "precio": precio, "score": round(score, 1),
-                "filtros": f_total, "todos": f_total == 4,
+                "filtros": f_total,
+                "todos": f_total == 4 and macro_apto,  # requiere macro ok
                 "f_ema": f_ema, "f_rsi": f_rsi, "f_vol": f_vol, "f_tend": f_tend,
+                "macro_apto": macro_apto,
                 "rsi": round(s_rsi, 1), "rsi_sub": rsi_sub,
                 "atr_pct": atr_pct, "vol_ratio": vol_ratio, "cambio": round(cambio, 2),
             })
@@ -368,11 +381,12 @@ def _render_scanner(scan_data):
         color_score = "#00e676" if r["todos"] else ("#ffa726" if r["filtros"] >= 2 else "#555")
         color_cambio = "#00e676" if r["cambio"] >= 0 else "#e82929"
         signo = "+" if r["cambio"] >= 0 else ""
-        f_ema_c  = "#00e676" if r["f_ema"]  else "#333"
-        f_rsi_c  = "#00e676" if r["f_rsi"]  else "#333"
-        f_vol_c  = "#00e676" if r["f_vol"]  else "#333"
-        f_tend_c = "#00e676" if r["f_tend"] else "#333"
-        rsi_dir  = "↑" if r.get("rsi_sub") else "↓"
+        f_ema_c   = "#00e676" if r["f_ema"]       else "#333"
+        f_rsi_c   = "#00e676" if r["f_rsi"]       else "#333"
+        f_vol_c   = "#00e676" if r["f_vol"]       else "#333"
+        f_tend_c  = "#00e676" if r["f_tend"]      else "#333"
+        f_macro_c = "#00e676" if r.get("macro_apto", True) else "#e82929"
+        rsi_dir   = "↑" if r.get("rsi_sub") else "↓"
         filas += (
             f'<div class="scan-row" style="{"background:#0f1a0f;border-left:2px solid #00e676;" if r["todos"] else ""}">'
             f'<span style="font-weight:700;color:#fff;font-size:12px;">{r["par"]}</span>'
@@ -382,6 +396,7 @@ def _render_scanner(scan_data):
             f'<span style="color:{f_rsi_c};">R</span>'
             f'<span style="color:{f_vol_c};">V</span>'
             f'<span style="color:{f_tend_c};">T</span>'
+            f'<span style="color:{f_macro_c};">M</span>'
             f' {r["filtros"]}/4</span>'
             f'<span style="color:#888;font-size:10px;">{r["rsi"]}{rsi_dir}</span>'
             f'<span style="color:#888;font-size:10px;">{r["atr_pct"]}%</span>'
@@ -391,8 +406,8 @@ def _render_scanner(scan_data):
     st.markdown(
         '<div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:10px;padding:10px;margin-bottom:10px;">'
         '<div style="font-size:9px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">'
-        '🔍 SCANNER — 9 PARES (vela cerrada 🕯️) — E=EMA R=RSI V=Vol T=Tend</div>'
-        '<div style="display:grid;grid-template-columns:75px 45px 60px 40px 48px 52px;'
+        '🔍 SCANNER — 8 PARES (vela cerrada 🕯️) — E=EMA R=RSI V=Vol T=Tend M=Macro</div>'
+        '<div style="display:grid;grid-template-columns:75px 45px 65px 40px 48px 52px;'
         'padding:4px 6px;font-size:9px;color:#333;letter-spacing:1px;text-transform:uppercase;">'
         '<span>PAR</span><span>SCORE</span><span>FILTROS</span>'
         '<span>RSI</span><span>ATR%</span><span>CAMBIO</span></div>'
@@ -831,9 +846,9 @@ elif pagina == "LIVE":
                 tend_str = "⚠️ Error tendencia"
                 tend_col = "#ffa726"
 
-            # ── FILTRO MACRO — condición global BTC en 1h ────────────────────
-            # Consulta BTC/EMA200 cada 60s (cachéado). Si falla → apto=True
-            _macro        = filtro_macro_btc()
+            # ── FILTRO MACRO — evaluado para el par específico en operación ──
+            # Cada par tiene su propio 1h EMA200 — ONDO puede ser alcista aunque BTC baje
+            _macro        = filtro_macro_par(market)
             mercado_apto  = _macro["apto"]
             macro_tend    = _macro["tendencia"]
             macro_score   = _macro["score"]
@@ -891,8 +906,8 @@ elif pagina == "LIVE":
                 f'<div class="cs-signal-trend">'
                 f'TENDENCIA {tf_mayor.upper()}: <span style="color:{tend_col};">{tend_str}</span>'
                 f'&nbsp;&nbsp;|&nbsp;&nbsp;'
-                f'MACRO BTC 1H: <span style="color:{macro_col};">'
-                f'{macro_icon} {macro_tend} (BTC ${_macro["btc_precio"]:,.0f} / EMA200 ${_macro["ema200"]:,.0f})'
+                f'MACRO {crypto_op} 1H: <span style="color:{macro_col};">'
+                f'{macro_icon} {macro_tend} (EMA200: {_macro["ema200"]:,.4f})'
                 f'</span></div>',
                 unsafe_allow_html=True
             )
@@ -972,8 +987,8 @@ elif pagina == "LIVE":
                     + fr(f_vol,  "Vol > Media")
                     + fr(f_tend, f"Tend. {tf_mayor}")
                     + f'<div style="border-top:1px solid #1a1a1a;margin:6px 0 4px;"></div>'
-                    + f'<div style="font-size:9px;color:#444;letter-spacing:1px;margin-bottom:4px;">MACRO BTC 1H</div>'
-                    + fr(_macro["sobre_ema200"], f"BTC > EMA200 (${_macro['ema200']:,.0f})")
+                    + f'<div style="font-size:9px;color:#444;letter-spacing:1px;margin-bottom:4px;">MACRO {crypto_op} 1H</div>'
+                    + fr(_macro["sobre_ema200"], f"Precio > EMA200 ({_macro['ema200']:,.4f})")
                     + fr(_macro["ema50_ok"],     "EMA50 > EMA200 (golden)")
                     + fr(_macro["ema50_sub"],    "EMA50 subiendo")
                     + '</div>',
@@ -1186,20 +1201,19 @@ elif pagina == "LIVE":
                                 )
                     else:
                         if not mercado_apto and f_ok >= 3:
-                            # Tiene casi todos los filtros pero el macro bloquea
                             st.markdown(
-                                f'<div class="cs-signal-block">🚫 SEÑAL BLOQUEADA — MACRO BAJISTA<br>'
+                                f'<div class="cs-signal-block">🚫 SEÑAL BLOQUEADA — MACRO {crypto_op} BAJISTA<br>'
                                 f'<span style="font-size:12px;font-weight:400;">'
-                                f'{f_ok}/4 filtros locales ✓ | BTC macro: {macro_tend} ({macro_score}/3)<br>'
-                                f'BTC ${_macro["btc_precio"]:,.0f} debe superar EMA200 ${_macro["ema200"]:,.0f}'
+                                f'{f_ok}/4 filtros locales ✓ | Macro {crypto_op}: {macro_tend} ({macro_score}/3)<br>'
+                                f'Precio debe superar EMA200 ({_macro["ema200"]:,.4f})'
                                 f'</span></div>',
                                 unsafe_allow_html=True
                             )
                         elif not mercado_apto:
                             st.markdown(
-                                f'<div class="cs-signal-block">🚫 MERCADO NO APTO — {macro_tend}<br>'
+                                f'<div class="cs-signal-block">🚫 MACRO {crypto_op} NO APTA — {macro_tend}<br>'
                                 f'<span style="font-size:12px;font-weight:400;">'
-                                f'BTC ${_macro["btc_precio"]:,.0f} / EMA200 ${_macro["ema200"]:,.0f} | '
+                                f'EMA200: {_macro["ema200"]:,.4f} | '
                                 f'Macro score: {macro_score}/3 | {f_ok}/4 filtros locales'
                                 f'</span></div>',
                                 unsafe_allow_html=True
