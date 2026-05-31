@@ -7,7 +7,7 @@ import base64, os, json, hmac, hashlib, time as time_module
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="🔴",
+st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="logo.png",
                    layout="wide", initial_sidebar_state="collapsed")
 
 # ── ENTORNO ──────────────────────────────────────────────────────────────────
