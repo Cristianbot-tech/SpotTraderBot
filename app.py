@@ -7,7 +7,7 @@ import base64, os, json, hmac, hashlib, time as time_module
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="logo.png",
+st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="🔴",
                    layout="wide", initial_sidebar_state="collapsed")
 
 # ── ENTORNO ──────────────────────────────────────────────────────────────────
@@ -46,6 +46,8 @@ def guardar_estado():
         "tp_pct_fijo":       st.session_state.get("tp_pct_fijo", 0.0),
         "sl_pct_fijo":       st.session_state.get("sl_pct_fijo", 0.0),
         "auth_ok":           st.session_state.get("auth", False),
+        "bot_activo":        st.session_state.get("bot_activo", False),
+        "auto_trading":      st.session_state.get("auto_trading", True),
     }
     try:
         with open(ESTADO_FILE, "w") as f:
@@ -73,7 +75,11 @@ def cargar_estado():
             st.session_state.orden_pendiente   = datos.get("orden_pendiente", False)
             st.session_state.tp_pct_fijo       = datos.get("tp_pct_fijo", 0.0)
             st.session_state.sl_pct_fijo       = datos.get("sl_pct_fijo", 0.0)
-            # ── Auto-login tras reconexión WebSocket ─────────────────────────
+            st.session_state.auto_trading      = datos.get("auto_trading", True)
+            # ── Restaurar bot activo y página ────────────────────────────────
+            if datos.get("bot_activo", False):
+                st.session_state.bot_activo = True
+                st.session_state.pagina     = "LIVE"   # volver directo a LIVE
             if datos.get("auth_ok", False):
                 st.session_state.auth = True
         except Exception as e:
@@ -280,22 +286,21 @@ def filtro_macro_btc():
     """Alias para referencia global BTC (inicio del bot, Telegram)."""
     return filtro_macro_par("BTCUSDT")
 
-@st.cache_data(ttl=13)
+@st.cache_data(ttl=45)
 def scan_pares(timeframe="5min", tf_mayor="15min"):
-    """Escanea PARES_SCAN cada 13s y devuelve lista ordenada por score.
-    Usa iloc[-2] (vela cerrada) para filtros consistentes.
-    timeout=5 por petición para no bloquear la UI."""
+    """Escanea PARES_SCAN cada 45s (3 ciclos de 15s) — reduce bloqueos.
+    Usa iloc[-2] (vela cerrada). NO llama funciones cacheadas anidadas."""
     resultados = []
     for par in PARES_SCAN:
         try:
             mkt = par.replace("/", "")
             url_k = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period={timeframe}&limit=80"
-            r_k = requests.get(url_k, timeout=5)
+            r_k = requests.get(url_k, timeout=8)
             if r_k.status_code != 200:
                 raise ValueError("HTTP error")
             d = r_k.json().get("data", [])
-            if not d:
-                raise ValueError("Sin datos")
+            if not d or len(d) < 20:
+                raise ValueError("Sin datos suficientes")
             df = pd.DataFrame({
                 "open":   [float(c["open"])  for c in d],
                 "high":   [float(c["high"])  for c in d],
@@ -322,12 +327,12 @@ def scan_pares(timeframe="5min", tf_mayor="15min"):
             f_rsi   = (52 < s_rsi < 68) and rsi_sub
             f_vol   = s_vol > s_volma
             f_tend  = False
-            if sum([f_ema, f_rsi, f_vol]) >= 1:
-                try:
-                    url_m = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period={tf_mayor}&limit=30"
-                    r_m   = requests.get(url_m, timeout=5)
-                    dm    = r_m.json().get("data", [])
-                    dfm   = pd.DataFrame({
+            try:
+                url_m = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period={tf_mayor}&limit=30"
+                r_m   = requests.get(url_m, timeout=6)
+                dm    = r_m.json().get("data", [])
+                if dm and len(dm) >= 20:
+                    dfm = pd.DataFrame({
                         "close": [float(c["close"]) for c in dm],
                         "high":  [float(c["high"])  for c in dm],
                         "low":   [float(c["low"])   for c in dm],
@@ -338,45 +343,72 @@ def scan_pares(timeframe="5min", tf_mayor="15min"):
                     dfm["EMA50"] = dfm["close"].ewm(span=50).mean()
                     f_tend = (dfm["EMA21"].iloc[-2] > dfm["EMA50"].iloc[-2] and
                               dfm["close"].iloc[-2]  > dfm["EMA21"].iloc[-2])
-                except:
-                    pass
+            except:
+                pass
             f_total   = sum([f_ema, f_rsi, f_vol, f_tend])
-            # Macro del par propio — evaluado solo si tiene filtros locales
+            # ── MACRO inline (sin caché anidada) ─────────────────────────────
             macro_apto = True
-            if f_total >= 2:
-                try:
-                    _m = filtro_macro_par(mkt)
-                    macro_apto = _m["apto"]
-                except:
-                    macro_apto = True
+            try:
+                url_macro = f"https://api.coinex.com/v2/spot/kline?market={mkt}&period=1hour&limit=220"
+                r_mac = requests.get(url_macro, timeout=6)
+                dm2   = r_mac.json().get("data", [])
+                if dm2 and len(dm2) >= 50:
+                    closes_m = pd.Series([float(c["close"]) for c in dm2])
+                    ema50_m  = closes_m.ewm(span=50).mean()
+                    ema200_m = closes_m.ewm(span=200).mean()
+                    mac_px   = closes_m.iloc[-1]
+                    macro_apto = (
+                        mac_px > ema200_m.iloc[-1] and
+                        ema50_m.iloc[-1] > ema200_m.iloc[-1] and
+                        ema50_m.iloc[-1] > ema50_m.iloc[-4]
+                    )
+            except:
+                macro_apto = True   # si falla la macro, no bloqueamos
             atr_pct   = round((s_atr / precio) * 100, 3) if precio > 0 else 0
             vol_ratio = round(s_vol / s_volma, 2)        if s_volma > 0 else 0
             score     = f_total * 20
             if 52 < s_rsi < 58: score += 5
             if vol_ratio >= 2.0: score += 5
             score += min(atr_pct * 5, 10)
-            if not macro_apto: score = max(score - 15, 0)  # penaliza macro bajista
+            if not macro_apto: score = max(score - 15, 0)
             resultados.append({
                 "par": par, "precio": precio, "score": round(score, 1),
                 "filtros": f_total,
-                "todos": f_total == 4 and macro_apto,  # requiere macro ok
+                "todos": f_total == 4 and macro_apto,
                 "f_ema": f_ema, "f_rsi": f_rsi, "f_vol": f_vol, "f_tend": f_tend,
                 "macro_apto": macro_apto,
                 "rsi": round(s_rsi, 1), "rsi_sub": rsi_sub,
                 "atr_pct": atr_pct, "vol_ratio": vol_ratio, "cambio": round(cambio, 2),
+                "error": False,
             })
-        except:
+        except Exception as _e:
+            # Añadir igualmente para que se vea en la tabla con error
             resultados.append({
                 "par": par, "precio": 0, "score": -1, "filtros": 0, "todos": False,
-                "rsi": 0, "atr_pct": 0, "vol_ratio": 0, "cambio": 0, "error": True,
+                "f_ema": False, "f_rsi": False, "f_vol": False, "f_tend": False,
+                "macro_apto": False,
+                "rsi": 0, "rsi_sub": False,
+                "atr_pct": 0, "vol_ratio": 0, "cambio": 0,
+                "error": True, "error_msg": str(_e)[:30],
             })
     return sorted(resultados, key=lambda x: x["score"], reverse=True)
+
 
 def _render_scanner(scan_data):
     """Renderiza la tabla del scanner de pares."""
     filas = ""
     for r in scan_data:
         if r.get("error"):
+            filas += (
+                f'<div class="scan-row" style="opacity:0.4;">'
+                f'<span style="font-weight:700;color:#777;font-size:12px;">{r["par"]}</span>'
+                f'<span style="color:#555;font-size:10px;">—</span>'
+                f'<span style="color:#555;font-size:9px;">{r.get("error_msg","err")}</span>'
+                f'<span style="color:#555;font-size:10px;">—</span>'
+                f'<span style="color:#555;font-size:10px;">—</span>'
+                f'<span style="color:#555;font-size:10px;">—</span>'
+                f'</div>'
+            )
             continue
         color_score = "#00e676" if r["todos"] else ("#ffa726" if r["filtros"] >= 2 else "#555")
         color_cambio = "#00e676" if r["cambio"] >= 0 else "#e82929"
@@ -766,25 +798,35 @@ elif pagina == "LIVE":
     else:
         st_autorefresh(interval=15000, limit=None, key="ar")
 
-        scan_data = []
-        # ── SCANNER: escanear los 9 pares y mostrar tabla ─────────────────────
+        # ── SCANNER con fallback ──────────────────────────────────────────────
+        # Si scan_pares falla (timeout/red), usa los datos del ciclo anterior
+        # guardados en session_state._scan_cache en vez de dejar scan_data vacío
+        scan_data  = st.session_state.get("_scan_cache", [])
         _scan_slot = st.empty()
         try:
-            scan_data = scan_pares(timeframe, tf_mayor)
+            _nuevo = scan_pares(timeframe, tf_mayor)
+            if _nuevo:                                   # solo actualiza si hay datos
+                scan_data = _nuevo
+                st.session_state["_scan_cache"] = scan_data
             with _scan_slot:
                 _render_scanner(scan_data)
             # Auto-selección: si el scanner encuentra señal perfecta (4/4) y no
             # estamos en posición, el bot usa ese par automáticamente
-            if not st.session_state.en_posicion:
+            if not st.session_state.en_posicion and scan_data:
                 mejor = scan_data[0]
                 if mejor["todos"] and mejor["par"] != st.session_state.get("par_activo", ""):
                     st.session_state.par_activo = mejor["par"]
                     add_log(f"🔍 SCANNER → mejor par: {mejor['par']} (score {mejor['score']})")
         except Exception as _se:
-            _scan_slot.markdown(
-                '<div style="color:#555;font-size:11px;padding:6px;">⚠️ Scanner no disponible en este ciclo — reintentará en 15s</div>',
-                unsafe_allow_html=True
-            )
+            # Usa datos anteriores si los hay — no interrumpe el bot
+            if scan_data:
+                with _scan_slot:
+                    _render_scanner(scan_data)
+            else:
+                _scan_slot.markdown(
+                    '<div style="color:#555;font-size:11px;padding:6px;">⚠️ Scanner actualizando...</div>',
+                    unsafe_allow_html=True
+                )
 
         # Par efectivo: usar el seleccionado por scanner si hay señal 4/4,
         # si no, usar el que el usuario eligió manualmente en el selectbox
