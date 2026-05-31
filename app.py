@@ -7,7 +7,7 @@ import base64, os, json, hmac, hashlib, time as time_module
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="logo.png",
+st.set_page_config(page_title="CRYPTOSCALPER BOT PRO", page_icon="🔴",
                    layout="wide", initial_sidebar_state="collapsed")
 
 # ── ENTORNO ──────────────────────────────────────────────────────────────────
@@ -730,7 +730,7 @@ elif pagina == "LIVE":
             guardar_estado()
             add_log("✅ Bot iniciado — contador SL reseteado")
             _m = filtro_macro_btc()
-            telegram(f"🤖 CRYPTOSCALPER iniciado\nModo: AUTOMATICO\nScanner: {len(PARES_SCAN)} pares | TF: {timeframe}\nMacro BTC: {_m['tendencia']} ({_m['score']}/3) | BTC ${_m['btc_precio']:,.0f}")
+            telegram(f"🤖 CRYPTOSCALPER iniciado\nModo: AUTOMATICO\nScanner: {len(PARES_SCAN)} pares | TF: {timeframe}\nMacro BTC: {_m['tendencia']} ({_m['score']}/3) | BTC ${_m['precio']:,.0f}")
     with b2:
         if st.button("⏹ DETENER BOT", use_container_width=True, key="bd"):
             mkt_stop = st.session_state.get("par_activo", crypto)
