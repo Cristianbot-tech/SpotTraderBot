@@ -1347,8 +1347,9 @@ elif pagina == "LIVE":
                 st.success(f"🟢 Bot activo | {crypto_op} | TP: {tp_pct:.2f}% | SL: {sl_pct:.2f}% | Neto: +{neto_tp:.2f}% | Modo: {modo_txt}")
 
         except Exception as e:
-            st.error(f"Error: {e}")
-            add_log(f"❌ Error: {e}")
+            # Error de red o API — NO desactiva el bot, solo registra en log
+            add_log(f"⚠️ Ciclo fallido: {str(e)[:60]} — reintentando en 15s")
+            st.warning(f"⚠️ Sin datos este ciclo ({str(e)[:50]}). El bot sigue activo.", icon="⚠️")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HISTORIAL
